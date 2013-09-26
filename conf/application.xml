@@ -46,7 +46,7 @@
   <!-- hadoop parameters -->
   <property>
     <name>tmpjars</name>
-    <value>file://${application.jar}/husky-example-1.0.0.jar,file://${application.lib}/husky-1.0.0.jar,file://${application.lib}/protobuf-java-2.5.0.jar,file://${application.lib}/commons-lang3-3.1.jar</value>
+    <value>file://${application.lib}/husky-1.0.0.jar,file://${application.lib}/protobuf-java-2.5.0.jar,file://${application.lib}/commons-lang3-3.1.jar</value>
   </property>
 
   <property>
