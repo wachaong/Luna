@@ -49,14 +49,12 @@ public class DataTransform {
 	
 	public int getWeekLabel(long timeStamp){
 		calendar.setTimeInMillis(timeStamp * 1000);
-		//获得星期,它是从1开始的
 		int DAY=calendar.get(Calendar.DAY_OF_WEEK);
 		return Integer.parseInt(day_split[DAY-1]);
 	}
 	
 	public int getTimeLabel(long timeStamp){
 		calendar.setTimeInMillis(timeStamp * 1000);
-		//获得星期,它是从1开始的
 		int HOUR=calendar.get(Calendar.HOUR_OF_DAY);
 		return Integer.parseInt(hour_split[HOUR]);
 	}
