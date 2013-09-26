@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+  <property>
+    <name>application.name</name>
+    <value>Luna</value>
+  </property>
+
+  <property>
+    <name>application.user</name>
+    <value>${USER}</value>
+  </property>
+  
+  <property>
+    <name>application.version</name>
+    <value>example</value>
+  </property>
+
+  <property>
+    <name>application.package</name>
+    <value>com.alimama.display.algo.luna</value>
+  </property>
+
+  <property>
+    <name>application.lib</name>
+    <value>${application.home}/lib</value>
+</property>
+
+  <property>
+    <name>application.jar</name>
+    <value>${application.home}/jar</value>
+  </property>
+  
+  <property>
+    <name>application.output</name>
+    <value>/group/tbalgo-dev/${application.user}/${application.name}/${application.version}</value>
+  </property>
+
+  <!--husky parameters -->
+  <property>
+    <name>mapred.jar</name>
+    <value>file://${application.lib}/husky-1.0.0.jar</value>
+  </property>
+
+  <!-- hadoop parameters -->
+  <property>
+    <name>tmpjars</name>
+    <value>file://${application.jar}/husky-example-1.0.0.jar,file://${application.lib}/husky-1.0.0.jar,file://${application.lib}/protobuf-java-2.5.0.jar,file://${application.lib}/commons-lang3-3.1.jar</value>
+  </property>
+
+  <property>
+    <name>husky.flow.job.save.counter</name>
+    <value>true</value>
+  </property>
+  
+  <property>
+    <name>io.serializations</name>
+    <value>org.apache.hadoop.io.serializer.WritableSerialization,com.taobao.husky.serialization.ProtobufSerialization</value>
+  </property>
+
+  <property>
+    <name>mapred.job.requirement</name>
+    <value>mem:big</value>
+  </property>
+
+  <property>
+    <name>dfs.block.size</name>
+    <value>536870912</value>
+  </property>
+
+  <property>
+    <name>io.sort.factor</name>
+    <value>100</value>
+  </property>
+
+  <property>
+    <name>io.sort.mb</name>
+    <value>500</value>
+  </property>
+  
+  <property>
+    <name>mapreduce.inputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
+  </property>
+
+  <property>
+    <name>mapreduce.outputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat</value>
+  </property>
+
+  <property>
+    <name>mapred.compress.map.output</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>mapred.map.output.compression.codec</name>
+    <value>org.apache.hadoop.io.compress.LzoCodec</value>
+  </property>
+
+  <property>
+    <name>mapred.map.output.compression.type</name>
+    <value>BLOCK</value>
+  </property>
+
+  <property>
+    <name>mapred.output.compress</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>mapred.output.compression.codec</name>
+    <value>org.apache.hadoop.io.compress.LzoCodec</value>
+  </property>
+
+  <property>
+    <name>mapred.output.compression.type</name>
+    <value>BLOCK</value>
+  </property>
+
+  <property>
+    <name>mapred.reduce.parallel.copies</name>
+    <value>20</value>
+  </property>
+
+  <property>
+    <name>mapred.reduce.tasks</name>
+    <value>100</value>
+  </property>
+
+  <property>
+    <name>mapred.task.timeout</name>
+    <value>3600000</value>
+  </property>
+
+  <property>
+    <name>mapred.create.symlink</name>
+    <value>yes</value>
+  </property>
+
+  <property>
+    <name>mapred.child.java.opts</name>
+    <value>-Xmx1024m</value>
+  </property>
+  
+  <property>
+    <name>husky.flow.job.monitor.email</name>
+    <value>yanling.yl@alibaba-inc.com</value>
+  </property>
+
+</configuration>

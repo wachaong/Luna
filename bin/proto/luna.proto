@@ -1,0 +1,54 @@
+package algomsg.luna;
+option java_package = "com.alimama.display.algo.luna.message";
+
+message Context{
+	optional string	pid		=1;		
+	optional int64	time	=2;	
+	optional int64 week 	=3;
+	optional string	url		=4;		
+	optional string	size	=5;	
+	optional string	pos		=6;		
+	optional string	show_type	=7;
+	optional int64 frame_cnt = 8; //帧数
+  	optional int64 frame_index = 9; //帧序
+    repeated Label  labels   =10;
+    
+}
+
+message User{
+	optional string	acookie		=1;
+	optional string	nickname	=2;	
+	optional string	userid  	=3;	
+	repeated Label	labels		=4;	
+}
+
+message Ad{
+	optional int64	trans_id		=1;	
+	optional int64	adboard_id		=2;	
+	optional int64	customer_id		=3;
+	optional int64	customer_price  =5;
+	optional int64	algo_price		=6;
+	optional int64	bid_price 		=7;
+	repeated Label	labels			=4;
+}
+
+
+message Display{
+	optional    string	bidid           =1;
+	optional	string	sessionid       =2;
+	optional	string	clickid         =3;
+	optional	Context	context         =4 ;
+	optional	User	user            =5 ;
+	optional	Ad	ad              	=6 ;
+	optional	int64	click           =7 ;
+}
+
+message Label{
+	optional int64	type	=1;
+	repeated Tag	tags	=2;
+}
+
+message Tag{
+	optional int64	id	=1;
+	optional float	value	=2;
+}

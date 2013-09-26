@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<flow name="myTestFilter">
+  <node>
+    <name>wordcount.step</name>
+  </node>
+</flow>

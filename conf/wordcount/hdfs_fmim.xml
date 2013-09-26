@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="../application.xml"/>
+
+  <property>
+    <name>husky.flow.job.name</name>
+    <value>fmin.myTestFilter</value>
+  </property>
+
+  <property>
+    <name>mapred.job.name</name>
+    <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
+  </property>
+
+  <property>
+    <name>mapred.output.dir</name>
+    <value>${application.output}/${bizdate}/${husky.flow.job.name}</value>
+  </property>
+
+  <property>
+    <name>husky.flow.onim.deadline</name>
+    <value>150000</value>
+    <description>作业完成标记文件终止检测时间,格式HHmmss</description>
+  </property>
+
+  <property>
+    <name>husky.flow.job.factory.class</name>
+    <value>com.taobao.husky.flow.lib.FmimJobFactory</value>
+    <description>作业工厂</description>
+  </property>
+
+  <property>
+    <name>husky.flow.fmim.done.flag</name>
+    <value>${application.output}/${bizdate}/flag.done</value>
+    <description>作业完成标记文件</description>
+  </property>
+
+  <property>
+    <name>husky.flow.job.save.counter</name>
+    <value>false</value>
+  </property>
+
+</configuration>

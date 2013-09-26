@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+
+<project name="Luna" basedir="." default="Luna">
+
+	<property name="src.java" value="src/main/java" />
+	<property name="src.test" value="src/test/java" />
+	<property name="lib.dir" value="lib" />
+	<property name="dist.dir" value="jar" />
+	<property name="build.dir" value="build" />
+	<property name="conf.dir" value="conf" />
+	<property name="test.dir" value="${build.dir}/test" />
+	<property name="report.dir" value="report" />
+
+	<!--Target compile-->
+	<target name="compile" description="Compile main source tree java files" depends="clean">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${test.dir}/classes" />
+
+		<javac destdir="${build.dir}/classes" encoding="utf-8" debug="true" optimize="false" deprecation="false" failonerror="true" >
+			<src path="${src.java}" />
+                        <include name="**/**" />
+			<classpath>
+				<fileset dir="${lib.dir}" />
+			</classpath>
+		</javac>
+
+		<!-- Copy XML files to ${build.dir}/classes -->
+		<copy todir="${build.dir}/classes">
+			<fileset dir="${src.java}" includes="**/*Conf **/*Conf"/>
+			<fileset dir="${src.java}" includes="**/*.xml **/*.xml"/>
+		</copy>
+	 
+	</target>
+
+
+	<!--Target Luna -->
+	<target name="Luna" depends="compile" description="Creates Jar">
+		<mkdir dir="${dist.dir}" />
+                <jar jarfile="jar/Luna.jar" compress="true" basedir="${build.dir}/classes" includes="**/*">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Build-Timestamp" value="${build.time}" />
+				<attribute name="Build-OS" value="${os.name}" />
+				<attribute name="Build-OS-Version" value="${os.version}" />
+				<attribute name="Build-OS-Host" value="${COMPUTERNAME}" />
+				<attribute name="Title" value="${ant.project.name}" />
+				<attribute name="Vendor" value="Taobao, Inc." />
+			</manifest>
+		</jar>
+		<delete dir="${build.dir}" />
+	</target>
+
+	<!--Target clean-->
+	<target name="clean" description="Clean up">
+		<delete dir="${build.dir}" />
+                <delete file="${dist.dir}/Luna.jar" />
+	</target>
+
+</project>
