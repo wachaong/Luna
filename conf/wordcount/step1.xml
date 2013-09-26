@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="../application.xml"/>
+
+  <property>
+    <name>husky.flow.job.name</name>
+    <value>step1</value>
+  </property>
+
+  <property>
+    <name>mapred.job.name</name>
+    <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
+  </property>
+
+  <property>
+    <name>mapred.input.dir</name>
+    <value>/group/tbalgo-rank-dev/husky-example/husky/example/wordcount/input/part-*</value>
+  </property>
+
+  <property>
+    <name>mapred.output.dir</name>
+    <value>${application.output}/wordcount/output/${gmtdate}/step1</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.class</name>
+    <value>com.taobao.husky.examples.wordcount.WordCount$Mapper</value>
+  </property>
+  
+  <property>
+    <name>mapreduce.combiner.class</name>
+    <value>com.taobao.husky.examples.wordcount.WordCount$Reducer</value>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.class</name>
+    <value>com.taobao.husky.examples.wordcount.WordCount$Reducer</value>
+  </property>
+
+  <property>
+    <name>mapred.reduce.tasks</name>
+    <value>50</value>
+  </property>
+
+  <property>
+    <name>mapreduce.inputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
+  </property>
+
+  <property>
+    <name>mapred.mapoutput.key.class</name>
+    <value>org.apache.hadoop.io.Text</value>
+  </property>
+
+  <property>
+    <name>mapred.mapoutput.value.class</name>
+    <value>org.apache.hadoop.io.IntWritable</value>
+  </property>
+
+  <property>
+    <name>mapred.output.key.class</name>
+    <value>org.apache.hadoop.io.Text</value>
+  </property>
+
+  <property>
+    <name>mapred.output.value.class</name>
+    <value>org.apache.hadoop.io.IntWritable</value>
+  </property>
+
+  <property>
+    <name>husky.flow.job.monitor.path</name>
+    <value>./conf/wordcount/step1.mon.xml</value>
+  </property>
+</configuration>

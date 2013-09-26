@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <counter>
+    <name>WORD_TOTAL_CNT</name>
+    <group>com.taobao.husky.examples.wordcount.WordCount$Counters</group>
+    <operator>
+      <class>com.taobao.husky.monitor.ValidRange</class>
+      <argument>100,1000</argument>
+      <level>Info</level>
+    </operator>
+    <operator>
+      <class>com.taobao.husky.monitor.ValidGrowthRate</class>
+      <argument>${application.output}/wordcount/output/${cmpdate}/step1.counter,-,0.1</argument>
+      <level>Warn</level>
+    </operator>
+  </counter>
+  
+  <counter>
+    <name>WORD_UNIQ_CNT</name>
+    <group>com.taobao.husky.examples.wordcount.WordCount$Counters</group>
+    <operator>
+      <class>com.taobao.husky.monitor.ValidRange</class>
+      <argument>100,1000</argument>
+      <level>Warn</level>
+    </operator>
+  </counter>
+  
+  <counter>
+    <name>MAP_INPUT_RECORDS</name>
+    <group>org.apache.hadoop.mapred.Task$Counter</group>
+    <operator>
+      <class>com.taobao.husky.monitor.ValidRange</class>
+      <argument>1000000,200000000</argument>
+      <level>Fatal</level>
+    </operator>
+    <operator>
+      <class>com.taobao.husky.monitor.ValidGrowthRate</class>
+      <argument>${application.output}/wordcount/output/${cmpdate}/step1.counter,-0.3,0.3</argument>
+      <level>Warn</level>
+    </operator>
+  </counter>
+</config>
+

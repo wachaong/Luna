@@ -10,7 +10,6 @@
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/display_midlog_parser.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/display_tool_0.1.0.jar"/>
-	<classpathentry kind="lib" path="D:/workspace/Luna/lib/EcpmPVLogParser.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/hadoop-0.19.1-dc-core.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/husky-1.0.0.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/husky-1.0.0-sources.jar"/>
