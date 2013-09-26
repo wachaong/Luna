@@ -69,8 +69,4 @@
     <value>org.apache.hadoop.io.IntWritable</value>
   </property>
 
-  <property>
-    <name>husky.flow.job.monitor.path</name>
-    <value>./conf/wordcount/step1.mon.xml</value>
-  </property>
 </configuration>
