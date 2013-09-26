@@ -29,7 +29,7 @@ public class FilterData {
 	
 	public static class Mapper
     	extends org.apache.hadoop.mapreduce.Mapper
-    	<LongWritable, Text, ByteString, Display> {
+    	<LongWritable, Text, Text, Display> {
 	    
 		
 		private DataTransform dt = new DataTransform();
@@ -72,7 +72,8 @@ public class FilterData {
 					context.getCounter(Counters.PV_FILTED).increment(1);
 					continue;
 				}
-				ByteString outKey = ByteString.copyFromUtf8(display.getSessionid()+display.getAd().getTransId()+display.getAd().getAdboardId());
+				Text outKey = new Text();
+				outKey.set(display.getSessionid()+display.getAd().getTransId()+display.getAd().getAdboardId());
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
 			}
@@ -81,10 +82,10 @@ public class FilterData {
 	
 	public static class Reducer
     	extends org.apache.hadoop.mapreduce.Reducer
-    	<ByteString, Display, ByteString, ByteString> {
+    	<Text, Display, Text, Text> {
 
 	    @Override
-	    protected void reduce(ByteString key, Iterable<Display> values, Context context)
+	    protected void reduce(Text key, Iterable<Display> values, Context context)
 	        throws IOException, InterruptedException {
 	      for (Display value: values)
 	    	  context.write(key, key);
