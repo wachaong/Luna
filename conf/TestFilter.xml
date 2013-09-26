@@ -2,6 +2,6 @@
 
 <flow name="myTestFilter">
   <node>
-    <name>wordcount.step</name>
+    <name>TestFilter.step</name>
   </node>
 </flow>
