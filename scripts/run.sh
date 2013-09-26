@@ -38,6 +38,7 @@ for jar in $application_lib/*.jar; do classpath=$classpath:$jar; done
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
+    -files $conf/train_pid.conf \
     -D application.home=$application_home \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \

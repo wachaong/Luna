@@ -51,16 +51,12 @@
 
   <property>
     <name>mapred.mapoutput.key.class</name>
-<<<<<<< HEAD
     <value>org.apache.hadoop.io.Text</value>
-=======
-    <value>com.google.protobuf.ByteString</value>
->>>>>>> 5d4625e9ab67e76cf83196a5acb3ab0e02540b6b
   </property>
 
   <property>
     <name>mapred.mapoutput.value.class</name>
-    <value>com.alimama.display.algo.luna.message.Luna.Display</value>
+    <value>org.apache.hadoop.io.Text</value>
   </property>
 
   <property>
