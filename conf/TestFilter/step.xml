@@ -53,7 +53,7 @@
     <name>mapreduce.inputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
   </property>
-
+-->
   <property>
     <name>mapred.mapoutput.key.class</name>
     <value>org.apache.hadoop.io.Text</value>
@@ -61,9 +61,9 @@
 
   <property>
     <name>mapred.mapoutput.value.class</name>
-    <value>org.apache.hadoop.io.Text</value>
+    <value>com.alimama.display.algo.luna.message.Luna.Display</value>
   </property>
-
+<!--
   <property>
     <name>mapred.output.key.class</name>
     <value>org.apache.hadoop.io.Text</value>
