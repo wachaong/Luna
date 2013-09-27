@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.apache.hadoop.conf.Configuration;
 
@@ -20,7 +21,7 @@ public class Filter {
     	FILTED_BY_PID,
     	FILTED_BY_TYPE,
     }
-	private Set<String> filted_Pid;
+	private Set<String> filted_Pid = new HashSet<String>();
 	public void init(Configuration conf) throws NumberFormatException, IOException{
 		readFiltedPid(conf);
 	}
@@ -36,6 +37,7 @@ public class Filter {
 					if(line.length()==0 || line.startsWith("#")){
 						continue;
 					}
+                    System.out.println(line);
 					filted_Pid.add(line);
 				}
 				br.close();

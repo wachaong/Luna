@@ -6,5 +6,5 @@ package com.alimama.display.algo.luna.util;
  *  2013.9.26
  */
 public class LunaConstants {
-	final static String FILTED_PID_FILE = "filted_pid_file";
+	final static String FILTED_PID_FILE = "filted.pid.file";
 }

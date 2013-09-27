@@ -37,6 +37,11 @@
     <value>/group/tbalgo-dev/${application.user}/${application.name}/${application.version}</value>
   </property>
 
+  <property>
+    <name>filter.pid.file</name>
+    <value>train_pid.conf</value>
+  </property>
+
   <!--husky parameters -->
   <property>
     <name>mapred.jar</name>

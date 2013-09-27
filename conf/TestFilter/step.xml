@@ -10,6 +10,11 @@
   </property>
 
   <property>
+    <name>filted.pid.file</name>
+    <value>train_pid.conf</value>
+  </property>
+
+  <property>
     <name>mapred.job.name</name>
     <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
   </property>

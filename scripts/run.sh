@@ -43,5 +43,6 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
+    -D filter.pid.file=train_pid.conf \
     ${properties[@]-} \
     $flow
