@@ -117,7 +117,7 @@ public class DataTransform {
 		db.setSessionid(dmd.getSessionid());
 		Context.Builder ctxb= getContext(dmd).toBuilder();
 		int frame_index = 0;
-		
+		System.out.println("Ads number in a record "+dmd.getAdCount());
 		for(display.algo.logs.proto.MiddataMessage.Ad t :dmd.getAdList()){
 			
 			Ad ad = getAd(t);

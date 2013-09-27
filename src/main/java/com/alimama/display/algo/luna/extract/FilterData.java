@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+
 
 
 
@@ -22,7 +24,9 @@ public class FilterData {
 		  RECORD_FILTERED_CNT,
 		  PV_ALL,
 		  PV_FILTED,
-		  PV_OK
+		  PV_OK,
+		  CLICK,
+		  NONCLICK
 	  }
 	
 	static Filter filter = new Filter();
@@ -73,7 +77,20 @@ public class FilterData {
 					continue;
 				}
 				Text outKey = new Text();
-				outKey.set(display.getSessionid()+"_"+display.getAd().getTransId()+"_"+display.getAd().getAdboardId());
+				String out = "";
+				out += display.getSessionid()+"_";
+				out += display.getAd().getTransId()+"_";
+				out += display.getAd().getAdboardId()+"_";
+				out += display.getAd().getCustomerId()+"_";
+				out += display.getContext().getPid()+"_";
+				out += display.getContext().getUrl()+"_";
+				out += display.getClick();
+				outKey.set(out);
+				if(display.getClick() == 1){
+					context.getCounter(Counters.CLICK).increment(1);
+				}
+				else
+					context.getCounter(Counters.NONCLICK).increment(1);
 				//outKey.set(display.getClickid());
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
@@ -83,13 +100,13 @@ public class FilterData {
 	
 	public static class Reducer
     	extends org.apache.hadoop.mapreduce.Reducer
-    	<Text, Display, Text, Text> {
+    	<Text, Display, Text, NullWritable> {
 
 	    @Override
 	    protected void reduce(Text key, Iterable<Display> values, Context context)
 	        throws IOException, InterruptedException {
 	      for (Display value: values)
-	    	  context.write(key, key);
+	    	  context.write(key, NullWritable.get());
 	    }
 	}
 }

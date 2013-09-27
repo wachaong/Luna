@@ -70,6 +70,6 @@
 
   <property>
     <name>mapred.output.value.class</name>
-    <value>org.apache.hadoop.io.Text</value>
+    <value>org.apache.hadoop.io.NullWritable</value>
   </property>
 </configuration>
