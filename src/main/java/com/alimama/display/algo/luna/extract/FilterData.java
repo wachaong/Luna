@@ -14,7 +14,6 @@ import com.alimama.display.algo.luna.message.Luna.Display;
 import com.alimama.display.algo.luna.util.DataTransform;
 import com.alimama.display.algo.luna.util.Filter;
 import com.alimama.display.algo.luna.util.Filter.FilterBy;
-import com.google.protobuf.ByteString;
 
 import display.algo.logs.proto.MiddataMessage.DiamondMidData;
 
