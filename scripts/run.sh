@@ -35,7 +35,8 @@ source $conf/application.conf
 classpath=$conf 
 for jar in $application_lib/*.jar; do classpath=$classpath:$jar; done
 
-hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/Testfilter/output/${gmtdate}
+set +e
+hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$1/output/${gmtdate}
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
@@ -45,6 +46,5 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
-    -D filter.pid.file=train_pid.conf \
     ${properties[@]-} \
     $flow

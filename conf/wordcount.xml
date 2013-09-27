@@ -6,13 +6,4 @@
     <name>wordcount.step1</name>
   </node>
 
-  <node>
-    <name>wordcount.step2</name>
-  </node>
-
-  <node>
-    <name>wordcount.step3</name>
-    <dependencies>wordcount.step1,wordcount.step2</dependencies>
-  </node>
-
 </flow>

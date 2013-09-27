@@ -73,8 +73,8 @@ public class FilterData {
 					continue;
 				}
 				Text outKey = new Text();
-				//outKey.set(display.getSessionid()+display.getAd().getTransId()+display.getAd().getAdboardId());
-				outKey.set(display.getClickid());
+				outKey.set(display.getSessionid()+"_"+display.getAd().getTransId()+"_"+display.getAd().getAdboardId());
+				//outKey.set(display.getClickid());
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
 			}

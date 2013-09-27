@@ -76,17 +76,22 @@
 
   <property>
     <name>io.sort.mb</name>
-    <value>1000</value>
+    <value>500</value>
   </property>
   
   <property>
     <name>mapreduce.inputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
   </property>
-
+  <!--
   <property>
     <name>mapreduce.outputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat</value>
+  </property>
+  -->
+  <property>
+    <name>mapreduce.outputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.output.TextOutputFormat</value>
   </property>
 
   <property>
@@ -106,7 +111,7 @@
 
   <property>
     <name>mapred.output.compress</name>
-    <value>true</value>
+    <value>false</value>
   </property>
 
   <property>
