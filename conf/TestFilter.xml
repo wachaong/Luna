@@ -2,6 +2,6 @@
 
 <flow name="myTestFilter">
   <node>
-    <name>TestFilter.step</name>
+    <name>TestFilter.demo</name>
   </node>
 </flow>

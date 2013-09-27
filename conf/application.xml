@@ -14,7 +14,7 @@
   
   <property>
     <name>application.version</name>
-    <value>example</value>
+    <value>1.0.0</value>
   </property>
 
   <property>
@@ -35,11 +35,6 @@
   <property>
     <name>application.output</name>
     <value>/group/tbalgo-dev/${application.user}/${application.name}/${application.version}</value>
-  </property>
-
-  <property>
-    <name>filter.pid.file</name>
-    <value>train_pid.conf</value>
   </property>
 
   <!--husky parameters -->
@@ -81,7 +76,7 @@
 
   <property>
     <name>io.sort.mb</name>
-    <value>500</value>
+    <value>1000</value>
   </property>
   
   <property>

@@ -6,7 +6,7 @@
 
   <property>
     <name>husky.flow.job.name</name>
-    <value>step</value>
+    <value>demo</value>
   </property>
 
   <property>
@@ -26,7 +26,7 @@
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/Testfilter/output/${gmtdate}/step</value>
+    <value>${application.output}/Testfilter/output/${gmtdate}/demo</value>
   </property>
 
   <property>

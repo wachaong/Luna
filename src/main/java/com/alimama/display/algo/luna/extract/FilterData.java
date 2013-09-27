@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 
 
@@ -74,7 +73,8 @@ public class FilterData {
 					continue;
 				}
 				Text outKey = new Text();
-				outKey.set(display.getSessionid()+display.getAd().getTransId()+display.getAd().getAdboardId());
+				//outKey.set(display.getSessionid()+display.getAd().getTransId()+display.getAd().getAdboardId());
+				outKey.set(display.getClickid());
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
 			}
