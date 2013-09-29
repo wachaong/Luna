@@ -2,7 +2,7 @@
 
 set -eu
 application_home=$(readlink -f $(dirname $0))/..
-
+conf_dir=$application_home/conf
 
 function usage() {
     echo "Usage: $0 FLOW DATE [-c CONF] [-t GMTDATE] [-q QUEUE] \
