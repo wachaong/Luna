@@ -1,6 +1,7 @@
 package com.alimama.display.algo.luna.extract;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
@@ -40,11 +41,17 @@ public class FilterData {
 		DiamondMidData.Builder dmdb = DiamondMidData.newBuilder();
 		
 	    @Override
-	      protected void setup(Context context)
+	    protected void setup(Context context)
 	      throws IOException, InterruptedException {
 	        Configuration conf = context.getConfiguration();
+	        
 	        filter.init(conf);
-	        dt.init();
+	        try {
+				dt.init(conf);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	      }
 
 	    @Override
@@ -78,12 +85,16 @@ public class FilterData {
 				}
 				Text outKey = new Text();
 				String out = "";
-				out += display.getSessionid()+"_";
+				//out += display.getSessionid()+"_";
 				out += display.getAd().getTransId()+"_";
 				out += display.getAd().getAdboardId()+"_";
 				out += display.getAd().getCustomerId()+"_";
 				out += display.getContext().getPid()+"_";
-				out += display.getContext().getUrl()+"_";
+				//out += display.getContext().getUrl()+"_";
+				
+				String nickName = display.getUser().getNickname();
+				if(nickName == null || nickName.equals("")) nickName = "UNKNOWN";
+				out += nickName + "_";
 				out += display.getClick();
 				outKey.set(out);
 				if(display.getClick() == 1){

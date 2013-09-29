@@ -2,15 +2,15 @@
 
 set -eu
 application_home=$(readlink -f $(dirname $0))/..
-application_lib=$application_home/lib
+
 
 function usage() {
-    echo "Usage: $0 [-c CONF] [-t GMTDATE] [-q QUEUE] \
-[-D NAME=VALUE] [-h] NAME" >&2
+    echo "Usage: $0 FLOW DATE [-c CONF] [-t GMTDATE] [-q QUEUE] \
+	[-D NAME=VALUE] [-h] NAME" >&2
     exit $1
 }
 
-conf=$application_home/conf
+
 gmtdate=$(date +%Y%m%d)
 properties=()
 while getopts "c:t:q:D:h" opt; do
@@ -26,23 +26,35 @@ done
 shift $((OPTIND-1))
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
-[[ $# == 1 ]] || usage 1
+[[ $# == 2 ]] || usage
 flow=$1
+DATE=$2
 
-source $conf/application.conf
+source $conf_dir/application.conf
+
+
 
 # set classpath
-classpath=$conf 
-for jar in $application_lib/*.jar; do classpath=$classpath:$jar; done
+classpath=$conf_dir
+for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
 set +e
-hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$1/output/${gmtdate}
+hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
+mkdir -p `dirname $customer_file`
+rm -rf $customer_file
+htext $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_file
+
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
-    -files $conf/train_pid.conf \
+    -files $train_pid.conf,$customer_cate\
     -D application.home=$application_home \
+    -D out_dir=$out_dir \
+    -D train_pid=`basename $train_pid` \
+    -D customer_cate=`basename $customer_cate` \
+    -D midlog_input=$midlog_input \
+    -D midad_input=$midad_input \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \

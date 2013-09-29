@@ -106,63 +106,27 @@ public final class Luna {
     com.google.protobuf.ByteString
         getShowTypeBytes();
 
-    // optional int64 frame_cnt = 8;
+    // repeated .algomsg.luna.Label labels = 8;
     /**
-     * <code>optional int64 frame_cnt = 8;</code>
-     *
-     * <pre>
-     *帧数
-     * </pre>
-     */
-    boolean hasFrameCnt();
-    /**
-     * <code>optional int64 frame_cnt = 8;</code>
-     *
-     * <pre>
-     *帧数
-     * </pre>
-     */
-    long getFrameCnt();
-
-    // optional int64 frame_index = 9;
-    /**
-     * <code>optional int64 frame_index = 9;</code>
-     *
-     * <pre>
-     *帧序	
-     * </pre>
-     */
-    boolean hasFrameIndex();
-    /**
-     * <code>optional int64 frame_index = 9;</code>
-     *
-     * <pre>
-     *帧序	
-     * </pre>
-     */
-    long getFrameIndex();
-
-    // repeated .algomsg.luna.Label labels = 10;
-    /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     java.util.List<com.alimama.display.algo.luna.message.Luna.Label> 
         getLabelsList();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     com.alimama.display.algo.luna.message.Luna.Label getLabels(int index);
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     int getLabelsCount();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
         getLabelsOrBuilderList();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
         int index);
@@ -253,20 +217,10 @@ public final class Luna {
               showType_ = input.readBytes();
               break;
             }
-            case 64: {
-              bitField0_ |= 0x00000080;
-              frameCnt_ = input.readInt64();
-              break;
-            }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              frameIndex_ = input.readInt64();
-              break;
-            }
-            case 82: {
-              if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+            case 66: {
+              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
                 labels_ = new java.util.ArrayList<com.alimama.display.algo.luna.message.Luna.Label>();
-                mutable_bitField0_ |= 0x00000200;
+                mutable_bitField0_ |= 0x00000080;
               }
               labels_.add(input.readMessage(com.alimama.display.algo.luna.message.Luna.Label.PARSER, extensionRegistry));
               break;
@@ -279,7 +233,7 @@ public final class Luna {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+        if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
           labels_ = java.util.Collections.unmodifiableList(labels_);
         }
         this.unknownFields = unknownFields.build();
@@ -561,84 +515,36 @@ public final class Luna {
       }
     }
 
-    // optional int64 frame_cnt = 8;
-    public static final int FRAME_CNT_FIELD_NUMBER = 8;
-    private long frameCnt_;
-    /**
-     * <code>optional int64 frame_cnt = 8;</code>
-     *
-     * <pre>
-     *帧数
-     * </pre>
-     */
-    public boolean hasFrameCnt() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional int64 frame_cnt = 8;</code>
-     *
-     * <pre>
-     *帧数
-     * </pre>
-     */
-    public long getFrameCnt() {
-      return frameCnt_;
-    }
-
-    // optional int64 frame_index = 9;
-    public static final int FRAME_INDEX_FIELD_NUMBER = 9;
-    private long frameIndex_;
-    /**
-     * <code>optional int64 frame_index = 9;</code>
-     *
-     * <pre>
-     *帧序	
-     * </pre>
-     */
-    public boolean hasFrameIndex() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional int64 frame_index = 9;</code>
-     *
-     * <pre>
-     *帧序	
-     * </pre>
-     */
-    public long getFrameIndex() {
-      return frameIndex_;
-    }
-
-    // repeated .algomsg.luna.Label labels = 10;
-    public static final int LABELS_FIELD_NUMBER = 10;
+    // repeated .algomsg.luna.Label labels = 8;
+    public static final int LABELS_FIELD_NUMBER = 8;
     private java.util.List<com.alimama.display.algo.luna.message.Luna.Label> labels_;
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     public java.util.List<com.alimama.display.algo.luna.message.Luna.Label> getLabelsList() {
       return labels_;
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     public java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
         getLabelsOrBuilderList() {
       return labels_;
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     public int getLabelsCount() {
       return labels_.size();
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     public com.alimama.display.algo.luna.message.Luna.Label getLabels(int index) {
       return labels_.get(index);
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 10;</code>
+     * <code>repeated .algomsg.luna.Label labels = 8;</code>
      */
     public com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
         int index) {
@@ -653,8 +559,6 @@ public final class Luna {
       size_ = "";
       pos_ = "";
       showType_ = "";
-      frameCnt_ = 0L;
-      frameIndex_ = 0L;
       labels_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -690,14 +594,8 @@ public final class Luna {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeBytes(7, getShowTypeBytes());
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeInt64(8, frameCnt_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt64(9, frameIndex_);
-      }
       for (int i = 0; i < labels_.size(); i++) {
-        output.writeMessage(10, labels_.get(i));
+        output.writeMessage(8, labels_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -736,17 +634,9 @@ public final class Luna {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(7, getShowTypeBytes());
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(8, frameCnt_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(9, frameIndex_);
-      }
       for (int i = 0; i < labels_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, labels_.get(i));
+          .computeMessageSize(8, labels_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -879,13 +769,9 @@ public final class Luna {
         bitField0_ = (bitField0_ & ~0x00000020);
         showType_ = "";
         bitField0_ = (bitField0_ & ~0x00000040);
-        frameCnt_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000080);
-        frameIndex_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
         if (labelsBuilder_ == null) {
           labels_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000080);
         } else {
           labelsBuilder_.clear();
         }
@@ -945,18 +831,10 @@ public final class Luna {
           to_bitField0_ |= 0x00000040;
         }
         result.showType_ = showType_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.frameCnt_ = frameCnt_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
-        result.frameIndex_ = frameIndex_;
         if (labelsBuilder_ == null) {
-          if (((bitField0_ & 0x00000200) == 0x00000200)) {
+          if (((bitField0_ & 0x00000080) == 0x00000080)) {
             labels_ = java.util.Collections.unmodifiableList(labels_);
-            bitField0_ = (bitField0_ & ~0x00000200);
+            bitField0_ = (bitField0_ & ~0x00000080);
           }
           result.labels_ = labels_;
         } else {
@@ -1009,17 +887,11 @@ public final class Luna {
           showType_ = other.showType_;
           onChanged();
         }
-        if (other.hasFrameCnt()) {
-          setFrameCnt(other.getFrameCnt());
-        }
-        if (other.hasFrameIndex()) {
-          setFrameIndex(other.getFrameIndex());
-        }
         if (labelsBuilder_ == null) {
           if (!other.labels_.isEmpty()) {
             if (labels_.isEmpty()) {
               labels_ = other.labels_;
-              bitField0_ = (bitField0_ & ~0x00000200);
+              bitField0_ = (bitField0_ & ~0x00000080);
             } else {
               ensureLabelsIsMutable();
               labels_.addAll(other.labels_);
@@ -1032,7 +904,7 @@ public final class Luna {
               labelsBuilder_.dispose();
               labelsBuilder_ = null;
               labels_ = other.labels_;
-              bitField0_ = (bitField0_ & ~0x00000200);
+              bitField0_ = (bitField0_ & ~0x00000080);
               labelsBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getLabelsFieldBuilder() : null;
@@ -1504,111 +1376,13 @@ public final class Luna {
         return this;
       }
 
-      // optional int64 frame_cnt = 8;
-      private long frameCnt_ ;
-      /**
-       * <code>optional int64 frame_cnt = 8;</code>
-       *
-       * <pre>
-       *帧数
-       * </pre>
-       */
-      public boolean hasFrameCnt() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional int64 frame_cnt = 8;</code>
-       *
-       * <pre>
-       *帧数
-       * </pre>
-       */
-      public long getFrameCnt() {
-        return frameCnt_;
-      }
-      /**
-       * <code>optional int64 frame_cnt = 8;</code>
-       *
-       * <pre>
-       *帧数
-       * </pre>
-       */
-      public Builder setFrameCnt(long value) {
-        bitField0_ |= 0x00000080;
-        frameCnt_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 frame_cnt = 8;</code>
-       *
-       * <pre>
-       *帧数
-       * </pre>
-       */
-      public Builder clearFrameCnt() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        frameCnt_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // optional int64 frame_index = 9;
-      private long frameIndex_ ;
-      /**
-       * <code>optional int64 frame_index = 9;</code>
-       *
-       * <pre>
-       *帧序	
-       * </pre>
-       */
-      public boolean hasFrameIndex() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional int64 frame_index = 9;</code>
-       *
-       * <pre>
-       *帧序	
-       * </pre>
-       */
-      public long getFrameIndex() {
-        return frameIndex_;
-      }
-      /**
-       * <code>optional int64 frame_index = 9;</code>
-       *
-       * <pre>
-       *帧序	
-       * </pre>
-       */
-      public Builder setFrameIndex(long value) {
-        bitField0_ |= 0x00000100;
-        frameIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 frame_index = 9;</code>
-       *
-       * <pre>
-       *帧序	
-       * </pre>
-       */
-      public Builder clearFrameIndex() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        frameIndex_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // repeated .algomsg.luna.Label labels = 10;
+      // repeated .algomsg.luna.Label labels = 8;
       private java.util.List<com.alimama.display.algo.luna.message.Luna.Label> labels_ =
         java.util.Collections.emptyList();
       private void ensureLabelsIsMutable() {
-        if (!((bitField0_ & 0x00000200) == 0x00000200)) {
+        if (!((bitField0_ & 0x00000080) == 0x00000080)) {
           labels_ = new java.util.ArrayList<com.alimama.display.algo.luna.message.Luna.Label>(labels_);
-          bitField0_ |= 0x00000200;
+          bitField0_ |= 0x00000080;
          }
       }
 
@@ -1616,7 +1390,7 @@ public final class Luna {
           com.alimama.display.algo.luna.message.Luna.Label, com.alimama.display.algo.luna.message.Luna.Label.Builder, com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> labelsBuilder_;
 
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public java.util.List<com.alimama.display.algo.luna.message.Luna.Label> getLabelsList() {
         if (labelsBuilder_ == null) {
@@ -1626,7 +1400,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public int getLabelsCount() {
         if (labelsBuilder_ == null) {
@@ -1636,7 +1410,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label getLabels(int index) {
         if (labelsBuilder_ == null) {
@@ -1646,7 +1420,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder setLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label value) {
@@ -1663,7 +1437,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder setLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -1677,7 +1451,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder addLabels(com.alimama.display.algo.luna.message.Luna.Label value) {
         if (labelsBuilder_ == null) {
@@ -1693,7 +1467,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder addLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label value) {
@@ -1710,7 +1484,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder addLabels(
           com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -1724,7 +1498,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder addLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -1738,7 +1512,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder addAllLabels(
           java.lang.Iterable<? extends com.alimama.display.algo.luna.message.Luna.Label> values) {
@@ -1752,12 +1526,12 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder clearLabels() {
         if (labelsBuilder_ == null) {
           labels_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000080);
           onChanged();
         } else {
           labelsBuilder_.clear();
@@ -1765,7 +1539,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public Builder removeLabels(int index) {
         if (labelsBuilder_ == null) {
@@ -1778,14 +1552,14 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder getLabelsBuilder(
           int index) {
         return getLabelsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
           int index) {
@@ -1795,7 +1569,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
            getLabelsOrBuilderList() {
@@ -1806,14 +1580,14 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder addLabelsBuilder() {
         return getLabelsFieldBuilder().addBuilder(
             com.alimama.display.algo.luna.message.Luna.Label.getDefaultInstance());
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder addLabelsBuilder(
           int index) {
@@ -1821,7 +1595,7 @@ public final class Luna {
             index, com.alimama.display.algo.luna.message.Luna.Label.getDefaultInstance());
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 10;</code>
+       * <code>repeated .algomsg.luna.Label labels = 8;</code>
        */
       public java.util.List<com.alimama.display.algo.luna.message.Luna.Label.Builder> 
            getLabelsBuilderList() {
@@ -1834,7 +1608,7 @@ public final class Luna {
           labelsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.alimama.display.algo.luna.message.Luna.Label, com.alimama.display.algo.luna.message.Luna.Label.Builder, com.alimama.display.algo.luna.message.Luna.LabelOrBuilder>(
                   labels_,
-                  ((bitField0_ & 0x00000200) == 0x00000200),
+                  ((bitField0_ & 0x00000080) == 0x00000080),
                   getParentForChildren(),
                   isClean());
           labels_ = null;
@@ -3021,70 +2795,110 @@ public final class Luna {
      */
     long getAdboardId();
 
-    // optional int64 customer_id = 3;
+    // optional int64 shop_id = 3;
     /**
-     * <code>optional int64 customer_id = 3;</code>
+     * <code>optional int64 shop_id = 3;</code>
+     */
+    boolean hasShopId();
+    /**
+     * <code>optional int64 shop_id = 3;</code>
+     */
+    long getShopId();
+
+    // optional int64 maincate = 4;
+    /**
+     * <code>optional int64 maincate = 4;</code>
+     */
+    boolean hasMaincate();
+    /**
+     * <code>optional int64 maincate = 4;</code>
+     */
+    long getMaincate();
+
+    // optional int64 customer_id = 5;
+    /**
+     * <code>optional int64 customer_id = 5;</code>
      */
     boolean hasCustomerId();
     /**
-     * <code>optional int64 customer_id = 3;</code>
+     * <code>optional int64 customer_id = 5;</code>
      */
     long getCustomerId();
 
-    // optional int64 customer_price = 5;
+    // optional int64 customer_price = 6;
     /**
-     * <code>optional int64 customer_price = 5;</code>
+     * <code>optional int64 customer_price = 6;</code>
      */
     boolean hasCustomerPrice();
     /**
-     * <code>optional int64 customer_price = 5;</code>
+     * <code>optional int64 customer_price = 6;</code>
      */
     long getCustomerPrice();
 
-    // optional int64 algo_price = 6;
+    // optional int64 algo_price = 7;
     /**
-     * <code>optional int64 algo_price = 6;</code>
+     * <code>optional int64 algo_price = 7;</code>
      */
     boolean hasAlgoPrice();
     /**
-     * <code>optional int64 algo_price = 6;</code>
+     * <code>optional int64 algo_price = 7;</code>
      */
     long getAlgoPrice();
 
-    // optional int64 bid_price = 7;
+    // optional int64 bid_price = 8;
     /**
-     * <code>optional int64 bid_price = 7;</code>
+     * <code>optional int64 bid_price = 8;</code>
      */
     boolean hasBidPrice();
     /**
-     * <code>optional int64 bid_price = 7;</code>
+     * <code>optional int64 bid_price = 8;</code>
      */
     long getBidPrice();
 
-    // repeated .algomsg.luna.Label labels = 4;
+    // repeated .algomsg.luna.Label labels = 9;
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     java.util.List<com.alimama.display.algo.luna.message.Luna.Label> 
         getLabelsList();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     com.alimama.display.algo.luna.message.Luna.Label getLabels(int index);
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     int getLabelsCount();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
         getLabelsOrBuilderList();
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
         int index);
+
+    // optional int64 product_type = 10;
+    /**
+     * <code>optional int64 product_type = 10;</code>
+     */
+    boolean hasProductType();
+    /**
+     * <code>optional int64 product_type = 10;</code>
+     */
+    long getProductType();
+
+    // optional int64 service_id = 11;
+    /**
+     * <code>optional int64 service_id = 11;</code>
+     */
+    boolean hasServiceId();
+    /**
+     * <code>optional int64 service_id = 11;</code>
+     */
+    long getServiceId();
   }
   /**
    * Protobuf type {@code algomsg.luna.Ad}
@@ -3149,30 +2963,50 @@ public final class Luna {
             }
             case 24: {
               bitField0_ |= 0x00000004;
+              shopId_ = input.readInt64();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              maincate_ = input.readInt64();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
               customerId_ = input.readInt64();
               break;
             }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+            case 48: {
+              bitField0_ |= 0x00000020;
+              customerPrice_ = input.readInt64();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              algoPrice_ = input.readInt64();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000080;
+              bidPrice_ = input.readInt64();
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
                 labels_ = new java.util.ArrayList<com.alimama.display.algo.luna.message.Luna.Label>();
-                mutable_bitField0_ |= 0x00000040;
+                mutable_bitField0_ |= 0x00000100;
               }
               labels_.add(input.readMessage(com.alimama.display.algo.luna.message.Luna.Label.PARSER, extensionRegistry));
               break;
             }
-            case 40: {
-              bitField0_ |= 0x00000008;
-              customerPrice_ = input.readInt64();
+            case 80: {
+              bitField0_ |= 0x00000100;
+              productType_ = input.readInt64();
               break;
             }
-            case 48: {
-              bitField0_ |= 0x00000010;
-              algoPrice_ = input.readInt64();
-              break;
-            }
-            case 56: {
-              bitField0_ |= 0x00000020;
-              bidPrice_ = input.readInt64();
+            case 88: {
+              bitField0_ |= 0x00000200;
+              serviceId_ = input.readInt64();
               break;
             }
           }
@@ -3183,7 +3017,7 @@ public final class Luna {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
           labels_ = java.util.Collections.unmodifiableList(labels_);
         }
         this.unknownFields = unknownFields.build();
@@ -3250,114 +3084,182 @@ public final class Luna {
       return adboardId_;
     }
 
-    // optional int64 customer_id = 3;
-    public static final int CUSTOMER_ID_FIELD_NUMBER = 3;
-    private long customerId_;
+    // optional int64 shop_id = 3;
+    public static final int SHOP_ID_FIELD_NUMBER = 3;
+    private long shopId_;
     /**
-     * <code>optional int64 customer_id = 3;</code>
+     * <code>optional int64 shop_id = 3;</code>
      */
-    public boolean hasCustomerId() {
+    public boolean hasShopId() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int64 customer_id = 3;</code>
+     * <code>optional int64 shop_id = 3;</code>
+     */
+    public long getShopId() {
+      return shopId_;
+    }
+
+    // optional int64 maincate = 4;
+    public static final int MAINCATE_FIELD_NUMBER = 4;
+    private long maincate_;
+    /**
+     * <code>optional int64 maincate = 4;</code>
+     */
+    public boolean hasMaincate() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int64 maincate = 4;</code>
+     */
+    public long getMaincate() {
+      return maincate_;
+    }
+
+    // optional int64 customer_id = 5;
+    public static final int CUSTOMER_ID_FIELD_NUMBER = 5;
+    private long customerId_;
+    /**
+     * <code>optional int64 customer_id = 5;</code>
+     */
+    public boolean hasCustomerId() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int64 customer_id = 5;</code>
      */
     public long getCustomerId() {
       return customerId_;
     }
 
-    // optional int64 customer_price = 5;
-    public static final int CUSTOMER_PRICE_FIELD_NUMBER = 5;
+    // optional int64 customer_price = 6;
+    public static final int CUSTOMER_PRICE_FIELD_NUMBER = 6;
     private long customerPrice_;
     /**
-     * <code>optional int64 customer_price = 5;</code>
+     * <code>optional int64 customer_price = 6;</code>
      */
     public boolean hasCustomerPrice() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional int64 customer_price = 5;</code>
+     * <code>optional int64 customer_price = 6;</code>
      */
     public long getCustomerPrice() {
       return customerPrice_;
     }
 
-    // optional int64 algo_price = 6;
-    public static final int ALGO_PRICE_FIELD_NUMBER = 6;
+    // optional int64 algo_price = 7;
+    public static final int ALGO_PRICE_FIELD_NUMBER = 7;
     private long algoPrice_;
     /**
-     * <code>optional int64 algo_price = 6;</code>
+     * <code>optional int64 algo_price = 7;</code>
      */
     public boolean hasAlgoPrice() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional int64 algo_price = 6;</code>
+     * <code>optional int64 algo_price = 7;</code>
      */
     public long getAlgoPrice() {
       return algoPrice_;
     }
 
-    // optional int64 bid_price = 7;
-    public static final int BID_PRICE_FIELD_NUMBER = 7;
+    // optional int64 bid_price = 8;
+    public static final int BID_PRICE_FIELD_NUMBER = 8;
     private long bidPrice_;
     /**
-     * <code>optional int64 bid_price = 7;</code>
+     * <code>optional int64 bid_price = 8;</code>
      */
     public boolean hasBidPrice() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>optional int64 bid_price = 7;</code>
+     * <code>optional int64 bid_price = 8;</code>
      */
     public long getBidPrice() {
       return bidPrice_;
     }
 
-    // repeated .algomsg.luna.Label labels = 4;
-    public static final int LABELS_FIELD_NUMBER = 4;
+    // repeated .algomsg.luna.Label labels = 9;
+    public static final int LABELS_FIELD_NUMBER = 9;
     private java.util.List<com.alimama.display.algo.luna.message.Luna.Label> labels_;
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     public java.util.List<com.alimama.display.algo.luna.message.Luna.Label> getLabelsList() {
       return labels_;
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     public java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
         getLabelsOrBuilderList() {
       return labels_;
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     public int getLabelsCount() {
       return labels_.size();
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     public com.alimama.display.algo.luna.message.Luna.Label getLabels(int index) {
       return labels_.get(index);
     }
     /**
-     * <code>repeated .algomsg.luna.Label labels = 4;</code>
+     * <code>repeated .algomsg.luna.Label labels = 9;</code>
      */
     public com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
         int index) {
       return labels_.get(index);
     }
 
+    // optional int64 product_type = 10;
+    public static final int PRODUCT_TYPE_FIELD_NUMBER = 10;
+    private long productType_;
+    /**
+     * <code>optional int64 product_type = 10;</code>
+     */
+    public boolean hasProductType() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional int64 product_type = 10;</code>
+     */
+    public long getProductType() {
+      return productType_;
+    }
+
+    // optional int64 service_id = 11;
+    public static final int SERVICE_ID_FIELD_NUMBER = 11;
+    private long serviceId_;
+    /**
+     * <code>optional int64 service_id = 11;</code>
+     */
+    public boolean hasServiceId() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>optional int64 service_id = 11;</code>
+     */
+    public long getServiceId() {
+      return serviceId_;
+    }
+
     private void initFields() {
       transId_ = 0L;
       adboardId_ = 0L;
+      shopId_ = 0L;
+      maincate_ = 0L;
       customerId_ = 0L;
       customerPrice_ = 0L;
       algoPrice_ = 0L;
       bidPrice_ = 0L;
       labels_ = java.util.Collections.emptyList();
+      productType_ = 0L;
+      serviceId_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3378,19 +3280,31 @@ public final class Luna {
         output.writeInt64(2, adboardId_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt64(3, customerId_);
-      }
-      for (int i = 0; i < labels_.size(); i++) {
-        output.writeMessage(4, labels_.get(i));
+        output.writeInt64(3, shopId_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt64(5, customerPrice_);
+        output.writeInt64(4, maincate_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt64(6, algoPrice_);
+        output.writeInt64(5, customerId_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeInt64(7, bidPrice_);
+        output.writeInt64(6, customerPrice_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeInt64(7, algoPrice_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeInt64(8, bidPrice_);
+      }
+      for (int i = 0; i < labels_.size(); i++) {
+        output.writeMessage(9, labels_.get(i));
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeInt64(10, productType_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeInt64(11, serviceId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3411,23 +3325,39 @@ public final class Luna {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, customerId_);
-      }
-      for (int i = 0; i < labels_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, labels_.get(i));
+          .computeInt64Size(3, shopId_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, customerPrice_);
+          .computeInt64Size(4, maincate_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(6, algoPrice_);
+          .computeInt64Size(5, customerId_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(7, bidPrice_);
+          .computeInt64Size(6, customerPrice_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, algoPrice_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(8, bidPrice_);
+      }
+      for (int i = 0; i < labels_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, labels_.get(i));
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, productType_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(11, serviceId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3550,20 +3480,28 @@ public final class Luna {
         bitField0_ = (bitField0_ & ~0x00000001);
         adboardId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
-        customerId_ = 0L;
+        shopId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
-        customerPrice_ = 0L;
+        maincate_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
-        algoPrice_ = 0L;
+        customerId_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
-        bidPrice_ = 0L;
+        customerPrice_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000020);
+        algoPrice_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        bidPrice_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000080);
         if (labelsBuilder_ == null) {
           labels_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000100);
         } else {
           labelsBuilder_.clear();
         }
+        productType_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        serviceId_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
 
@@ -3603,28 +3541,44 @@ public final class Luna {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.customerId_ = customerId_;
+        result.shopId_ = shopId_;
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.customerPrice_ = customerPrice_;
+        result.maincate_ = maincate_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.algoPrice_ = algoPrice_;
+        result.customerId_ = customerId_;
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
+        result.customerPrice_ = customerPrice_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.algoPrice_ = algoPrice_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
         result.bidPrice_ = bidPrice_;
         if (labelsBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040)) {
+          if (((bitField0_ & 0x00000100) == 0x00000100)) {
             labels_ = java.util.Collections.unmodifiableList(labels_);
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000100);
           }
           result.labels_ = labels_;
         } else {
           result.labels_ = labelsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.productType_ = productType_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.serviceId_ = serviceId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3647,6 +3601,12 @@ public final class Luna {
         if (other.hasAdboardId()) {
           setAdboardId(other.getAdboardId());
         }
+        if (other.hasShopId()) {
+          setShopId(other.getShopId());
+        }
+        if (other.hasMaincate()) {
+          setMaincate(other.getMaincate());
+        }
         if (other.hasCustomerId()) {
           setCustomerId(other.getCustomerId());
         }
@@ -3663,7 +3623,7 @@ public final class Luna {
           if (!other.labels_.isEmpty()) {
             if (labels_.isEmpty()) {
               labels_ = other.labels_;
-              bitField0_ = (bitField0_ & ~0x00000040);
+              bitField0_ = (bitField0_ & ~0x00000100);
             } else {
               ensureLabelsIsMutable();
               labels_.addAll(other.labels_);
@@ -3676,7 +3636,7 @@ public final class Luna {
               labelsBuilder_.dispose();
               labelsBuilder_ = null;
               labels_ = other.labels_;
-              bitField0_ = (bitField0_ & ~0x00000040);
+              bitField0_ = (bitField0_ & ~0x00000100);
               labelsBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getLabelsFieldBuilder() : null;
@@ -3684,6 +3644,12 @@ public final class Luna {
               labelsBuilder_.addAllMessages(other.labels_);
             }
           }
+        }
+        if (other.hasProductType()) {
+          setProductType(other.getProductType());
+        }
+        if (other.hasServiceId()) {
+          setServiceId(other.getServiceId());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3778,145 +3744,211 @@ public final class Luna {
         return this;
       }
 
-      // optional int64 customer_id = 3;
-      private long customerId_ ;
+      // optional int64 shop_id = 3;
+      private long shopId_ ;
       /**
-       * <code>optional int64 customer_id = 3;</code>
+       * <code>optional int64 shop_id = 3;</code>
        */
-      public boolean hasCustomerId() {
+      public boolean hasShopId() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 customer_id = 3;</code>
+       * <code>optional int64 shop_id = 3;</code>
+       */
+      public long getShopId() {
+        return shopId_;
+      }
+      /**
+       * <code>optional int64 shop_id = 3;</code>
+       */
+      public Builder setShopId(long value) {
+        bitField0_ |= 0x00000004;
+        shopId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 shop_id = 3;</code>
+       */
+      public Builder clearShopId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        shopId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional int64 maincate = 4;
+      private long maincate_ ;
+      /**
+       * <code>optional int64 maincate = 4;</code>
+       */
+      public boolean hasMaincate() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int64 maincate = 4;</code>
+       */
+      public long getMaincate() {
+        return maincate_;
+      }
+      /**
+       * <code>optional int64 maincate = 4;</code>
+       */
+      public Builder setMaincate(long value) {
+        bitField0_ |= 0x00000008;
+        maincate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 maincate = 4;</code>
+       */
+      public Builder clearMaincate() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        maincate_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional int64 customer_id = 5;
+      private long customerId_ ;
+      /**
+       * <code>optional int64 customer_id = 5;</code>
+       */
+      public boolean hasCustomerId() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int64 customer_id = 5;</code>
        */
       public long getCustomerId() {
         return customerId_;
       }
       /**
-       * <code>optional int64 customer_id = 3;</code>
+       * <code>optional int64 customer_id = 5;</code>
        */
       public Builder setCustomerId(long value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
         customerId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 customer_id = 3;</code>
+       * <code>optional int64 customer_id = 5;</code>
        */
       public Builder clearCustomerId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
         customerId_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int64 customer_price = 5;
+      // optional int64 customer_price = 6;
       private long customerPrice_ ;
       /**
-       * <code>optional int64 customer_price = 5;</code>
+       * <code>optional int64 customer_price = 6;</code>
        */
       public boolean hasCustomerPrice() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional int64 customer_price = 5;</code>
+       * <code>optional int64 customer_price = 6;</code>
        */
       public long getCustomerPrice() {
         return customerPrice_;
       }
       /**
-       * <code>optional int64 customer_price = 5;</code>
+       * <code>optional int64 customer_price = 6;</code>
        */
       public Builder setCustomerPrice(long value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000020;
         customerPrice_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 customer_price = 5;</code>
+       * <code>optional int64 customer_price = 6;</code>
        */
       public Builder clearCustomerPrice() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000020);
         customerPrice_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int64 algo_price = 6;
+      // optional int64 algo_price = 7;
       private long algoPrice_ ;
       /**
-       * <code>optional int64 algo_price = 6;</code>
+       * <code>optional int64 algo_price = 7;</code>
        */
       public boolean hasAlgoPrice() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional int64 algo_price = 6;</code>
+       * <code>optional int64 algo_price = 7;</code>
        */
       public long getAlgoPrice() {
         return algoPrice_;
       }
       /**
-       * <code>optional int64 algo_price = 6;</code>
+       * <code>optional int64 algo_price = 7;</code>
        */
       public Builder setAlgoPrice(long value) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000040;
         algoPrice_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 algo_price = 6;</code>
+       * <code>optional int64 algo_price = 7;</code>
        */
       public Builder clearAlgoPrice() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000040);
         algoPrice_ = 0L;
         onChanged();
         return this;
       }
 
-      // optional int64 bid_price = 7;
+      // optional int64 bid_price = 8;
       private long bidPrice_ ;
       /**
-       * <code>optional int64 bid_price = 7;</code>
+       * <code>optional int64 bid_price = 8;</code>
        */
       public boolean hasBidPrice() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>optional int64 bid_price = 7;</code>
+       * <code>optional int64 bid_price = 8;</code>
        */
       public long getBidPrice() {
         return bidPrice_;
       }
       /**
-       * <code>optional int64 bid_price = 7;</code>
+       * <code>optional int64 bid_price = 8;</code>
        */
       public Builder setBidPrice(long value) {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000080;
         bidPrice_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 bid_price = 7;</code>
+       * <code>optional int64 bid_price = 8;</code>
        */
       public Builder clearBidPrice() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000080);
         bidPrice_ = 0L;
         onChanged();
         return this;
       }
 
-      // repeated .algomsg.luna.Label labels = 4;
+      // repeated .algomsg.luna.Label labels = 9;
       private java.util.List<com.alimama.display.algo.luna.message.Luna.Label> labels_ =
         java.util.Collections.emptyList();
       private void ensureLabelsIsMutable() {
-        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (!((bitField0_ & 0x00000100) == 0x00000100)) {
           labels_ = new java.util.ArrayList<com.alimama.display.algo.luna.message.Luna.Label>(labels_);
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000100;
          }
       }
 
@@ -3924,7 +3956,7 @@ public final class Luna {
           com.alimama.display.algo.luna.message.Luna.Label, com.alimama.display.algo.luna.message.Luna.Label.Builder, com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> labelsBuilder_;
 
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public java.util.List<com.alimama.display.algo.luna.message.Luna.Label> getLabelsList() {
         if (labelsBuilder_ == null) {
@@ -3934,7 +3966,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public int getLabelsCount() {
         if (labelsBuilder_ == null) {
@@ -3944,7 +3976,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label getLabels(int index) {
         if (labelsBuilder_ == null) {
@@ -3954,7 +3986,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder setLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label value) {
@@ -3971,7 +4003,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder setLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -3985,7 +4017,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder addLabels(com.alimama.display.algo.luna.message.Luna.Label value) {
         if (labelsBuilder_ == null) {
@@ -4001,7 +4033,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder addLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label value) {
@@ -4018,7 +4050,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder addLabels(
           com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -4032,7 +4064,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder addLabels(
           int index, com.alimama.display.algo.luna.message.Luna.Label.Builder builderForValue) {
@@ -4046,7 +4078,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder addAllLabels(
           java.lang.Iterable<? extends com.alimama.display.algo.luna.message.Luna.Label> values) {
@@ -4060,12 +4092,12 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder clearLabels() {
         if (labelsBuilder_ == null) {
           labels_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000100);
           onChanged();
         } else {
           labelsBuilder_.clear();
@@ -4073,7 +4105,7 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public Builder removeLabels(int index) {
         if (labelsBuilder_ == null) {
@@ -4086,14 +4118,14 @@ public final class Luna {
         return this;
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder getLabelsBuilder(
           int index) {
         return getLabelsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.LabelOrBuilder getLabelsOrBuilder(
           int index) {
@@ -4103,7 +4135,7 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public java.util.List<? extends com.alimama.display.algo.luna.message.Luna.LabelOrBuilder> 
            getLabelsOrBuilderList() {
@@ -4114,14 +4146,14 @@ public final class Luna {
         }
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder addLabelsBuilder() {
         return getLabelsFieldBuilder().addBuilder(
             com.alimama.display.algo.luna.message.Luna.Label.getDefaultInstance());
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public com.alimama.display.algo.luna.message.Luna.Label.Builder addLabelsBuilder(
           int index) {
@@ -4129,7 +4161,7 @@ public final class Luna {
             index, com.alimama.display.algo.luna.message.Luna.Label.getDefaultInstance());
       }
       /**
-       * <code>repeated .algomsg.luna.Label labels = 4;</code>
+       * <code>repeated .algomsg.luna.Label labels = 9;</code>
        */
       public java.util.List<com.alimama.display.algo.luna.message.Luna.Label.Builder> 
            getLabelsBuilderList() {
@@ -4142,12 +4174,78 @@ public final class Luna {
           labelsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.alimama.display.algo.luna.message.Luna.Label, com.alimama.display.algo.luna.message.Luna.Label.Builder, com.alimama.display.algo.luna.message.Luna.LabelOrBuilder>(
                   labels_,
-                  ((bitField0_ & 0x00000040) == 0x00000040),
+                  ((bitField0_ & 0x00000100) == 0x00000100),
                   getParentForChildren(),
                   isClean());
           labels_ = null;
         }
         return labelsBuilder_;
+      }
+
+      // optional int64 product_type = 10;
+      private long productType_ ;
+      /**
+       * <code>optional int64 product_type = 10;</code>
+       */
+      public boolean hasProductType() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional int64 product_type = 10;</code>
+       */
+      public long getProductType() {
+        return productType_;
+      }
+      /**
+       * <code>optional int64 product_type = 10;</code>
+       */
+      public Builder setProductType(long value) {
+        bitField0_ |= 0x00000200;
+        productType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 product_type = 10;</code>
+       */
+      public Builder clearProductType() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        productType_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional int64 service_id = 11;
+      private long serviceId_ ;
+      /**
+       * <code>optional int64 service_id = 11;</code>
+       */
+      public boolean hasServiceId() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      /**
+       * <code>optional int64 service_id = 11;</code>
+       */
+      public long getServiceId() {
+        return serviceId_;
+      }
+      /**
+       * <code>optional int64 service_id = 11;</code>
+       */
+      public Builder setServiceId(long value) {
+        bitField0_ |= 0x00000400;
+        serviceId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 service_id = 11;</code>
+       */
+      public Builder clearServiceId() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        serviceId_ = 0L;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:algomsg.luna.Ad)
@@ -6875,26 +6973,27 @@ public final class Luna {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020proto/luna.proto\022\014algomsg.luna\"\272\001\n\007Con" +
+      "\n\020proto/luna.proto\022\014algomsg.luna\"\222\001\n\007Con" +
       "text\022\013\n\003pid\030\001 \001(\t\022\014\n\004time\030\002 \001(\003\022\014\n\004week\030" +
       "\003 \001(\003\022\013\n\003url\030\004 \001(\t\022\014\n\004size\030\005 \001(\t\022\013\n\003pos\030" +
-      "\006 \001(\t\022\021\n\tshow_type\030\007 \001(\t\022\021\n\tframe_cnt\030\010 " +
-      "\001(\003\022\023\n\013frame_index\030\t \001(\003\022#\n\006labels\030\n \003(\013" +
+      "\006 \001(\t\022\021\n\tshow_type\030\007 \001(\t\022#\n\006labels\030\010 \003(\013" +
       "2\023.algomsg.luna.Label\"^\n\004User\022\017\n\007acookie" +
       "\030\001 \001(\t\022\020\n\010nickname\030\002 \001(\t\022\016\n\006userid\030\003 \001(\t" +
-      "\022#\n\006labels\030\004 \003(\0132\023.algomsg.luna.Label\"\243\001" +
+      "\022#\n\006labels\030\004 \003(\0132\023.algomsg.luna.Label\"\360\001" +
       "\n\002Ad\022\020\n\010trans_id\030\001 \001(\003\022\022\n\nadboard_id\030\002 \001" +
-      "(\003\022\023\n\013customer_id\030\003 \001(\003\022\026\n\016customer_pric",
-      "e\030\005 \001(\003\022\022\n\nalgo_price\030\006 \001(\003\022\021\n\tbid_price" +
-      "\030\007 \001(\003\022#\n\006labels\030\004 \003(\0132\023.algomsg.luna.La" +
-      "bel\"\263\001\n\007Display\022\r\n\005bidid\030\001 \001(\t\022\021\n\tsessio" +
-      "nid\030\002 \001(\t\022\017\n\007clickid\030\003 \001(\t\022&\n\007context\030\004 " +
-      "\001(\0132\025.algomsg.luna.Context\022 \n\004user\030\005 \001(\013" +
-      "2\022.algomsg.luna.User\022\034\n\002ad\030\006 \001(\0132\020.algom" +
-      "sg.luna.Ad\022\r\n\005click\030\007 \001(\003\"6\n\005Label\022\014\n\004ty" +
-      "pe\030\001 \001(\003\022\037\n\004tags\030\002 \003(\0132\021.algomsg.luna.Ta" +
-      "g\" \n\003Tag\022\n\n\002id\030\001 \001(\003\022\r\n\005value\030\002 \001(\002B\'\n%c" +
-      "om.alimama.display.algo.luna.message"
+      "(\003\022\017\n\007shop_id\030\003 \001(\003\022\020\n\010maincate\030\004 \001(\003\022\023\n" +
+      "\013customer_id\030\005 \001(\003\022\026\n\016customer_price\030\006 \001",
+      "(\003\022\022\n\nalgo_price\030\007 \001(\003\022\021\n\tbid_price\030\010 \001(" +
+      "\003\022#\n\006labels\030\t \003(\0132\023.algomsg.luna.Label\022\024" +
+      "\n\014product_type\030\n \001(\003\022\022\n\nservice_id\030\013 \001(\003" +
+      "\"\263\001\n\007Display\022\r\n\005bidid\030\001 \001(\t\022\021\n\tsessionid" +
+      "\030\002 \001(\t\022\017\n\007clickid\030\003 \001(\t\022&\n\007context\030\004 \001(\013" +
+      "2\025.algomsg.luna.Context\022 \n\004user\030\005 \001(\0132\022." +
+      "algomsg.luna.User\022\034\n\002ad\030\006 \001(\0132\020.algomsg." +
+      "luna.Ad\022\r\n\005click\030\007 \001(\003\"6\n\005Label\022\014\n\004type\030" +
+      "\001 \001(\003\022\037\n\004tags\030\002 \003(\0132\021.algomsg.luna.Tag\" " +
+      "\n\003Tag\022\n\n\002id\030\001 \001(\003\022\r\n\005value\030\002 \001(\002B\'\n%com.",
+      "alimama.display.algo.luna.message"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6906,7 +7005,7 @@ public final class Luna {
           internal_static_algomsg_luna_Context_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_algomsg_luna_Context_descriptor,
-              new java.lang.String[] { "Pid", "Time", "Week", "Url", "Size", "Pos", "ShowType", "FrameCnt", "FrameIndex", "Labels", });
+              new java.lang.String[] { "Pid", "Time", "Week", "Url", "Size", "Pos", "ShowType", "Labels", });
           internal_static_algomsg_luna_User_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_algomsg_luna_User_fieldAccessorTable = new
@@ -6918,7 +7017,7 @@ public final class Luna {
           internal_static_algomsg_luna_Ad_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_algomsg_luna_Ad_descriptor,
-              new java.lang.String[] { "TransId", "AdboardId", "CustomerId", "CustomerPrice", "AlgoPrice", "BidPrice", "Labels", });
+              new java.lang.String[] { "TransId", "AdboardId", "ShopId", "Maincate", "CustomerId", "CustomerPrice", "AlgoPrice", "BidPrice", "Labels", "ProductType", "ServiceId", });
           internal_static_algomsg_luna_Display_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_algomsg_luna_Display_fieldAccessorTable = new

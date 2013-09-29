@@ -11,7 +11,17 @@
 
   <property>
     <name>filted.pid.file</name>
-    <value>train_pid.conf</value>
+    <value>${train.pid}</value>
+  </property>
+  
+  <property>
+    <name>customer_cate</name>
+    <value>${customer_cate}</value>
+  </property>
+  
+  <property>
+    <name>luna.ad.path</name>
+    <value>${midad_input}</value>
   </property>
 
   <property>
@@ -21,12 +31,12 @@
 
   <property>
     <name>mapred.input.dir</name>
-    <value>/group/tbalgo-dev/yanling.yl/data/DiamondLogs/20130901/pv_click/in-r-*</value>
+    <value>${midlog_input}</value>
   </property>
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/TestFilter/output/${gmtdate}/demo</value>
+    <value>${out_dir}</value>
   </property>
 
   <property>

@@ -1,14 +1,20 @@
 package com.alimama.display.algo.luna.util;
 
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Vector;
 
+import org.apache.hadoop.conf.Configuration;
 
+import com.alimama.display.algo.luna.ad.AdExtractor;
 import com.alimama.display.algo.luna.message.Luna.Ad;
 import com.alimama.display.algo.luna.message.Luna.Context;
 import com.alimama.display.algo.luna.message.Luna.Display;
+import com.alimama.display.algo.luna.message.Luna.Label;
+import com.alimama.display.algo.luna.message.Luna.Tag;
 import com.alimama.display.algo.luna.message.Luna.User;
 
 import display.algo.common.Constants;
@@ -23,7 +29,10 @@ public class DataTransform {
 	private static Ad.Builder adb = Ad.newBuilder();
 	private static Context.Builder ctxb = Context.newBuilder();
 	private static Display.Builder db = Display.newBuilder();
+	private Label.Builder lbb = Label.newBuilder();
+	private Tag.Builder tgb = Tag.newBuilder();
 	
+	private AdExtractor adExtractor;
 	
 	private static void clear(){
 		ub.clear();
@@ -33,7 +42,7 @@ public class DataTransform {
 	}
 	
 	
-	public void init() {
+	public void init(Configuration conf) throws IOException, URISyntaxException {
 		System.out.println("DataTransform init...");
 		day_split = "1,0,0,0,0,0,1".split(",", -1);
 		hour_split = "2,2,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2".split(",",-1);
@@ -43,6 +52,20 @@ public class DataTransform {
 		if (hour_split.length != 24) {
 			throw new RuntimeException("HOUR_SPLIT Conf Error");
 		}
+		
+		String adpath = conf.get(LunaConstants.AD_PATH);
+		if(adpath==null){
+        	throw new RuntimeException("adpath is null");
+        }
+        
+        try {
+			AdExtractor.addPath(conf, adpath);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		adExtractor = AdExtractor.newInstance(conf);
+		
 		clear();
 		System.out.println("DataTransform success...");
 	}
@@ -75,7 +98,7 @@ public class DataTransform {
 		int week = getWeekLabel(p.getTimestamp());
 		String size = p.getSize();
 		return ctxb.setPid(pid)
-				.setUrl(url).setTime(time).setFrameCnt(dmd.getAdCount())
+				.setUrl(url).setTime(time)
 				.setWeek(week).setSize(size).build();
 	}
 	
@@ -88,23 +111,71 @@ public class DataTransform {
 		ub.setAcookie(acookie);
 		ub.setNickname(nickname);
 		
+		//Crowd Targeting
+		lbb.clear();
+		lbb.setType(8);
+		for(display.algo.logs.proto.BasicMessage.Crowd c : u.getCrowdList()){
+			tgb.clear();
+			tgb.setId(c.getCrowdid());
+			tgb.setValue(c.getBuy());
+			lbb.addTags(tgb.build());
+		}
+		ub.addLabels(lbb.build());
+		
+		//Shop Targeting
+		lbb.clear();
+		lbb.setType(16);
+		for(display.algo.logs.proto.BasicMessage.Shop s : u.getShopList()){
+			tgb.clear();
+			tgb.setId(s.getShopid());
+			tgb.setValue(s.getScore());
+			lbb.addTags(tgb.build());
+		}
+		ub.addLabels(lbb.build());
+		
+		//Interest Targeting
+		lbb.clear();
+		lbb.setType(64);
+		for(display.algo.logs.proto.BasicMessage.Interest i : u.getInterestList()){
+			tgb.clear();
+			tgb.setId(i.getInterestid());
+			tgb.setValue(i.getScore());
+			lbb.addTags(tgb.build());
+		}
+		ub.addLabels(lbb.build());
+		
 		return ub.build();
 	}
+	
 	
 	public Ad getAd(display.algo.logs.proto.MiddataMessage.Ad ad){
 		adb.clear().setAdboardId(ad.getAdboradId())
 		.setTransId(ad.getTransId())
-		//.setCate(ad.getMaincateId())
+		.setMaincate(ad.getMaincateId())
 		.setCustomerId(ad.getCustomerId())
-		.setCustomerPrice(ad.getCustomerId());
-		//.setProType(ad.getProductType());
+		.setCustomerPrice(ad.getCustomerId())
+		.setProductType(ad.getProductType());
+		
+		
+		if (adExtractor != null) {
+			Ad tmp = adExtractor.getAdInfo(ad.getTransId(), ad.getAdboradId());
+			if (null == tmp) {
+				System.out.println("AD_NOT_FOUND");
+				return null;
+			}
+			adb.addAllLabels(tmp.getLabelsList());
+		}
+		
 		return adb.build();
 	}
+	
 	
 	public Collection<Ad> getAds(DiamondMidData dmd){
 		Vector<Ad> result = new Vector<Ad>();
 		for(display.algo.logs.proto.MiddataMessage.Ad ad :dmd.getAdList()){
-			result.add(getAd(ad));
+			Ad adx = getAd(ad);
+			if(adx != null)
+				result.add(getAd(ad));
 		}
 		return result;
 	}
@@ -116,8 +187,7 @@ public class DataTransform {
 		db.setUser(getUser(dmd));
 		db.setSessionid(dmd.getSessionid());
 		Context.Builder ctxb= getContext(dmd).toBuilder();
-		int frame_index = 0;
-		System.out.println("Ads number in a record "+dmd.getAdCount());
+		//System.out.println("Ads number in a record "+dmd.getAdCount());
 		for(display.algo.logs.proto.MiddataMessage.Ad t :dmd.getAdList()){
 			
 			Ad ad = getAd(t);
@@ -126,7 +196,6 @@ public class DataTransform {
 			db.setClick(0);
 			if(adex.hasClickid() && !adex.getClickid().isEmpty())
 				db.setClick(1);
-			ctxb.setFrameIndex(frame_index++);
 			db.setContext(ctxb.build());
 			result.add(db.build());
 		}

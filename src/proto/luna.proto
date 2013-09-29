@@ -9,10 +9,7 @@ message Context{
 	optional string	size	=5;	
 	optional string	pos		=6;		
 	optional string	show_type	=7;
-	optional int64 frame_cnt = 8; //帧数
-  	optional int64 frame_index = 9; //帧序
-    repeated Label  labels   =10;
-    
+    repeated Label  labels   =8;
 }
 
 message User{
@@ -25,13 +22,17 @@ message User{
 message Ad{
 	optional int64	trans_id		=1;	
 	optional int64	adboard_id		=2;	
-	optional int64	customer_id		=3;
-	optional int64	customer_price  =5;
-	optional int64	algo_price		=6;
-	optional int64	bid_price 		=7;
-	repeated Label	labels			=4;
+	optional int64	shop_id			=3;
+	optional int64	maincate		=4;
+	optional int64	customer_id		=5;
+	optional int64	customer_price  =6;
+	optional int64	algo_price		=7;
+	optional int64	bid_price 		=8;
+	repeated Label	labels			=9;
+	
+	optional int64 product_type		=10;
+	optional int64 service_id		=11;
 }
-
 
 message Display{
 	optional    string	bidid           =1;
