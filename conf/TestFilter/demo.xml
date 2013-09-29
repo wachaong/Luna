@@ -16,12 +16,12 @@
   
   <property>
     <name>customer_cate</name>
-    <value>${customer_cate}</value>
+    <value>${customer.cate}</value>
   </property>
   
   <property>
     <name>luna.ad.path</name>
-    <value>${midad_input}</value>
+    <value>${midad.input}</value>
   </property>
 
   <property>
@@ -31,12 +31,12 @@
 
   <property>
     <name>mapred.input.dir</name>
-    <value>${midlog_input}</value>
+    <value>${midlog.input}</value>
   </property>
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${out_dir}</value>
+    <value>${application.output}/TestFilter/output/demo/${DATE}</value>
   </property>
 
   <property>

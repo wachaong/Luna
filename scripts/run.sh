@@ -40,23 +40,23 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
 set +e
 hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
-mkdir -p `dirname $customer_file`
-rm -rf $customer_file
-htext $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_file
+mkdir -p `dirname $customer_cate`
+rm -rf $customer_cate
+hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
-    -files $train_pid.conf,$customer_cate\
+    -files $train_pid,$customer_cate\
     -D application.home=$application_home \
-    -D out_dir=$out_dir \
-    -D train_pid=`basename $train_pid` \
-    -D customer_cate=`basename $customer_cate` \
-    -D midlog_input=$midlog_input \
-    -D midad_input=$midad_input \
+    -D train.pid=`basename $train_pid` \
+    -D customer.cate=`basename $customer_cate` \
+    -D midlog.input=$midlog_input \
+    -D midad.input=$midad_input \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
+    -D DATE=$DATE \
     ${properties[@]-} \
     $flow

@@ -103,6 +103,11 @@ public class AdExtractor {
 	}
 	
 	private void loadData(Configuration conf, String path) throws IOException, URISyntaxException{
+        Path[] cached = DistributedCache.getLocalCacheFiles(conf);
+        System.out.println(cached.length);
+        for(int i = 0; i < cached.length; i++){
+            System.out.println(cached[i].toString());
+        }
 		System.out.println("load File:" + path);
 		BytesWritable key = new BytesWritable();
 		BytesWritable val = new BytesWritable();
@@ -212,6 +217,8 @@ public class AdExtractor {
 	}
 	
 	public static void addPath(Configuration conf, String adpath) throws URISyntaxException, IOException {			
+        System.out.println("TESTTTTT");
+        System.out.println(adpath);
 		addPath(conf, adpath, "default");
 	}
 	
@@ -233,6 +240,7 @@ public class AdExtractor {
 				if (status.isDir()) {
 					continue;
 				}
+                
 				DistributedCache.addCacheFile(makeSymbolicLink(status.getPath(), adfindername, suffix++), conf);
 			}
 			if (suffix == 0) {
