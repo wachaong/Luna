@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
@@ -30,8 +29,7 @@ import display.algo.common.Constants;
 
 public class AdExtractor {
 	private Map<Long, Long> AdvertiserId2MainCate = new  HashMap<Long, Long>();
-	private static final String SYMBOLIC_LINK = "com_taobao_algo_ecpm_admidtier_aurora_adsdata.";
-	private static final String CONF_ADFILE_NUM = "admidtier.aurora.filenum";
+	private static final String MID_AD_INPUT = "mid_ad_input";
 	
 	
 	
@@ -51,33 +49,29 @@ public class AdExtractor {
 		transAdMap = new HashMap<String, Ad>();
 	}
 	
-	public static AdExtractor newInstance(Configuration conf) throws IOException, URISyntaxException {
-
-		return newInstance(conf, "default");
-	}
-	
-	public static AdExtractor newInstance(Configuration conf, String name) throws IOException, URISyntaxException {		
+	public static AdExtractor newInstance(Configuration conf) throws IOException, URISyntaxException {		
 
 		AdExtractor extractor = new AdExtractor();
-		extractor.init(conf, name);		
+		extractor.init(conf);		
 		return extractor;
 	}
 	
-	private void init(Configuration conf, String name) throws IOException, URISyntaxException {
+	private void init(Configuration conf) throws IOException, URISyntaxException {
 		
 		System.out.println("AdDataBase init...");
 		readCustomerID2MainCate(conf);
 		
-		String filenum = conf.get(SYMBOLIC_LINK + name + CONF_ADFILE_NUM);
-		int fnum = Integer.parseInt(filenum);
-		if (filenum == null || filenum.isEmpty()) {
-			throw new RuntimeException("filename is null");
-		}
-		for (int i = 0; i < fnum; i++) {
-			String path = SYMBOLIC_LINK + name + i;
-			loadData(conf, path);
-		}
-		
+		//String filenum = conf.get(SYMBOLIC_LINK + name + CONF_ADFILE_NUM);
+		//int fnum = Integer.parseInt(filenum);
+		//if (filenum == null || filenum.isEmpty()) {
+		//	throw new RuntimeException("filename is null");
+		//}
+		//for (int i = 0; i < fnum; i++) {
+		//	String path = SYMBOLIC_LINK + name + i;
+		//	loadData(conf, path);
+		//}
+		String path = MID_AD_INPUT;
+		loadData(conf, path);
 		System.out.println("transMap.size="+transAdMap.size());
 		System.out.println("AdDataBase init Success!");
 
@@ -216,6 +210,7 @@ public class AdExtractor {
 		return find_main_cate;
 	}
 	
+	/*
 	public static void addPath(Configuration conf, String adpath) throws URISyntaxException, IOException {			
         System.out.println("TESTTTTT");
         System.out.println(adpath);
@@ -260,5 +255,5 @@ public class AdExtractor {
 		strbuf.append(suffix);
 		return new URI(strbuf.toString());
 	}
-	
+	*/
 }

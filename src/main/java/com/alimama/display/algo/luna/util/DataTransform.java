@@ -57,13 +57,14 @@ public class DataTransform {
 		if(adpath==null){
         	throw new RuntimeException("adpath is null");
         }
-        
+        /*
         try {
 			AdExtractor.addPath(conf, adpath);
 		} catch (URISyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		*/
 		adExtractor = AdExtractor.newInstance(conf);
 		
 		clear();

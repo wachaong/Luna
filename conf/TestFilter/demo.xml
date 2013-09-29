@@ -25,6 +25,16 @@
   </property>
 
   <property>
+  	<name>mapred.cache.files</name>
+  	<value>${midad.input}#mid_ad_input</value>
+  </property>
+  
+  <property>
+  	<name>mapred.create.symlink</name>
+  	<value>yes</value>
+  </property>
+  
+  <property>
     <name>mapred.job.name</name>
     <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
   </property>
@@ -39,6 +49,7 @@
     <value>${application.output}/TestFilter/output/demo/${DATE}</value>
   </property>
 
+  
   <property>
     <name>mapreduce.map.class</name>
     <value>com.alimama.display.algo.luna.extract.FilterData$Mapper</value>
