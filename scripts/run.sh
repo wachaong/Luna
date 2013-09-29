@@ -40,9 +40,14 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
 set +e
 hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
-mkdir -p `dirname $customer_cate`
-rm -rf $customer_cate
-hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
+
+if [ -f $customer_cate ];then
+    echo "$customer_cate exist"
+else
+    mkdir -p `dirname $customer_cate`
+    rm -rf $customer_cate
+    hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
+fi
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \

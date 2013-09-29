@@ -162,9 +162,13 @@ public class DataTransform {
 			Ad tmp = adExtractor.getAdInfo(ad.getTransId(), ad.getAdboradId());
 			if (null == tmp) {
 				System.out.println("AD_NOT_FOUND");
-				return null;
+				//return null;
 			}
-			adb.addAllLabels(tmp.getLabelsList());
+            else
+            {
+                System.out.println("FOUND");
+			    adb.addAllLabels(tmp.getLabelsList());
+            }
 		}
 		
 		return adb.build();
