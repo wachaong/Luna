@@ -34,7 +34,7 @@ NEXTDATE=$(date -d "$DATE +1 day" +%Y%m%d)
 source $conf_dir/application.conf
 
 shop_input="/group/taobao/taobao/hive/r_seller_basic_info/pt="$DATE"000000"
-shop_output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/DataFilter/output/${DATE}/step0/part-r-00000
+shop_output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step0/part-r-00000
 
 
 # set classpath

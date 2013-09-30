@@ -160,12 +160,12 @@ public class DataTransform {
 		if (adExtractor != null) {
 			Ad tmp = adExtractor.getAdInfo(ad.getTransId(), ad.getAdboradId());
 			if (null == tmp) {
-				System.out.println("AD_NOT_FOUND");
+				//System.out.println("AD_NOT_FOUND");
 				return null;
 			}
             else
             {
-                System.out.println("FOUND");
+                //System.out.println("FOUND");
 			    adb.addAllLabels(tmp.getLabelsList());
             }
 		}

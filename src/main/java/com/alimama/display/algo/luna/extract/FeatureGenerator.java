@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import com.alimama.display.algo.luna.message.Luna.Ad;
 import com.alimama.display.algo.luna.message.Luna.Context;
+import com.alimama.display.algo.luna.message.Luna.Display;
 import com.alimama.display.algo.luna.message.Luna.Label;
 import com.alimama.display.algo.luna.message.Luna.User;
+import com.alimama.display.algo.luna.util.LunaConstants;
 
 public class FeatureGenerator {
 	
@@ -104,5 +106,24 @@ public class FeatureGenerator {
 		//out += display.getContext().getUrl()+"_";
 		
 		return result;
+	}
+
+
+	public static ArrayList<String> getAllFeatures(Display display) {
+		ArrayList<String> allFeatures = new ArrayList<String>();
+		
+		Context c = display.getContext();
+		User u = display.getUser();
+		Ad a = display.getAd();
+		
+		allFeatures.add(LunaConstants.CONTEXT_PREFIX + c.getPid());
+		allFeatures.add(LunaConstants.CONTEXT_PREFIX + c.getWeek());
+		allFeatures.add(LunaConstants.CONTEXT_PREFIX + c.getTime());
+		
+		//allFeatures.add();
+		
+		
+		
+		return null;
 	}
 }
