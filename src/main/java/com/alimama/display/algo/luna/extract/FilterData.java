@@ -85,19 +85,22 @@ public class FilterData {
 				}
 				Text outKey = new Text();
 				String out = "";
+				
+				out += "AD:" + FeatureGenerator.GetAdFeaturesStr(display.getAd()) + " | ";
+				out += "USER:" + FeatureGenerator.GetUserFeaturesStr(display.getUser()) + " | ";
+				out += "CONTEXT:" + FeatureGenerator.GetContextFeaturesStr(display.getContext()) + " | ";
 				//out += display.getSessionid()+"_";
-				out += display.getAd().getTransId()+"_";
-				out += display.getAd().getAdboardId()+"_";
-				out += display.getAd().getCustomerId()+"_";
-				out += display.getContext().getPid()+"_";
+				//out += display.getAd().getTransId()+"_";
+				//out += display.getAd().getAdboardId()+"_";
+				//out += display.getAd().getCustomerId()+"_";
+				//out += display.getContext().getPid()+"_";
 				//out += display.getContext().getUrl()+"_";
 				
-				String nickName = display.getUser().getNickname();
-				if(nickName == null || nickName.equals("")) nickName = "UNKNOWN";
+				//String nickName = display.getUser().getNickname();
+				//if(nickName == null || nickName.equals("")) nickName = "UNKNOWN";
 				//out += nickName + "_";
 				
-				out += FeatureGenerator.GetUserFeaturesStr(display.getUser()) + "//////";
-				out += display.getClick();
+				out += "CLICK:" + display.getClick();
 				outKey.set(out);
 				if(display.getClick() == 1){
 					context.getCounter(Counters.CLICK).increment(1);
