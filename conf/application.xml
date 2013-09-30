@@ -79,11 +79,11 @@
     <value>500</value>
   </property>
   
+  <!--
   <property>
     <name>mapreduce.inputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
   </property>
-  <!--
   <property>
     <name>mapreduce.outputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat</value>

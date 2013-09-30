@@ -33,7 +33,7 @@ DATE=$2
 NEXTDATE=$(date -d "$DATE +1 day" +%Y%m%d)
 source $conf_dir/application.conf
 
-shop_input="/group/taobao/taobao/hive/r_seller_basic_info/pt#"$DATE"000000"
+shop_input="/group/taobao/taobao/hive/r_seller_basic_info/pt="$DATE"000000"
 shop_output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/DataFilter/output/${DATE}/step0/part-00000
 
 
@@ -68,7 +68,7 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D USER=$USER \
     -D DATE=$DATE \
     -D NEXTDATE=$NEXTDATE \
-    -D shop.input=$shopinput \
-    -D shop.output=$shopoutput \
+    -D shop.input=$shop_input \
+    -D shop.output=$shop_output \
     ${properties[@]-} \
     $flow
