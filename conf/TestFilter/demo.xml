@@ -26,7 +26,7 @@
 
   <property>
   	<name>mapred.cache.files</name>
-  	<value>${midad.input}#mid_ad_input, ${midad.input2}#mid_ad_input2</value>
+  	<value>${midad.input}#mid_ad_input,${midad.input2}#mid_ad_input2</value>
   </property>
   
   <property>
