@@ -76,6 +76,11 @@
   </property>
 -->
   <property>
+    <name>mapreduce.inputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
+  </property>
+  
+  <property>
     <name>mapred.mapoutput.key.class</name>
     <value>org.apache.hadoop.io.Text</value>
   </property>
