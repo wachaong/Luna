@@ -162,7 +162,7 @@ public class DataTransform {
 			Ad tmp = adExtractor.getAdInfo(ad.getTransId(), ad.getAdboradId());
 			if (null == tmp) {
 				System.out.println("AD_NOT_FOUND");
-				//return null;
+				return null;
 			}
             else
             {
@@ -196,6 +196,8 @@ public class DataTransform {
 		for(display.algo.logs.proto.MiddataMessage.Ad t :dmd.getAdList()){
 			
 			Ad ad = getAd(t);
+			if(ad == null)
+				continue;
 			display.algo.logs.proto.MiddataMessage.AdEx adex = t.getAdex();
 			db.setAd(ad);
 			db.setClick(0);

@@ -30,7 +30,7 @@ import display.algo.common.Constants;
 public class AdExtractor {
 	private Map<Long, Long> AdvertiserId2MainCate = new  HashMap<Long, Long>();
 	private static final String MID_AD_INPUT = "mid_ad_input";
-	
+	private static final String MID_AD_INPUT2 = "mid_ad_input2";
 	
 	
 	private long find_main_cate = 0;
@@ -70,8 +70,9 @@ public class AdExtractor {
 		//	String path = SYMBOLIC_LINK + name + i;
 		//	loadData(conf, path);
 		//}
-		String path = MID_AD_INPUT;
-		loadData(conf, path);
+		loadData(conf, MID_AD_INPUT);
+		System.out.println("transMap.size="+transAdMap.size());
+		loadData(conf, MID_AD_INPUT2);
 		System.out.println("transMap.size="+transAdMap.size());
 		System.out.println("AdDataBase init Success!");
 

@@ -26,10 +26,11 @@ done
 shift $((OPTIND-1))
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
+
 [[ $# == 2 ]] || usage
 flow=$1
 DATE=$2
-
+NEXTDATE=$(date -d "$DATE +1 day" +%Y%m%d)
 source $conf_dir/application.conf
 
 
@@ -59,9 +60,11 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D customer.cate=`basename $customer_cate` \
     -D midlog.input=$midlog_input \
     -D midad.input=$midad_input \
+    -D midad.input2=$midad_input2 \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
     -D DATE=$DATE \
+    -D NEXTDATE=$NEXTDATE \
     ${properties[@]-} \
     $flow

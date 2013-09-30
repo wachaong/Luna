@@ -2,6 +2,7 @@ package com.alimama.display.algo.luna.extract;
 
 import java.util.ArrayList;
 
+import com.alimama.display.algo.luna.message.Luna.Label;
 import com.alimama.display.algo.luna.message.Luna.User;
 
 public class FeatureGenerator {
@@ -17,6 +18,19 @@ public class FeatureGenerator {
 		
 		
 		return features;
+	}
+	
+	
+	public static String GetUserFeaturesStr(User u){
+		String result = "";
+		for(int i = 0; i < u.getLabelsCount(); i++){
+			Label l = u.getLabels(i);
+			result += "Label" + l.getType() + ":";
+			for(int j = 0; j < l.getTagsCount(); j++){
+				result += l.getTags(j).getId() +  "_" + l.getTags(j).getValue()+"==";
+			}
+		}
+		return result;
 	}
 	
 	/*

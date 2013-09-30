@@ -72,7 +72,7 @@ public class FilterData {
 	    	}
 	      
 	    	Collection<Display> displays = dt.getDisplays(dmd);
-	    	context.getCounter("FRAME_CNT", String.valueOf(displays.size())).increment(1);
+	    	//context.getCounter("FRAME_CNT", String.valueOf(displays.size())).increment(1);
 	    	
 	    	
 			for(Display display:displays){
@@ -94,7 +94,9 @@ public class FilterData {
 				
 				String nickName = display.getUser().getNickname();
 				if(nickName == null || nickName.equals("")) nickName = "UNKNOWN";
-				out += nickName + "_";
+				//out += nickName + "_";
+				
+				out += FeatureGenerator.GetUserFeaturesStr(display.getUser()) + "//////";
 				out += display.getClick();
 				outKey.set(out);
 				if(display.getClick() == 1){
