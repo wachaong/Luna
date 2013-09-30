@@ -3,9 +3,13 @@ package com.alimama.display.algo.luna.extract;
 import java.io.IOException;
 
 
+
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer.Context;
+
+import com.alimama.display.algo.luna.message.Luna.Display;
 
 import display.algo.common.Constants;
 
@@ -75,4 +79,16 @@ public class GetMainCate {
 			context.getCounter(Counters.SHOP_NUM).increment(1);
 	    }
 	}
+	
+	
+	public static class Reducer
+		extends org.apache.hadoop.mapreduce.Reducer
+			<Text, NullWritable, Text, NullWritable> {
+
+	    @Override
+	    protected void reduce(Text key, Iterable<NullWritable> values, Context context)
+	        throws IOException, InterruptedException {
+	    	 context.write(key, NullWritable.get());
+	    }
+    }
 }

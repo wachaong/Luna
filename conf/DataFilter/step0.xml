@@ -32,12 +32,12 @@
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>org.apache.hadoop.mapred.lib.IdentityReducer</value>
+    <value>com.alimama.display.algo.luna.extract.GetMainCate$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>org.apache.hadoop.mapred.lib.IdentityReducer</value>
+    <value>com.alimama.display.algo.luna.extract.GetMainCate$Reducer</value>
   </property>
 
   <property>
