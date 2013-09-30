@@ -6,8 +6,10 @@ import java.util.Collection;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+
 
 
 
@@ -34,7 +36,7 @@ public class FilterData {
 	
 	public static class Mapper
     	extends org.apache.hadoop.mapreduce.Mapper
-    	<BytesWritable, BytesWritable, Text, Display> {
+    	<LongWritable, BytesWritable, Text, Display> {
 	    
 		
 		private DataTransform dt = new DataTransform();
@@ -60,7 +62,7 @@ public class FilterData {
 	      }
 		
 	    @Override
-	    protected void map(BytesWritable key, BytesWritable value, Context context)
+	    protected void map(LongWritable key, BytesWritable value, Context context)
 	        throws IOException, InterruptedException {
 	    	context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    	DiamondMidData dmd = dmdb.clear()

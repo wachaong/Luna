@@ -46,7 +46,7 @@
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/TestFilter/output/${DATE}/step1</value>
+    <value>${application.output}/DataFilter/output/${DATE}/step1</value>
   </property>
 
   
