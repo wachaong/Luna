@@ -7,9 +7,7 @@ import java.io.IOException;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 
-import com.alimama.display.algo.luna.message.Luna.Display;
 
 import display.algo.common.Constants;
 
