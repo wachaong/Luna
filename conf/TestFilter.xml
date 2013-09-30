@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<flow name="myTestFilter">
-  <node>
-    <name>TestFilter.demo</name>
-  </node>
-</flow>

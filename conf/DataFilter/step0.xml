@@ -6,32 +6,7 @@
 
   <property>
     <name>husky.flow.job.name</name>
-    <value>demo</value>
-  </property>
-
-  <property>
-    <name>filted.pid.file</name>
-    <value>${train.pid}</value>
-  </property>
-  
-  <property>
-    <name>customer_cate</name>
-    <value>${customer.cate}</value>
-  </property>
-  
-  <property>
-    <name>luna.ad.path</name>
-    <value>${midad.input}</value>
-  </property>
-
-  <property>
-  	<name>mapred.cache.files</name>
-  	<value>${midad.input}#mid_ad_input,${midad.input2}#mid_ad_input2</value>
-  </property>
-  
-  <property>
-  	<name>mapred.create.symlink</name>
-  	<value>yes</value>
+    <value>step0</value>
   </property>
   
   <property>
@@ -41,33 +16,33 @@
 
   <property>
     <name>mapred.input.dir</name>
-    <value>${midlog.input}</value>
+    <value>${shop.input}</value>
   </property>
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/TestFilter/output/${DATE}/demo</value>
+    <value>${application.output}/DataFilter/output/${DATE}/step0</value>
   </property>
 
   
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.extract.FilterData$Mapper</value>
+    <value>com.alimama.display.algo.luna.extract.GetMainCate$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.extract.FilterData$Reducer</value>
+    <value>org.apache.hadoop.mapred.lib.IdentityReducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.extract.FilterData$Reducer</value>
+    <value>org.apache.hadoop.mapred.lib.IdentityReducer</value>
   </property>
 
   <property>
     <name>mapred.reduce.tasks</name>
-    <value>50</value>
+    <value>1</value>
   </property>
 <!--  
   <property>
@@ -82,7 +57,7 @@
 
   <property>
     <name>mapred.mapoutput.value.class</name>
-    <value>com.alimama.display.algo.luna.message.Luna$Display</value>
+    <value>org.apache.hadoop.io.NullWritable</value>
   </property>
   <property>
     <name>mapred.output.key.class</name>
