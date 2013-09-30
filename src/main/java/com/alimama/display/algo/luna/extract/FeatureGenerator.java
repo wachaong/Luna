@@ -25,15 +25,7 @@ public class FeatureGenerator {
 	
 	public static String GetUserFeaturesStr(User u){
 		String result = "";
-		/*
-		for(int i = 0; i < u.getLabelsCount(); i++){
-			Label l = u.getLabels(i);
-			result += "Label" + l.getType() + ":";
-			for(int j = 0; j < l.getTagsCount(); j++){
-				result += l.getTags(j).getId() +  "_" + l.getTags(j).getValue()+"==";
-			}
-		}
-		*/
+		
 		result += u.getAcookie();
 		//result += u.getAcookie() + "_";
 		
@@ -45,6 +37,17 @@ public class FeatureGenerator {
 		//if(userId == null || userId.equals("")) userId = "NULL";
 		
 		//result += userId;
+		
+		//get targeting information
+		
+		for(int i = 0; i < u.getLabelsCount(); i++){
+			result += "_";
+			Label l = u.getLabels(i);
+			result += l.getType() + ":";
+			for(int j = 0; j < l.getTagsCount(); j++){
+				result += l.getTags(j).getId() +  "/" + l.getTags(j).getValue();
+			}
+		}
 		
 		return result;
 	}
@@ -63,7 +66,7 @@ public class FeatureGenerator {
 	
 	public static String GetAdFeaturesStr(Ad ad){
 		String result = "";
-		/*
+		
 		for(int i = 0; i < ad.getLabelsCount(); i++){
 			Label l = ad.getLabels(i);
 			result += l.getType() + ":";
@@ -71,13 +74,13 @@ public class FeatureGenerator {
 				result += l.getTags(j).getId()+"_";
 			}
 		}
-		*/
+		/*
 		result += ad.getAdboardId()+"_";
 		result += ad.getTransId() +"_";
 		result += ad.getCustomerId() +"_";
 		result += ad.getMaincate() + "_";
 		result += ad.getProductType();
-		
+		*/
 		
 		return result;
 	}
