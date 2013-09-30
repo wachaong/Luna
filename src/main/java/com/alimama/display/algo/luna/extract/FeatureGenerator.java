@@ -34,16 +34,17 @@ public class FeatureGenerator {
 			}
 		}
 		*/
-		result += u.getAcookie() + "_";
+		result += u.getAcookie();
+		//result += u.getAcookie() + "_";
 		
-		String nickName = u.getNickname();
-		if(nickName == null || nickName.equals("")) nickName = "NULL";
-		result += nickName + "_";
+		//String nickName = u.getNickname();
+		//if(nickName == null || nickName.equals("")) nickName = "NULL";
+		//result += nickName;
 		
-		String userId = u.getUserid();
-		if(userId == null || userId.equals("")) nickName = "NULL";
+		//String userId = u.getUserid();
+		//if(userId == null || userId.equals("")) userId = "NULL";
 		
-		result += userId;
+		//result += userId;
 		
 		return result;
 	}
@@ -73,15 +74,27 @@ public class FeatureGenerator {
 		*/
 		result += ad.getAdboardId()+"_";
 		result += ad.getTransId() +"_";
-		result += ad.getCustomerId();
+		result += ad.getCustomerId() +"_";
+		result += ad.getMaincate() + "_";
+		result += ad.getProductType();
+		
 		
 		return result;
 	}
 	
 	public static String GetContextFeaturesStr(Context c){
 		String result = "";
-		
-		result += c.getPid() + "_";
+		String pid = "";
+		if(c.getPid().endsWith("777")){
+			pid = "0";
+		}
+		else if(c.getPid().endsWith("778")){
+			pid = "1";
+		}
+		else{
+			pid = "2";
+		}
+		result += pid + "_";
 		result += c.getWeek() + "_";
 		result += c.getTime();
 		//out += display.getContext().getPid()+"_";

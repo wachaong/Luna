@@ -111,7 +111,6 @@ public class DataTransform {
 		String nickname = u.getNickname();
 		ub.setAcookie(acookie);
 		ub.setNickname(nickname);
-		
 		//Crowd Targeting
 		lbb.clear();
 		lbb.setType(8);
