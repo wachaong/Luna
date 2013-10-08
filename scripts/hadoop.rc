@@ -1,0 +1,90 @@
+# Hadoop resource file
+
+function hadoop() {
+    if [ -n "$hadoop_exec_conf" ]; then
+        $hadoop_exec --config $hadoop_exec_conf "$@"
+    else
+        $hadoop_exec "$@"
+    fi
+}
+
+function hput() {
+    hadoop fs -put "$@"
+}
+
+function hget() {
+    hadoop fs -get "$@"
+}
+
+function hcat() {
+    hadoop fs -cat "$@"
+}
+
+function hls() {
+    hadoop fs -ls "$@"
+}
+
+function htext() {
+    hadoop fs -text "$@"
+}
+
+function hgetmerge() {
+    hadoop fs -getmerge "$@"
+}
+
+function htouch() {
+    hadoop fs -touchz "$@" >/dev/null 2>&1
+    return 0
+}
+
+function hexist() {
+    hadoop fs -test -e "$@"
+}
+
+function hrmr() {
+    if hexist "$@"; then
+        hadoop fs -rmr "$@" >/dev/null 2>&1
+    fi
+}
+
+function hrm() {
+    if hexist "$@"; then
+        hadoop fs -rm "$@" >/dev/null 2>&1
+    fi
+}
+
+function hrmf() {
+    hadoop fs -rm "$@" >/dev/null 2>&1
+}
+
+function hdfs_part_num() {
+    if hexist "$@"; then
+        hadoop fs -ls "$@" | grep 'part-' | wc -l
+    fi
+}
+
+function hdfs_size() {
+    if hexist "$@"; then
+        hadoop fs -dus "$@" | grep "$@" | awk '{print $2;}'
+    fi
+}
+
+function hdfs_time() {
+    if hexist "$@"; then
+        hadoop fs -ls "$@" | grep "$@" | awk '{print $6","$7}'
+    fi
+}
+
+function hdfs_check() {
+    path=$1
+    num_parts=$2
+    min_size=$3
+    parts=$(hadoop fs -ls $path | grep 'part-' | wc -l)
+    size=$(hadoop fs -dus $path | awk '{print $2}')
+    if [[ $parts == $num_parts && $size -ge $min_size || \
+        min_size == 0 ]]; then
+        return 0
+    else
+        return 1
+    fi
+}

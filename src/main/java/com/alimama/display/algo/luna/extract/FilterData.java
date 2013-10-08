@@ -16,7 +16,6 @@ import org.apache.hadoop.io.Text;
 import com.alimama.display.algo.luna.message.Luna.Display;
 import com.alimama.display.algo.luna.util.DataTransform;
 import com.alimama.display.algo.luna.util.Filter;
-import com.alimama.display.algo.luna.util.Filter.FilterBy;
 
 import display.algo.logs.proto.MiddataMessage.DiamondMidData;
 
@@ -35,7 +34,7 @@ public class FilterData {
 	
 	public static class Mapper
     	extends org.apache.hadoop.mapreduce.Mapper
-    	<BytesWritable, BytesWritable, Display, NullWritable> {
+    	<BytesWritable, BytesWritable, Text, Display> {
 	    
 		
 		private DataTransform dt = new DataTransform();
@@ -113,19 +112,30 @@ public class FilterData {
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
 				*/
-				context.write(display,NullWritable.get());
+				
+				Text outKey = new Text();
+				String out = "";
+				out += display.getAd().getTransId()+"_";
+				out += display.getAd().getAdboardId()+"_";
+				out += display.getAd().getCustomerId()+"_";
+				out += display.getContext().getPid()+"_";
+				out += display.getUser().getAcookie();
+				outKey.set(out);
+				context.write(outKey, display);
+				
 			}
 	    }
 	}
 	
 	public static class Reducer
     	extends org.apache.hadoop.mapreduce.Reducer
-    	<Display, NullWritable, Display, NullWritable> {
+    	<Text, Display, Display, NullWritable> {
 
 	    @Override
-	    protected void reduce(Display key, Iterable<NullWritable> values, Context context)
+	    protected void reduce(Text key, Iterable<Display> values, Context context)
 	        throws IOException, InterruptedException {
-	    	context.write(key, NullWritable.get());
+	      for (Display value: values)
+	    	  context.write(value, NullWritable.get());
 	    }
 	}
 }

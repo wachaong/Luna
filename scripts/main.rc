@@ -1,0 +1,29 @@
+# Cfop resource file
+source $work_dir/scripts/hadoop.rc
+
+function dates() {
+    local last_date=$1
+    local num_days=$2
+    for ((i = $num_days - 1; i >= 0; --i)); do
+        echo $(date -d "$last_date - $i day" +%Y%m%d)
+    done
+}
+
+
+
+function get_input_path() {
+    local last_date=$1
+    local merge_days=$(($2-1))
+    local output=$3
+    local merge_output=$4
+    local first_date=$(date -d "$last_date -$merge_days day" +%Y%m%d)
+    local result=
+    for ((date=$first_date; $date <= $last_date; 
+        date=$(date -d "$date +1 day" +%Y%m%d))); do
+        if hexist /group/tbalgo-dev/yanling.yl/Luna/1.0.0/DataFilter/output/$date/step1.done; then
+            result=$result,/group/tbalgo-dev/yanling.yl/Luna/1.0.0/DataFilter/output/$date/step1
+        fi
+    done
+    echo ${result:1}
+}
+

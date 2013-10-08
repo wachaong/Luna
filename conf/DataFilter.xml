@@ -7,6 +7,8 @@
 
   <node>
     <name>DataFilter.step1</name>
+    <dependencies>wordcount.step0</dependencies>
   </node>
+
    <!--   -->
 </flow>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<flow name="myFeatureMapper">
+	<node>
+    <name>FeatureMapper.step0</name>
+  </node>
+
+  <node>
+    <name>FeatureMapper.step1</name>
+  </node>
+   <!--   -->
+</flow>
