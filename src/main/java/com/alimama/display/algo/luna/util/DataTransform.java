@@ -109,6 +109,8 @@ public class DataTransform {
 		
 		String acookie = u.getAcookie();
 		String nickname = u.getNickname();
+		if (nickname == null || nickname.equals(""))
+			nickname = "UNKNOWN";
 		ub.setAcookie(acookie);
 		ub.setNickname(nickname);
 		//Crowd Targeting

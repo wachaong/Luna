@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<flow name="example">
-
-  <node>
-    <name>wordcount.step1</name>
-  </node>
-
-</flow>

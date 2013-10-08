@@ -35,7 +35,7 @@ public class FilterData {
 	
 	public static class Mapper
     	extends org.apache.hadoop.mapreduce.Mapper
-    	<BytesWritable, BytesWritable, Text, Display> {
+    	<BytesWritable, BytesWritable, Display, NullWritable> {
 	    
 		
 		private DataTransform dt = new DataTransform();
@@ -77,6 +77,7 @@ public class FilterData {
 	    	
 	    	
 			for(Display display:displays){
+				/*
 				context.getCounter(Counters.PV_ALL).increment(1);
 				FilterBy a = filter.Valid(display.getAd());
 				if(a!=null){
@@ -111,19 +112,20 @@ public class FilterData {
 				//outKey.set(display.getClickid());
 				context.write(outKey, display);
 				context.getCounter(Counters.PV_OK).increment(1);
+				*/
+				context.write(display,NullWritable.get());
 			}
 	    }
 	}
 	
 	public static class Reducer
     	extends org.apache.hadoop.mapreduce.Reducer
-    	<Text, Display, Text, NullWritable> {
+    	<Display, NullWritable, Display, NullWritable> {
 
 	    @Override
-	    protected void reduce(Text key, Iterable<Display> values, Context context)
+	    protected void reduce(Display key, Iterable<NullWritable> values, Context context)
 	        throws IOException, InterruptedException {
-	      for (Display value: values)
-	    	  context.write(key, NullWritable.get());
+	    	context.write(key, NullWritable.get());
 	    }
 	}
 }

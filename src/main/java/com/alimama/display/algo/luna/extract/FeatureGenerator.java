@@ -120,10 +120,17 @@ public class FeatureGenerator {
 		allFeatures.add(LunaConstants.CONTEXT_PREFIX + c.getWeek());
 		allFeatures.add(LunaConstants.CONTEXT_PREFIX + c.getTime());
 		
+		allFeatures.add(LunaConstants.ADID_PREFIX + a.getAdboardId());
+		allFeatures.add(LunaConstants.TRANSID_PREFIX + a.getTransId());
+		allFeatures.add(LunaConstants.CUSTOMERID_PREFIX + a.getCustomerId());
+		allFeatures.add(LunaConstants.MAINCATE_PREFIX + a.getMaincate());
+		allFeatures.add(LunaConstants.PRODUCTTYPE_PREFIX + a.getProductType());
+		
+		allFeatures.add(LunaConstants.ACOOKIE_PREFIX + u.getAcookie());
+		allFeatures.add(LunaConstants.NICKNAME_PREFIX + u.getNickname());
+		
 		//allFeatures.add();
 		
-		
-		
-		return null;
+		return allFeatures;
 	}
 }

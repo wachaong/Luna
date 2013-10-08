@@ -16,6 +16,13 @@ public class LunaConstants {
 	
 	
 	public final static String ADID_PREFIX = "adid";
+	public final static String TRANSID_PREFIX = "transid";
+	public final static String CUSTOMERID_PREFIX = "customerid";
+	public final static String MAINCATE_PREFIX = "maincate";
+	public final static String PRODUCTTYPE_PREFIX = "product";
+	
+	public final static String ACOOKIE_PREFIX = "acookie";
+	public final static String NICKNAME_PREFIX = "nickname";
 	
 	
 }
