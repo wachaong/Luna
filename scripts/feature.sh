@@ -33,7 +33,7 @@ flow=$1
 end_date=$2
 DATE=$2
 NEXTDATE=$2
-num_days=11
+num_days=1
 begin_date=$(date -d "$end_date -$num_days day" +%Y%m%d)
 
 source $conf_dir/application.conf

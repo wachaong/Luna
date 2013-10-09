@@ -39,12 +39,12 @@
     <name>mapred.reduce.tasks</name>
     <value>50</value>
   </property>
-  
+  <!-- 
   <property>
     <name>mapred.inputformat.class</name>
     <value>com.alimama.display.algo.luna.message.Luna$Display</value>
   </property>
-
+  -->
   <property>
     <name>mapred.mapoutput.key.class</name>
     <value>org.apache.hadoop.io.Text</value>

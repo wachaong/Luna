@@ -44,6 +44,8 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 set +e
 #hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
 hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1
+hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1.*
+
 #if [ -f $customer_cate ];then
 #    echo "$customer_cate exist"
 #else
