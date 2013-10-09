@@ -126,8 +126,8 @@ public class FeatureGenerator {
 		allFeatures.add(LunaConstants.MAINCATE_PREFIX + a.getMaincate());
 		allFeatures.add(LunaConstants.PRODUCTTYPE_PREFIX + a.getProductType());
 		
-		allFeatures.add(LunaConstants.ACOOKIE_PREFIX + u.getAcookie());
-		allFeatures.add(LunaConstants.NICKNAME_PREFIX + u.getNickname());
+		//allFeatures.add(LunaConstants.ACOOKIE_PREFIX + u.getAcookie());
+		//allFeatures.add(LunaConstants.NICKNAME_PREFIX + u.getNickname());
 		
 		
 		//Targetting Information
