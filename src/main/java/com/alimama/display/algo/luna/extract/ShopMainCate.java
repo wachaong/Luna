@@ -42,7 +42,7 @@ public class ShopMainCate {
 			br.close();
 		}
 		
-		BufferedWriter bw = new BufferedWriter(new FileWriter("~/Luna/data/shop2cate.txt"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("data/shop2cate.txt"));
 		Iterator<String> iter = hm.keySet().iterator(); 
 		while(iter.hasNext()){
 			String key = iter.next();
