@@ -79,7 +79,7 @@
     <value>500</value>
   </property>
   
-  
+  <!-- 
   <property>
     <name>mapreduce.inputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
@@ -88,7 +88,7 @@
     <name>mapreduce.outputformat.class</name>
     <value>org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat</value>
   </property>
-  
+  -->
   <property>
     <name>mapred.compress.map.output</name>
     <value>false</value>
