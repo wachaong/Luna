@@ -35,6 +35,7 @@ public class ShopMainCate {
 			BufferedReader br = new BufferedReader(new FileReader(filename));
 			while((line = br.readLine()) != null){
 				String[] temp = line.split(Constants.CTRL_A);
+				if(temp.length < 2) continue;
 				if(hm.containsKey(temp[0])) continue;
 				hm.put(temp[0],temp[1]);
 			}
