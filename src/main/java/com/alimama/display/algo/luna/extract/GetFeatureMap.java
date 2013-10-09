@@ -38,7 +38,7 @@ public class GetFeatureMap {
 	    protected void map(LongWritable key, Display value, Context context)
 	        throws IOException, InterruptedException {
 	    	context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
-	    	
+	    		
 	    		ArrayList<String> allFeatures = FeatureGenerator.getAllFeatures(value);
 	    		if(allFeatures == null){
 	    			context.getCounter(Counters.NULL_FEATURE_RECORD).increment(1);

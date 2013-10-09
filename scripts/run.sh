@@ -42,15 +42,15 @@ classpath=$conf_dir
 for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
 set +e
-hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
-
-if [ -f $customer_cate ];then
-    echo "$customer_cate exist"
-else
-    mkdir -p `dirname $customer_cate`
-    rm -rf $customer_cate
-    hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
-fi
+#hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
+hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1
+#if [ -f $customer_cate ];then
+#    echo "$customer_cate exist"
+#else
+#    mkdir -p `dirname $customer_cate`
+#    rm -rf $customer_cate
+#    hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
+#fi
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
@@ -73,4 +73,4 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     ${properties[@]-} \
     $flow
     
-hadoop fs -cat $shop_output > $shop_cate
+#hadoop fs -cat $shop_output > $shop_cate
