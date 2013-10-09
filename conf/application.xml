@@ -76,7 +76,7 @@
 
   <property>
     <name>io.sort.mb</name>
-    <value>750</value>
+    <value>500</value>
   </property>
   
   <!--

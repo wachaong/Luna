@@ -46,6 +46,8 @@
 				<attribute name="Build-OS-Host" value="${COMPUTERNAME}" />
 				<attribute name="Title" value="${ant.project.name}" />
 				<attribute name="Vendor" value="Taobao, Inc." />
+                <attribute name="Main-Class"
+                    value="com.alimama.display.algo.luna.extract.ShopMainCate"/>
 			</manifest>
 		</jar>
 		<delete dir="${build.dir}" />

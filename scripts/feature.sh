@@ -2,6 +2,7 @@
 
 set -eu
 application_home=$(readlink -f $(dirname $0))/..
+work_dir=$application_home
 conf_dir=$application_home/conf
 
 function usage() {
@@ -29,7 +30,9 @@ cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
 [[ $# == 2 ]] || usage
 flow=$1
-end_date=$1
+end_date=$2
+DATE=$2
+NEXTDATE=$2
 num_days=11
 begin_date=$(date -d "$end_date -$num_days day" +%Y%m%d)
 
@@ -42,14 +45,11 @@ featuremap=$data_dir/featureMap.txt
 classpath=$conf_dir
 for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
+source $application_home/scripts/hadoop.rc
+source $application_home/scripts/main.rc
 
-if [ -f $output ];then
-    echo "$output exist"
-else
-    rm -rf $output
-fi
 
-input_path=$(get_input_path $end_date $num_days $daily_output $output)
+input_path=$(get_input_path $end_date $num_days)
 output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/step0/part*
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
@@ -59,7 +59,7 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
-    -D mapred.input.dir=$input \
+    -D mapred.input.dir=$input_path \
     ${properties[@]-} \
     $flow
     

@@ -14,8 +14,6 @@ function dates() {
 function get_input_path() {
     local last_date=$1
     local merge_days=$(($2-1))
-    local output=$3
-    local merge_output=$4
     local first_date=$(date -d "$last_date -$merge_days day" +%Y%m%d)
     local result=
     for ((date=$first_date; $date <= $last_date; 
