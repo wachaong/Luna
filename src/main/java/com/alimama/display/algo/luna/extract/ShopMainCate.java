@@ -29,7 +29,7 @@ public class ShopMainCate {
 			br.close();
 		}
 		for(int i = 20; i<=30; i++){
-			filename = "~/Luna/data/201309"+i+"/shop2cate.txt";
+			filename = "data/201309"+i+"/shop2cate.txt";
 			f = new File(filename);
 			if(!f.exists()) continue;
 			BufferedReader br = new BufferedReader(new FileReader(filename));
