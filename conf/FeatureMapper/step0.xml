@@ -16,7 +16,7 @@
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/DataFilter/output/step0</value>
+    <value>${application.output}/FeatureMap/output/step0</value>
   </property>
 
   
@@ -39,12 +39,12 @@
     <name>mapred.reduce.tasks</name>
     <value>50</value>
   </property>
-<!--  
+  
   <property>
-    <name>mapreduce.inputformat.class</name>
-    <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
+    <name>mapred.inputformat.class</name>
+    <value>com.alimama.display.algo.luna.message.Luna$Display</value>
   </property>
--->
+
   <property>
     <name>mapred.mapoutput.key.class</name>
     <value>org.apache.hadoop.io.Text</value>

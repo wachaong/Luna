@@ -51,6 +51,7 @@ source $application_home/scripts/main.rc
 
 input_path=$(get_input_path $end_date $num_days)
 output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/step0/part*
+hrmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/FeatureMap/
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
