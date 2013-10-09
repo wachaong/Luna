@@ -41,6 +41,9 @@ shop_output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step0
 classpath=$conf_dir
 for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 
+
+[[ -f ~/Luna/data/${DATE}/job.done ]] && exit $1
+
 set +e
 #hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
 hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1

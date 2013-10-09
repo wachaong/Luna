@@ -28,12 +28,12 @@ shift $((OPTIND-1))
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
 
-[[ $# == 2 ]] || usage
+[[ $# == 3 ]] || usage
 flow=$1
 end_date=$2
 DATE=$2
 NEXTDATE=$2
-num_days=1
+num_days=$3
 begin_date=$(date -d "$end_date -$num_days day" +%Y%m%d)
 
 source $conf_dir/application.conf

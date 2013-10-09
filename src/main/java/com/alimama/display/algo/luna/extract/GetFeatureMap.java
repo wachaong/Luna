@@ -22,7 +22,7 @@ public class GetFeatureMap {
 	
 	public static class Mapper
 	  	extends org.apache.hadoop.mapreduce.Mapper
-	  	<LongWritable, Display, Text, NullWritable> {
+	  	<Display, NullWritable, Text, NullWritable> {
 	    
 	    @Override
 	    protected void setup(Context context)
@@ -35,7 +35,7 @@ public class GetFeatureMap {
 	      }
 		
 	    @Override
-	    protected void map(LongWritable key, Display value, Context context)
+	    protected void map(Display value, NullWritable nu, Context context)
 	        throws IOException, InterruptedException {
 	    	context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    		
