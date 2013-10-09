@@ -129,6 +129,10 @@ public class FeatureGenerator {
 		allFeatures.add(LunaConstants.ACOOKIE_PREFIX + u.getAcookie());
 		allFeatures.add(LunaConstants.NICKNAME_PREFIX + u.getNickname());
 		
+		
+		//Targetting Information
+		
+		
 		//allFeatures.add();
 		
 		return allFeatures;

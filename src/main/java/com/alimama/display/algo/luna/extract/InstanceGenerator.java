@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+
+import display.algo.common.Constants;
 
 
 public class InstanceGenerator {
@@ -45,6 +48,19 @@ public class InstanceGenerator {
 		}catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		System.out.println("AdvertiserId2MainCate.size()="+FeatureName2ID.size());
+		System.out.println("FeatureName2ID.size()="+FeatureName2ID.size());
+	}
+	
+	
+	public String getInstance(ArrayList<String> features){
+		String result = "";
+		if(features.size() <=0 ){
+			return null;
+		}
+		result += FeatureName2ID.get(features.get(0));
+		for(int i = 1; i < features.size(); i++){
+			result += Constants.CTRL_A + FeatureName2ID.get(features.get(i));
+		}
+		return result;
 	}
 }
