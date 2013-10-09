@@ -91,7 +91,7 @@
   -->
   <property>
     <name>mapred.compress.map.output</name>
-    <value>false</value>
+    <value>true</value>
   </property>
 
   <property>
