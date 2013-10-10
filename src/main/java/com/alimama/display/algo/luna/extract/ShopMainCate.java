@@ -28,7 +28,7 @@ public class ShopMainCate {
 			f.delete();
 			br.close();
 		}
-		
+		/*
 		filename = "data/shop2cate.txt_bak";
 		f = new File(filename);
 		if(f.exists()){
@@ -40,9 +40,9 @@ public class ShopMainCate {
 			}
 			br.close();
 		}
+		*/
 		
-		/*
-		for(int i = 20; i<=30; i++){
+		for(int i = 10; i<=30; i++){
 			filename = "data/201309"+i+"/shop2cate.txt";
 			f = new File(filename);
 			if(!f.exists()) continue;
@@ -56,7 +56,7 @@ public class ShopMainCate {
 			f.delete();
 			br.close();
 		}
-		*/
+		
 		BufferedWriter bw = new BufferedWriter(new FileWriter("data/shop2cate.txt"));
 		Iterator<String> iter = hm.keySet().iterator(); 
 		while(iter.hasNext()){
