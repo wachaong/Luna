@@ -37,7 +37,7 @@
 
   <property>
     <name>mapred.reduce.tasks</name>
-    <value>50</value>
+    <value>100</value>
   </property>
   
   <property>

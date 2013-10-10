@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 
 <flow name="myDataFilter">
-	<!--
 	<node>
     <name>DataFilter.step0</name>
   </node>
@@ -11,9 +10,9 @@
     <dependencies>DataFilter.step0</dependencies>
   </node>
 
-      -->
-      
+  <!--
   <node>
     <name>DataFilter.step1</name>
   </node>
+  -->
 </flow>
