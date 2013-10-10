@@ -18,7 +18,11 @@
     <name>mapred.output.dir</name>
     <value>${application.output}/FeatureMap/output/step0</value>
   </property>
-
+  
+  <property>
+    <name>shop_maincate</name>
+    <value>${shop.cate}</value>
+  </property>
   
   <property>
     <name>mapreduce.map.class</name>
@@ -37,7 +41,7 @@
 
   <property>
     <name>mapred.reduce.tasks</name>
-    <value>100</value>
+    <value>300</value>
   </property>
   
   <property>

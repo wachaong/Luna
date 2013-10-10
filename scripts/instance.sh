@@ -57,12 +57,15 @@ input_path_test=$(get_input_path $end_date_test $num_days_test)
 
 
 hrmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/Instance/
+shop_cate=$data_dir/shop2cate.txt
+
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
-    -files $featuremap \
+    -files $featuremap, $shop_cate\
     -D feature.map=`basename $featuremap` \
+    -D shop.cate=`basename $shop_cate` \
     -D application.home=$application_home \
     -D gmtdate=$gmtdate \
     -D cmpdate=$cmpdate \

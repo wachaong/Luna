@@ -23,12 +23,15 @@ public class GetInstance {
 	  	extends org.apache.hadoop.mapreduce.Mapper
 	  	<Display, NullWritable, Text, LongWritable> {
 	    	InstanceGenerator ig;
+	    	FeatureGenerator fg;
+	    	
 		
 	    @Override
 	    protected void setup(Context context)
 	      throws IOException, InterruptedException {
 	    	try {
 				ig = InstanceGenerator.newInstance(context.getConfiguration());
+				fg = FeatureGenerator.newInstance(context.getConfiguration());
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -45,7 +48,7 @@ public class GetInstance {
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    	
-	    		ArrayList<String> allFeatures = FeatureGenerator.getAllFeatures(value);
+	    		ArrayList<String> allFeatures = fg.getAllFeatures(value);
 	    		if(allFeatures == null){
 	    			context.getCounter(Counters.NULL_FEATURE_RECORD).increment(1);
 	    			return;

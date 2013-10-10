@@ -3,9 +3,9 @@ package com.alimama.display.algo.luna.extract;
 import java.io.IOException;
 
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 
@@ -24,9 +24,16 @@ public class GetFeatureMap {
 	  	extends org.apache.hadoop.mapreduce.Mapper
 	  	<Display, NullWritable, Text, NullWritable> {
 	    
+		FeatureGenerator fg ;
 	    @Override
 	    protected void setup(Context context)
 	      throws IOException, InterruptedException {
+	    	try {
+				fg = FeatureGenerator.newInstance(context.getConfiguration());
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	      }
 
 	    @Override
@@ -39,7 +46,7 @@ public class GetFeatureMap {
 	        throws IOException, InterruptedException {
 	    	context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    		
-	    		ArrayList<String> allFeatures = FeatureGenerator.getAllFeatures(value);
+	    		ArrayList<String> allFeatures = fg.getAllFeatures(value);
 	    		if(allFeatures == null){
 	    			context.getCounter(Counters.NULL_FEATURE_RECORD).increment(1);
 	    			return;
