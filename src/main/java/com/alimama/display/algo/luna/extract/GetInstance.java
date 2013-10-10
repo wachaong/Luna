@@ -21,7 +21,7 @@ public class GetInstance {
 	
 	public static class Mapper
 	  	extends org.apache.hadoop.mapreduce.Mapper
-	  	<LongWritable, Display, Text, LongWritable> {
+	  	<Display, NullWritable, Text, LongWritable> {
 	    	InstanceGenerator ig;
 		
 	    @Override
@@ -41,7 +41,7 @@ public class GetInstance {
 	      }
 		
 	    @Override
-	    protected void map(LongWritable key, Display value, Context context)
+	    protected void map(Display value, NullWritable n, Context context)
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    	
