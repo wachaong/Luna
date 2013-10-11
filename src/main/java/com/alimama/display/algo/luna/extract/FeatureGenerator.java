@@ -178,12 +178,12 @@ public class FeatureGenerator {
 		for(int i = 0; i < u.getLabelsCount(); i++){
 			Label l = u.getLabels(i);
 			if(l.getType() == 8){
-				context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId());
 			}
 			else if(l.getType() == 16){
-				context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
@@ -194,7 +194,7 @@ public class FeatureGenerator {
 					
 			}
 			else if(l.getType() == 64){
-				context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId());
 			}
@@ -203,12 +203,12 @@ public class FeatureGenerator {
 		for(int i = 0; i < a.getLabelsCount(); i++){
 			Label l = a.getLabels(i);
 			if(l.getType() == 8){
-				context.getCounter("SHOP_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("SHOP_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.USER_CROWDPOWER_PREFIX + l.getTags(j).getId());
 			}
 			else if(l.getType() == 16){
-				context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
@@ -219,7 +219,7 @@ public class FeatureGenerator {
 					
 			}
 			else if(l.getType() == 64){
-				context.getCounter("SHOP_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("SHOP_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.USER_INTEREST_PREFIX + l.getTags(j).getId());
 			}
