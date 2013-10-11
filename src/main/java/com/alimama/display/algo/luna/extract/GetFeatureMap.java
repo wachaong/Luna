@@ -17,7 +17,8 @@ public class GetFeatureMap {
 		  RECORD_TOTAL_CNT,
 		  CLICK,
 		  NONCLICK,
-		  NULL_FEATURE_RECORD
+		  NULL_FEATURE_RECORD,
+		  USER_TAG_
 	  }
 	
 	public static class Mapper
@@ -46,7 +47,7 @@ public class GetFeatureMap {
 	        throws IOException, InterruptedException {
 	    	context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    		
-	    		ArrayList<String> allFeatures = fg.getAllFeatures(value);
+	    		ArrayList<String> allFeatures = fg.getAllFeatures(value, context);
 	    		if(allFeatures == null){
 	    			context.getCounter(Counters.NULL_FEATURE_RECORD).increment(1);
 	    			return;

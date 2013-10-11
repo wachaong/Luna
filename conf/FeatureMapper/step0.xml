@@ -41,7 +41,7 @@
 
   <property>
     <name>mapred.reduce.tasks</name>
-    <value>300</value>
+    <value>50</value>
   </property>
   
   <property>
@@ -68,6 +68,10 @@
     <value>org.apache.hadoop.io.NullWritable</value>
   </property>
   
+  <property>
+    <name>mapred.compress.map.output</name>
+    <value>true</value>
+  </property>
   <property>
     <name>mapred.output.compress</name>
     <value>false</value>

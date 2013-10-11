@@ -69,4 +69,4 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $flow
     
 rm -rf $featuremap
-hadoop fs -cat $output > $featuremap
+hadoop fs -cat $output  | sort > $featuremap

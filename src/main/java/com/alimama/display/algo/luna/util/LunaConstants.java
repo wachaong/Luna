@@ -8,7 +8,10 @@ package com.alimama.display.algo.luna.util;
 public class LunaConstants {
 	public final static String FILTED_PID_FILE = "filted.pid.file";
 	public final static String AD_PATH = "luna.ad.path";
-	public final static String CONTEXT_PREFIX = "co";
+	public final static String CONTEXT_PID_PREFIX = "cp";
+	public final static String CONTEXT_WEEK_PREFIX = "cw";
+	public final static String CONTEXT_TIME_PREFIX = "ct";
+	
 	public final static String USER_PREFIX = "u";
 	public final static String CROWD_PREFIX = "cr";
 	public final static String CATE_PREFIX = "m";

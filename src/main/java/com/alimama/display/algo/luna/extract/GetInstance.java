@@ -48,7 +48,7 @@ public class GetInstance {
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    	
-	    		ArrayList<String> allFeatures = fg.getAllFeatures(value);
+	    		ArrayList<String> allFeatures = fg.getAllFeatures(value, context);
 	    		if(allFeatures == null){
 	    			context.getCounter(Counters.NULL_FEATURE_RECORD).increment(1);
 	    			return;
