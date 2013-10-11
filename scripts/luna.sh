@@ -7,6 +7,8 @@
 #   java -jar jar/Luna.jar
 #done
 #bash ~/Luna/scripts/feature.sh FeatureMapper 20130930 21
+rm ~/Luna/data/featureMap.txt
+bash ~/Luna/scripts/feature.sh FeatureMapper 20130930 21
 bash ~/Luna/scripts/instance.sh Instance 20130923 14 20130930 7
 
 
