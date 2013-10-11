@@ -60,10 +60,11 @@ hrmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/Instance/
 shop_cate=$data_dir/shop2cate.txt
 
 
+echo $shop_cate
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
-    -files $featuremap, $shop_cate\
+    -files $featuremap,$shop_cate \
     -D feature.map=`basename $featuremap` \
     -D shop.cate=`basename $shop_cate` \
     -D application.home=$application_home \
