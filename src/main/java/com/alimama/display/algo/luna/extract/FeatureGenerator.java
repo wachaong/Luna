@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 
@@ -152,7 +155,70 @@ public class FeatureGenerator {
 		return result;
 	}
 
-
+	public ArrayList<String> calculateMatchFeature(User u,Ad a, org.apache.hadoop.mapreduce.Mapper.Context context){
+		Set<String> userinfoSet = new HashSet<String>();
+		Set<String> adinfoSet = new HashSet<String>();
+		ArrayList<String> result = new ArrayList<String>();
+		for(int i = 0; i < u.getLabelsCount(); i++){
+			Label l = u.getLabels(i);
+			if(l.getType() == 8){
+				for(int j = 0; j < l.getTagsCount(); j++)
+					userinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());
+			}
+			else if(l.getType() == 16){
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long shopid = l.getTags(j).getId();
+					if(!shop2maincate.containsKey(shopid)) continue;
+					Long maincate = shop2maincate.get(shopid);
+					userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+				}
+					
+			}
+			else if(l.getType() == 64){
+				for(int j = 0; j < l.getTagsCount(); j++)
+					userinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());
+			}
+		}
+		
+		for(int i = 0; i < a.getLabelsCount(); i++){
+			Label l = a.getLabels(i);
+			if(l.getType() == 8){
+				for(int j = 0; j < l.getTagsCount(); j++)
+					adinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());
+			}
+			else if(l.getType() == 16){
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long shopid = l.getTags(j).getId();
+					if(!shop2maincate.containsKey(shopid)) continue;
+					Long maincate = shop2maincate.get(shopid);
+					adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+				}
+					
+			}
+			else if(l.getType() == 64){
+				for(int j = 0; j < l.getTagsCount(); j++)
+					adinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());
+			}
+		}
+		
+		for(Iterator<String> it=adinfoSet.iterator();it.hasNext();){
+			String adinfo = it.next();
+			if(userinfoSet.contains(adinfo)){
+				result.add(adinfo);
+				if(adinfo.contains(LunaConstants.CROWDPOWER_PREFIX))
+					context.getCounter("match_type", "CROWDPOWER").increment(1);
+				else if(adinfo.contains(LunaConstants.SHOPTARGETING_PREFIX))
+					context.getCounter("match_type", "SHOPTARGETING").increment(1);
+				else if(adinfo.contains(LunaConstants.INTEREST_PREFIX))
+					context.getCounter("match_type", "INTEREST").increment(1);
+			}
+		}
+		
+		return result;
+	}
+	
 	public  ArrayList<String> getAllFeatures(Display display, org.apache.hadoop.mapreduce.Mapper.Context context) {
 		ArrayList<String> allFeatures = new ArrayList<String>();
 		
@@ -175,40 +241,16 @@ public class FeatureGenerator {
 		
 		
 		//Targetting Information
+		/*
 		for(int i = 0; i < u.getLabelsCount(); i++){
 			Label l = u.getLabels(i);
 			if(l.getType() == 8){
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
-					allFeatures.add(LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId());
-			}
-			else if(l.getType() == 16){
-				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
-				for(int j = 0; j < l.getTagsCount(); j++){
-					//get maincate of the shop
-					long shopid = l.getTags(j).getId();
-					if(!shop2maincate.containsKey(shopid)) continue;
-					Long maincate = shop2maincate.get(shopid);
-					allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + maincate);
-				}
-					
-			}
-			else if(l.getType() == 64){
-				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
-				for(int j = 0; j < l.getTagsCount(); j++)
-					allFeatures.add(LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId());
-			}
-		}
-		
-		for(int i = 0; i < a.getLabelsCount(); i++){
-			Label l = a.getLabels(i);
-			if(l.getType() == 8){
-				//context.getCounter("SHOP_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
-				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.USER_CROWDPOWER_PREFIX + l.getTags(j).getId());
 			}
 			else if(l.getType() == 16){
-				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
@@ -219,12 +261,43 @@ public class FeatureGenerator {
 					
 			}
 			else if(l.getType() == 64){
-				//context.getCounter("SHOP_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.USER_INTEREST_PREFIX + l.getTags(j).getId());
 			}
 		}
 		
+		for(int i = 0; i < a.getLabelsCount(); i++){
+			Label l = a.getLabels(i);
+			if(l.getType() == 8){
+				//context.getCounter("SHOP_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				for(int j = 0; j < l.getTagsCount(); j++)
+					allFeatures.add(LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId());
+			}
+			else if(l.getType() == 16){
+				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long shopid = l.getTags(j).getId();
+					if(!shop2maincate.containsKey(shopid)) continue;
+					Long maincate = shop2maincate.get(shopid);
+					allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + maincate);
+				}
+					
+			}
+			else if(l.getType() == 64){
+				//context.getCounter("SHOP_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				for(int j = 0; j < l.getTagsCount(); j++)
+					allFeatures.add(LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId());
+			}
+		}
+		*/
+		
+		
+		ArrayList<String> matchFeatures = calculateMatchFeature(u, a, context);
+		for(int i = 0; i < matchFeatures.size(); i++){
+			allFeatures.add(matchFeatures.get(i));
+		}
 		//allFeatures.add();
 		
 		return allFeatures;
