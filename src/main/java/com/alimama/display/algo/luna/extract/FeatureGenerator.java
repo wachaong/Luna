@@ -226,22 +226,22 @@ public class FeatureGenerator {
 		User u = display.getUser();
 		Ad a = display.getAd();
 		
-		allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
-		allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
-		allFeatures.add(LunaConstants.CONTEXT_TIME_PREFIX + c.getTime());
+		//allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
+		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
+		//allFeatures.add(LunaConstants.CONTEXT_TIME_PREFIX + c.getTime());
 		
-		allFeatures.add(LunaConstants.ADID_PREFIX + a.getAdboardId());
-		allFeatures.add(LunaConstants.TRANSID_PREFIX + a.getTransId());
-		allFeatures.add(LunaConstants.CUSTOMERID_PREFIX + a.getCustomerId());
-		allFeatures.add(LunaConstants.MAINCATE_PREFIX + a.getMaincate());
-		allFeatures.add(LunaConstants.PRODUCTTYPE_PREFIX + a.getProductType());
+		//allFeatures.add(LunaConstants.ADID_PREFIX + a.getAdboardId());
+		//allFeatures.add(LunaConstants.TRANSID_PREFIX + a.getTransId());
+		//allFeatures.add(LunaConstants.CUSTOMERID_PREFIX + a.getCustomerId());
+		//allFeatures.add(LunaConstants.MAINCATE_PREFIX + a.getMaincate());
+		//allFeatures.add(LunaConstants.PRODUCTTYPE_PREFIX + a.getProductType());
 		
 		//allFeatures.add(LunaConstants.ACOOKIE_PREFIX + u.getAcookie());
 		//allFeatures.add(LunaConstants.NICKNAME_PREFIX + u.getNickname());
 		
 		
 		//Targetting Information
-		/*
+		
 		for(int i = 0; i < u.getLabelsCount(); i++){
 			Label l = u.getLabels(i);
 			if(l.getType() == 8){
@@ -291,13 +291,15 @@ public class FeatureGenerator {
 					allFeatures.add(LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId());
 			}
 		}
-		*/
+		/*
+		
 		
 		
 		ArrayList<String> matchFeatures = calculateMatchFeature(u, a, context);
 		for(int i = 0; i < matchFeatures.size(); i++){
 			allFeatures.add(matchFeatures.get(i));
 		}
+		*/
 		//allFeatures.add();
 		
 		return allFeatures;

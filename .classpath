@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/mrunit-1.0.0-hadoop1.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/p4p-click.1.2.6.jar"/>
 	<classpathentry kind="lib" path="D:/workspace/Luna/lib/protobuf-java-2.5.0.jar"/>
+	<classpathentry kind="lib" path="D:/workspace/Luna/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="D:/workspace/Luna/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
