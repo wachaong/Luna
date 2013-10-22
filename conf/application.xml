@@ -76,7 +76,7 @@
 
   <property>
     <name>io.sort.mb</name>
-    <value>600</value>
+    <value>500</value>
   </property>
   
   <!-- 
@@ -141,7 +141,7 @@
 
   <property>
     <name>mapred.child.java.opts</name>
-    <value>-Xmx2048m</value>
+    <value>-Xmx3000m</value>
   </property>
   
   <property>
