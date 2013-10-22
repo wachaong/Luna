@@ -21,5 +21,5 @@ hadoop fs -mkdir /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$name
 hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.0/FeatureMap /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$name
 hadoop fs -put ~/Luna/data/featureMap.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$name
 bash ~/Luna/scripts/instance.sh Instance 20130923 14 20130930 7
-hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.0/Instance/group/tbalgo-dev/yanling.yl/Luna/1.0.0/$name
+hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.0/Instance /group/tbalgo-dev/yanling.yl/Luna/1.0.0/$name
 
