@@ -93,24 +93,24 @@ fi
 hdfs_shopcate=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/shop2cate.txt
 
 #Data Filter
-HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
-    $hadoop_exec --config $hadoop_exec_conf \
-    jar $husky_jar com.taobao.husky.flow.Launcher \
-    -files $train_pid,$customer_cate\
-    -D application.home=$application_home \
-    -D train.pid=`basename $train_pid` \
-    -D customer.cate=`basename $customer_cate` \
-    -D midlog.input=$midlog_input \
-    -D midad.input=$midad_input \
-    -D midad.input2=$midad_input2 \
-    -D shop2cate.input=$hdfs_shopcate \
-    -D gmtdate=$gmtdate \
-    -D cmpdate=$cmpdate \
-    -D USER=$USER \
-    -D DATE=$DATE \
-    -D version=${version} \
-    -D NEXTDATE=$NEXTDATE \
-    -D shop.input=$shop_input \
-    -D shop.output=$shop_output \
-    ${properties[@]-} \
-    $flow
+#HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
+#    $hadoop_exec --config $hadoop_exec_conf \
+#    jar $husky_jar com.taobao.husky.flow.Launcher \
+#    -files $train_pid,$customer_cate\
+#    -D application.home=$application_home \
+#    -D train.pid=`basename $train_pid` \
+#    -D customer.cate=`basename $customer_cate` \
+#    -D midlog.input=$midlog_input \
+#    -D midad.input=$midad_input \
+#    -D midad.input2=$midad_input2 \
+#    -D shop2cate.input=$hdfs_shopcate \
+#    -D gmtdate=$gmtdate \
+#    -D cmpdate=$cmpdate \
+#    -D USER=$USER \
+#    -D DATE=$DATE \
+#    -D version=${version} \
+#    -D NEXTDATE=$NEXTDATE \
+#    -D shop.input=$shop_input \
+#    -D shop.output=$shop_output \
+#    ${properties[@]-} \
+#    $flow
