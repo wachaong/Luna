@@ -75,6 +75,7 @@ public class Test {
 		
 	};
 	public static void main(String[] args) throws IOException{
+		/*
 		BufferedReader br = new BufferedReader(new FileReader("A-large.in"));
 		BufferedWriter bw = new BufferedWriter(new FileWriter("A-large.out"));
 		int T = Integer.parseInt(br.readLine());
@@ -100,5 +101,10 @@ public class Test {
 		}
 		br.close();
 		bw.close();
+		*/
+		Long a = (long) 1;
+		Long b = (long) 1;
+		System.out.println(a.equals(b));
+		
 	}
 }

@@ -198,9 +198,7 @@ public class AdExtractor {
 				for (long typeValue : destinfo.getFieldValsList()) {
 					tmpTag.clear();
 					Long maincat = ShopId2MainCate.get(typeValue);
-					System.out.println(typeValue);
 					if(maincat == null) {
-						System.out.println("ad shopid 2 maincate not found");
 						continue;
 					}
 					tmpTag.setId(maincat);
