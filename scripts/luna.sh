@@ -12,15 +12,14 @@ for ((i=1;i<10;i++)); do
 done
 job_name=DataFilter_20131010
 echo "Job: $job_name starting"
-bash ~/Luna/scripts/filter.sh DataFilter 20131010
+bash ~/Luna/scripts/filter.sh DataFilter 20131010 &
 
-#touch ~/Luna/data/201309$i/job.done
 wait
-echo "here"
-java -jar jar/Luna.jar
-hadoop fs -put ~/Luna/data/shop2cate.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.1/shop2cate.txt
+echo "Data Filtering Done"
+#java -jar jar/Luna.jar
+#hadoop fs -put ~/Luna/data/shop2cate.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.1/shop2cate.txt
 
-#bash ~/Luna/scripts/feature.sh FeatureMapper 20130930 21
+bash ~/Luna/scripts/feature.sh FeatureMapper 20131010 21
 
 #usage(){
 #    echo "Usage: $0 NAME"

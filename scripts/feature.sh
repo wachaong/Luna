@@ -71,5 +71,10 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
 #-files $shop_cate\
 #-D shop.cate=`basename $shop_cate` \
 
+hdfs_featuremap=/group/tbalgo-dev/yanling.yl/Luna/${version}/featureMap.txt
+hrmr $hdfs_featuremap
+hdfs_shopcate=/group/tbalgo-dev/yanling.yl/Luna/${version}/shop2cate.txt
 rm -rf $featuremap
-hadoop fs -cat $output  | sort > $featuremap
+#hadoop fs -cat $output  | sort > $featuremap
+hadoop fs -cat $output  > $featuremap
+hadoop fs -put $featuremap $hdfs_featuremap
