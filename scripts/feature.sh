@@ -6,7 +6,7 @@ work_dir=$application_home
 conf_dir=$application_home/conf
 
 function usage() {
-    echo "Usage: $0 FLOW DATE [-c CONF] [-t GMTDATE] [-q QUEUE] \
+    echo "Usage: $0 FLOW DATE NUMDATE [-c CONF] [-t GMTDATE] [-q QUEUE] \
 	[-D NAME=VALUE] [-h] NAME" >&2
     exit $1
 }
