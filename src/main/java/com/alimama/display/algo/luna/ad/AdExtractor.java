@@ -103,7 +103,7 @@ public class AdExtractor {
 	
 	public void readShopID2MainCate(Configuration conf) throws IOException, URISyntaxException{
 		System.out.println("read ShopID2MainCate...");
-		String path = conf.get(SHOP2MAINCATE);
+		String path = SHOP2MAINCATE;
 		Path[] cached = DistributedCache.getLocalCacheFiles(conf);
         System.out.println(cached.length);
         for(int i = 0; i < cached.length; i++){
