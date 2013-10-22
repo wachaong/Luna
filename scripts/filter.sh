@@ -30,11 +30,12 @@ cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 [[ $# == 2 ]] || usage
 flow=$1
 DATE=$2
+version=1.0.1
 NEXTDATE=$(date -d "$DATE +1 day" +%Y%m%d)
 source $conf_dir/application.conf
 
 shop_input="/group/taobao/taobao/hive/r_seller_basic_info/pt="$DATE"000000"
-shop_output=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step0/part-r-*
+shop_output=/group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}/step0/part-r-*
 
 
 # set classpath
@@ -45,9 +46,9 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 [[ -f ~/Luna/data/${DATE}/job.done ]] && exit $1
 
 set +e
-hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}
-#hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1
-#hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/1.0.0/${flow}/output/${DATE}/step1.*
+hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}
+#hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}/step1
+#hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}/step1.*
 
 if [ -f $customer_cate ];then
     echo "$customer_cate exist"
@@ -57,7 +58,8 @@ else
     hadoop fs -text $hdfs_customer/*  | perl  -lane 's/\s+//;next if /\cA\\N\cA/ ;split /\cA/ ; print "$_[0]\cA$_[18]"' > $customer_cate
 fi
 
-
+#generate shop2cate file
+main_cate_flow=MainCate
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     $hadoop_exec --config $hadoop_exec_conf \
     jar $husky_jar com.taobao.husky.flow.Launcher \
@@ -72,10 +74,38 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D cmpdate=$cmpdate \
     -D USER=$USER \
     -D DATE=$DATE \
+    -D version=${version} \
+    -D NEXTDATE=$NEXTDATE \
+    -D shop.input=$shop_input \
+    -D shop.output=$shop_output \
+    ${properties[@]-} \
+    $main_cate_flow
+    
+hadoop fs -cat $shop_output | sort > $shop_cate
+hadoop fs -put $shop_cate $hdfs_shopcate
+hadoop fs -put $customer_cate $hdfs_customercate
+
+hdfs_shopcate=/group/tbalgo-dev/yanling.yl/Luna/1.0.0/shop2cate.txt
+
+#Data Filter
+HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
+    $hadoop_exec --config $hadoop_exec_conf \
+    jar $husky_jar com.taobao.husky.flow.Launcher \
+    -files $train_pid,$customer_cate\
+    -D application.home=$application_home \
+    -D train.pid=`basename $train_pid` \
+    -D customer.cate=`basename $customer_cate` \
+    -D midlog.input=$midlog_input \
+    -D midad.input=$midad_input \
+    -D midad.input2=$midad_input2 \
+    -D shop2cate.input=$hdfs_shopcate \
+    -D gmtdate=$gmtdate \
+    -D cmpdate=$cmpdate \
+    -D USER=$USER \
+    -D DATE=$DATE \
+    -D version=${version} \
     -D NEXTDATE=$NEXTDATE \
     -D shop.input=$shop_input \
     -D shop.output=$shop_output \
     ${properties[@]-} \
     $flow
-    
-hadoop fs -cat $shop_output > $shop_cate

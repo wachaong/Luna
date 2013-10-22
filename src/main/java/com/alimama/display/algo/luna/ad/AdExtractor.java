@@ -29,8 +29,11 @@ import display.algo.common.Constants;
 
 public class AdExtractor {
 	private Map<Long, Long> AdvertiserId2MainCate = new  HashMap<Long, Long>();
+	private Map<Long, Long> ShopId2MainCate = new HashMap<Long, Long>();
+	
 	private static final String MID_AD_INPUT = "mid_ad_input";
 	private static final String MID_AD_INPUT2 = "mid_ad_input2";
+	private static final String SHOP2MAINCATE = "shop_cate";
 	
 	
 	private long find_main_cate = 0;
@@ -60,6 +63,7 @@ public class AdExtractor {
 		
 		System.out.println("AdDataBase init...");
 		readCustomerID2MainCate(conf);
+		readShopID2MainCate(conf);
 		
 		//String filenum = conf.get(SYMBOLIC_LINK + name + CONF_ADFILE_NUM);
 		//int fnum = Integer.parseInt(filenum);
@@ -95,6 +99,29 @@ public class AdExtractor {
 			throw new RuntimeException(e);
 		}
 		System.out.println("AdvertiserId2MainCate.size()="+AdvertiserId2MainCate.size());
+	}
+	
+	public void readShopID2MainCate(Configuration conf) throws IOException, URISyntaxException{
+		System.out.println("read ShopID2MainCate...");
+		String path = conf.get(SHOP2MAINCATE);
+		Path[] cached = DistributedCache.getLocalCacheFiles(conf);
+        System.out.println(cached.length);
+        for(int i = 0; i < cached.length; i++){
+            System.out.println(cached[i].toString());
+        }
+		System.out.println("load File:" + path);
+		BytesWritable key = new BytesWritable();
+		BytesWritable val = new BytesWritable();
+		FileSystem fs = FileSystem.get(new URI("file:///"), conf);
+		SequenceFile.Reader reader = new SequenceFile.Reader(fs,
+				new Path(path), conf);
+		while (reader.next(key, val)) {
+			String line = val.toString().trim();
+			String[] tmp = line.split(Constants.CTRL_A);
+			ShopId2MainCate.put(Long.parseLong(tmp[0]),
+					Long.parseLong(tmp[1]));
+		}
+		reader.close();
 	}
 	
 	private void loadData(Configuration conf, String path) throws IOException, URISyntaxException{
@@ -162,6 +189,25 @@ public class AdExtractor {
 				tmpLabel.addTags(tmpTag);
 				
 			}
+			ad.addLabels(tmpLabel.build());
+			
+			
+			if(destinfo.getDestType() == 16){
+				tmpLabel.clear();
+				tmpLabel.setType(128);
+				
+				for (long typeValue : destinfo.getFieldValsList()) {
+					tmpTag.clear();
+					Long maincat = ShopId2MainCate.get(typeValue);
+					if(maincat == null) {
+						System.out.println("ad shopid 2 maincate not found");
+						continue;
+					}
+					tmpTag.setId(maincat);
+					tmpLabel.addTags(tmpTag);
+					
+				}
+			}
 			
 			ad.addLabels(tmpLabel.build());
 		}
@@ -204,6 +250,10 @@ public class AdExtractor {
 		
 	}
 	
+	public Long getShopCate(long shopId) {
+		return ShopId2MainCate.get(shopId);
+		
+	}
 	public long getUnfindMainCate(){
 		return unfind_main_cate;
 	}

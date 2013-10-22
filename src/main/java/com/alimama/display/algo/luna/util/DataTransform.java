@@ -135,6 +135,22 @@ public class DataTransform {
 		}
 		ub.addLabels(lbb.build());
 		
+		//Shop Targeting: ShopMainCate
+		lbb.clear();
+		lbb.setType(128);
+		for(display.algo.logs.proto.BasicMessage.Shop s : u.getShopList()){
+			tgb.clear();
+			Long maincate = adExtractor.getShopCate(s.getShopid());
+			if(maincate == null){
+				System.out.println("user shopid 2 maincate not found");
+				continue;
+			}
+			tgb.setId(maincate);
+			tgb.setValue(s.getScore());
+			lbb.addTags(tgb.build());
+		}
+		ub.addLabels(lbb.build());		
+				
 		//Interest Targeting
 		lbb.clear();
 		lbb.setType(64);
@@ -169,6 +185,7 @@ public class DataTransform {
             {
                 //System.out.println("FOUND");
 			    adb.addAllLabels(tmp.getLabelsList());
+			    
             }
 		}
 		

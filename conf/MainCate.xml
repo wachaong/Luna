@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<flow name="myMainCate">
+	<node>
+    <name>MainCate.step0</name>
+  </node>
+</flow>
