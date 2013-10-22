@@ -3,6 +3,7 @@ package com.alimama.display.algo.luna.ad;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -110,18 +111,16 @@ public class AdExtractor {
             System.out.println(cached[i].toString());
         }
 		System.out.println("load File:" + path);
-		BytesWritable key = new BytesWritable();
-		BytesWritable val = new BytesWritable();
 		FileSystem fs = FileSystem.get(new URI("file:///"), conf);
-		SequenceFile.Reader reader = new SequenceFile.Reader(fs,
-				new Path(path), conf);
-		while (reader.next(key, val)) {
-			String line = val.toString().trim();
+		BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(new Path(path))));
+		String line;
+		while ((line=br.readLine()) != null) {
+			line = line.trim();
 			String[] tmp = line.split(Constants.CTRL_A);
 			ShopId2MainCate.put(Long.parseLong(tmp[0]),
 					Long.parseLong(tmp[1]));
 		}
-		reader.close();
+		br.close();
 	}
 	
 	private void loadData(Configuration conf, String path) throws IOException, URISyntaxException{
