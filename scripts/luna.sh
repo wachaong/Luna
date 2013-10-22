@@ -13,7 +13,7 @@ done
 job_name=DataFilter_20131010
 echo "Job: $job_name starting"
 bash ~/Luna/scripts/filter.sh DataFilter 20131010
-    
+
 #touch ~/Luna/data/201309$i/job.done
 java -jar jar/Luna.jar
 hadoop fs -put ~/Luna/data/shop2cate.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.1/shop2cate.txt
