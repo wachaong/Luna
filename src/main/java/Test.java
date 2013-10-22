@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 
 public class Test {
@@ -104,6 +105,9 @@ public class Test {
 		*/
 		Long a = (long) 1;
 		Long b = (long) 1;
+		HashMap<String, Long> hm = new HashMap<String, Long>();
+		hm.put("1", a);
+		System.out.println(hm.containsKey(a.toString()));
 		System.out.println(a.equals(b));
 		
 	}

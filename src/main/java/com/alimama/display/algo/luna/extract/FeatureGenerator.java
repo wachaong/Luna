@@ -23,7 +23,7 @@ import com.alimama.display.algo.luna.util.LunaConstants;
 public class FeatureGenerator {
 	
 	
-	private Map<String, Long> shop2maincate = new  HashMap<String, Long>();
+	//private Map<String, Long> shop2maincate = new  HashMap<String, Long>();
 	private FeatureGenerator() {
 	}
 	
@@ -37,11 +37,11 @@ public class FeatureGenerator {
 	private void init(Configuration conf) throws IOException, URISyntaxException {
 		
 		System.out.println("Feature Generator init...");
-		readShopId2MainCate(conf);
+		//readShopId2MainCate(conf);
 		System.out.println("Feature Generator init Success!");
 
 	}
-
+	/*
 	private void readShopId2MainCate(Configuration conf) {
 		System.out.println("read readShopId2MainCate...");
 		String file = conf.get("shop_maincate");
@@ -60,6 +60,7 @@ public class FeatureGenerator {
 		System.out.println("shop2maincate.size()="+shop2maincate.size());
 	}
 	
+	*/
 	/*
 	 * Get User Features
 	 * Input: acookie
@@ -169,9 +170,21 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
-					if(!shop2maincate.containsKey(shopid)) continue;
-					Long maincate = shop2maincate.get(shopid);
-					userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);
+				}
+					
+			}
+			else if(l.getType() == 128){
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long shopmaincate = l.getTags(j).getId();
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);
 				}
 					
 			}
@@ -191,9 +204,21 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
-					if(!shop2maincate.containsKey(shopid)) continue;
-					Long maincate = shop2maincate.get(shopid);
-					adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);
+				}
+					
+			}
+			else if(l.getType() == 128){
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long shopmaincate = l.getTags(j).getId();
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
+					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);
 				}
 					
 			}
@@ -213,6 +238,8 @@ public class FeatureGenerator {
 					context.getCounter("match_type", "SHOPTARGETING").increment(1);
 				else if(adinfo.contains(LunaConstants.INTEREST_PREFIX))
 					context.getCounter("match_type", "INTEREST").increment(1);
+				else if(adinfo.contains(LunaConstants.MAINCATETARGETING_PREFIX))
+					context.getCounter("match_type", "MAINCATE").increment(1);
 			}
 		}
 		
@@ -254,9 +281,22 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
-					if(!shop2maincate.containsKey(shopid)) continue;
-					Long maincate = shop2maincate.get(shopid);
-					allFeatures.add(LunaConstants.USER_SHOPTARGETING_PREFIX + maincate);
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//allFeatures.add(LunaConstants.USER_SHOPTARGETING_PREFIX + maincate);
+					allFeatures.add(LunaConstants.USER_SHOPTARGETING_PREFIX + shopid);
+				}
+					
+			}
+			else if(l.getType() == 128){
+				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long maincate = l.getTags(j).getId();
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//allFeatures.add(LunaConstants.USER_SHOPTARGETING_PREFIX + maincate);
+					allFeatures.add(LunaConstants.USER_MAINCATETARGETING_PREFIX + maincate);
 				}
 					
 			}
@@ -282,12 +322,29 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
 					long shopid = l.getTags(j).getId();
-					if(!shop2maincate.containsKey(shopid)) continue;
-					Long maincate = shop2maincate.get(shopid);
-					allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + maincate);
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + maincate);
+					allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + shopid);
+					
 				}
 					
 			}
+			else if(l.getType() == 128){
+				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
+				//num += l.getTagsCount();
+				for(int j = 0; j < l.getTagsCount(); j++){
+					//get maincate of the shop
+					long maincate = l.getTags(j).getId();
+					//if(!shop2maincate.containsKey(shopid)) continue;
+					//Long maincate = shop2maincate.get(shopid);
+					//allFeatures.add(LunaConstants.AD_SHOPTARGETING_PREFIX + maincate);
+					allFeatures.add(LunaConstants.AD_MAINCATETARGETING_PREFIX + maincate);
+					
+				}
+					
+			}
+			
 			else if(l.getType() == 64){
 				//context.getCounter("SHOP_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				//num += l.getTagsCount();

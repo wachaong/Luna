@@ -28,14 +28,17 @@ public class LunaConstants {
 	public final static String AD_CROWDPOWER_PREFIX = "ac";
 	public final static String AD_SHOPTARGETING_PREFIX = "as";
 	public final static String AD_INTEREST_PREFIX = "ai";
+	public final static String AD_MAINCATETARGETING_PREFIX = "am";
 	
 	public final static String USER_CROWDPOWER_PREFIX = "uc";
 	public final static String USER_SHOPTARGETING_PREFIX = "us";
 	public final static String USER_INTEREST_PREFIX = "ui";
+	public final static String USER_MAINCATETARGETING_PREFIX = "um";
 	
 	public final static String CROWDPOWER_PREFIX = "cp";
 	public final static String SHOPTARGETING_PREFIX = "st";
 	public final static String INTEREST_PREFIX = "it";
+	public final static String MAINCATETARGETING_PREFIX = "ma";
 	
 	
 }

@@ -18,12 +18,12 @@
     <name>mapred.output.dir</name>
     <value>${application.output}/FeatureMap/output/step0</value>
   </property>
-  
+<!--   
   <property>
     <name>shop_maincate</name>
     <value>${shop.cate}</value>
   </property>
-  
+ -->  
   <property>
     <name>mapreduce.map.class</name>
     <value>com.alimama.display.algo.luna.extract.GetFeatureMap$Mapper</value>
