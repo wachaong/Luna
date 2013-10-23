@@ -52,8 +52,8 @@ source $application_home/scripts/hadoop.rc
 source $application_home/scripts/main.rc
 
 
-input_path_train=$(get_input_path $end_date_train $num_days_train)
-input_path_test=$(get_input_path $end_date_test $num_days_test)
+input_path_train=$(get_input_path $end_date_train $num_days_train DataFilter)
+input_path_test=$(get_input_path $end_date_test $num_days_test DataFilter)
 
 
 
