@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<flow name="myMergeFeature">
+	<node>
+    <name>MergeFeature.step0</name>
+  </node>
+
+   <!--   -->
+</flow>

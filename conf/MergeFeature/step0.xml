@@ -14,6 +14,10 @@
     <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
   </property>
 
+  <property>
+    <name>mapred.output.dir</name>
+    <value>${application.output}/FeatureMap/output/step0</value>
+  </property>
 <!--   
   <property>
     <name>shop_maincate</name>
@@ -22,17 +26,17 @@
  -->  
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetFeatureMap$Mapper</value>
+    <value>com.alimama.display.algo.luna.extract.MergeFeatureMap$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetFeatureMap$Reducer</value>
+    <value>com.alimama.display.algo.luna.extract.MergeFeatureMap$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetFeatureMap$Reducer</value>
+    <value>com.alimama.display.algo.luna.extract.MergeFeatureMap$Reducer</value>
   </property>
 
   <property>
