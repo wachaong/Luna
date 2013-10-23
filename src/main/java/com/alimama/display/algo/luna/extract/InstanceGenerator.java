@@ -14,7 +14,7 @@ import display.algo.common.Constants;
 
 
 public class InstanceGenerator {
-	private Map<String, Long> FeatureName2ID = new  HashMap<String, Long>();
+	//private Map<String, Long> FeatureName2ID = new  HashMap<String, Long>();
 	private InstanceGenerator() {
 	}
 	
@@ -28,11 +28,11 @@ public class InstanceGenerator {
 	private void init(Configuration conf) throws IOException, URISyntaxException {
 		
 		System.out.println("Instance Generator init...");
-		readFeatureName2FearureId(conf);
+		//readFeatureName2FearureId(conf);
 		System.out.println("Instance Generator init Success!");
 
 	}
-
+	/*
 	private void readFeatureName2FearureId(Configuration conf) {
 		System.out.println("read FeatureName2FearureId...");
 		String file = conf.get("feature_map");
@@ -51,15 +51,19 @@ public class InstanceGenerator {
 		System.out.println("FeatureName2ID.size()="+FeatureName2ID.size());
 	}
 	
-	
+	*/
 	public String getInstance(ArrayList<String> features){
 		String result = "";
 		if(features.size() <=0 ){
 			return null;
 		}
-		result += FeatureName2ID.get(features.get(0));
+		//result += FeatureName2ID.get(features.get(0));
+		//for(int i = 1; i < features.size(); i++){
+		//	result += Constants.CTRL_A + FeatureName2ID.get(features.get(i));
+		//}
+		result += features.get(0);
 		for(int i = 1; i < features.size(); i++){
-			result += Constants.CTRL_A + FeatureName2ID.get(features.get(i));
+			result += Constants.CTRL_A + features.get(i);
 		}
 		return result;
 	}

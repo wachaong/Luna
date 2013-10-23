@@ -13,10 +13,6 @@
     <name>feature_map</name>
     <value>${feature.map}</value>
   </property>
-  <property>
-    <name>shop_maincate</name>
-    <value>${shop.cate}</value>
-  </property>
 <!--  
   <property>
   	<name>mapred.cache.files</name>

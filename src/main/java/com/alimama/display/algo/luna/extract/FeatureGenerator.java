@@ -20,6 +20,8 @@ import com.alimama.display.algo.luna.message.Luna.Label;
 import com.alimama.display.algo.luna.message.Luna.User;
 import com.alimama.display.algo.luna.util.LunaConstants;
 
+import display.algo.common.Constants;
+
 public class FeatureGenerator {
 	
 	
@@ -135,8 +137,8 @@ public class FeatureGenerator {
 		return result;
 	}
 	
-	public static String GetContextFeaturesStr(Context c){
-		String result = "";
+	public static ArrayList<String> GetContextFeatureList(Context c){
+		ArrayList<String> result = new ArrayList<String>();
 		String pid = "";
 		if(c.getPid().endsWith("777")){
 			pid = "0";
@@ -147,9 +149,9 @@ public class FeatureGenerator {
 		else{
 			pid = "2";
 		}
-		result += pid + "_";
-		result += c.getWeek() + "_";
-		result += c.getTime();
+		result.add(LunaConstants.CONTEXT_PID_PREFIX + pid);
+		result.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
+		result.add(LunaConstants.CONTEXT_TIME_PREFIX + c.getTime());
 		//out += display.getContext().getPid()+"_";
 		//out += display.getContext().getUrl()+"_";
 		
@@ -253,6 +255,8 @@ public class FeatureGenerator {
 		User u = display.getUser();
 		Ad a = display.getAd();
 		
+		ArrayList<String> contextFeatures = GetContextFeatureList(c);
+		for(int i = 0; i < contextFeatures.size(); i++) allFeatures.add(contextFeatures.get(i));
 		//allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
 		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
 		//allFeatures.add(LunaConstants.CONTEXT_TIME_PREFIX + c.getTime());
@@ -276,6 +280,7 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.USER_CROWDPOWER_PREFIX + l.getTags(j).getId());
 			}
+			/*
 			else if(l.getType() == 16){
 				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
@@ -288,6 +293,7 @@ public class FeatureGenerator {
 				}
 					
 			}
+			*/
 			else if(l.getType() == 128){
 				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
@@ -316,6 +322,7 @@ public class FeatureGenerator {
 				for(int j = 0; j < l.getTagsCount(); j++)
 					allFeatures.add(LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId());
 			}
+			/*
 			else if(l.getType() == 16){
 				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				//num += l.getTagsCount();
@@ -330,6 +337,7 @@ public class FeatureGenerator {
 				}
 					
 			}
+			*/
 			else if(l.getType() == 128){
 				//context.getCounter("SHOP_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				//num += l.getTagsCount();
