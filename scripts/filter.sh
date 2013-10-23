@@ -46,7 +46,7 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 [[ -f ~/Luna/data/${DATE}/job.done ]] && exit $1
 
 set +e
-hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}
+#hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}
 #hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}/step1
 #hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/${version}/${flow}/output/${DATE}/step1.*
 

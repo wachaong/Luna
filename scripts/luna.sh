@@ -1,21 +1,21 @@
 #!/bin/bash
-for ((i=20;i<=30;i++)); do
-	job_name=DataFilter_201309$i
-	echo "Job: $job_name starting"
-    bash ~/Luna/scripts/filter.sh DataFilter 201309$i &
-done
+#for ((i=20;i<=30;i++)); do
+#	job_name=DataFilter_201309$i
+#	echo "Job: $job_name starting"
+#    bash ~/Luna/scripts/filter.sh DataFilter 201309$i &
+#done
 
-for ((i=1;i<10;i++)); do
-	job_name=DataFilter_2013100$i
-	echo "Job: $job_name starting"
-    bash ~/Luna/scripts/filter.sh DataFilter 2013100$i &
-done
-job_name=DataFilter_20131010
-echo "Job: $job_name starting"
-bash ~/Luna/scripts/filter.sh DataFilter 20131010 &
+#for ((i=1;i<10;i++)); do
+#	job_name=DataFilter_2013100$i
+#	echo "Job: $job_name starting"
+#   bash ~/Luna/scripts/filter.sh DataFilter 2013100$i &
+#done
+#job_name=DataFilter_20131010
+#echo "Job: $job_name starting"
+#bash ~/Luna/scripts/filter.sh DataFilter 20131010 &
 
-wait
-echo "Data Filtering Done"
+#wait
+#echo "Data Filtering Done"
 #java -jar jar/Luna.jar
 #hadoop fs -put ~/Luna/data/shop2cate.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.1/shop2cate.txt
 
