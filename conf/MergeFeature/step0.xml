@@ -46,17 +46,17 @@
   
   <property>
     <name>mapreduce.inputformat.class</name>
-    <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
+    <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
   </property>
   
   <property>
     <name>mapred.mapoutput.key.class</name>
-    <value>org.apache.hadoop.io.Text</value>
+    <value>org.apache.hadoop.io.LongWritable</value>
   </property>
 
   <property>
     <name>mapred.mapoutput.value.class</name>
-    <value>org.apache.hadoop.io.NullWritable</value>
+    <value>org.apache.hadoop.io.Text</value>
   </property>
   <property>
     <name>mapred.output.key.class</name>

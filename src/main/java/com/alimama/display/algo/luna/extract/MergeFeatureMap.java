@@ -1,6 +1,8 @@
 package com.alimama.display.algo.luna.extract;
 
 import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 
@@ -16,7 +18,7 @@ public class MergeFeatureMap {
 	
 	public static class Mapper
 	  	extends org.apache.hadoop.mapreduce.Mapper
-	  	<Text, NullWritable, Text, NullWritable> {
+	  	<LongWritable, Text, Text, NullWritable> {
 	    
 		
 	    @Override
@@ -30,7 +32,7 @@ public class MergeFeatureMap {
 	      }
 		
 	    @Override
-	    protected void map(Text value, NullWritable nu, Context context)
+	    protected void map(LongWritable key, Text value, Context context)
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
 	    		context.write(value, NullWritable.get());
