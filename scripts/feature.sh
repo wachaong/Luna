@@ -28,9 +28,9 @@ gmtdate=$(date +%Y%m%d)
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
 
-[[ $# == 3 ]] || usage
+#[[ $# == 3 ]] || usage
 version=1.0.1
-flow=MeargeFeature
+flow=MergeFeature
 end_date=20131010
 DATE=20131010
 NEXTDATE=20131010
@@ -49,7 +49,7 @@ source $application_home/scripts/main.rc
 
 input_path=$(get_input_path $end_date $num_days)
 output=/group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0/part*
-hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/step0*
+hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0*
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
