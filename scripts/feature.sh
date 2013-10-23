@@ -47,9 +47,13 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 source $application_home/scripts/hadoop.rc
 source $application_home/scripts/main.rc
 
-input_path=$(get_input_path $end_date $num_days, FeatureMap)
+input_path=$(get_input_path $end_date $num_days FeatureMap step0)
+echo $input_path
 output=/group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0/part*
-hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0*
+hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0
+hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0.busy
+hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/step0.counter
+
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \

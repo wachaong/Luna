@@ -18,8 +18,8 @@ function get_input_path() {
     local result=
     for ((date=$first_date; $date <= $last_date; 
         date=$(date -d "$date +1 day" +%Y%m%d))); do
-        if hexist /group/tbalgo-dev/yanling.yl/Luna/1.0.1/$3/output/$date/step1.done; then
-            result=$result,/group/tbalgo-dev/yanling.yl/Luna/1.0.1/$3/output/$date/step1
+        if hexist /group/tbalgo-dev/yanling.yl/Luna/1.0.1/$3/output/$date/$4.done; then
+            result=$result,/group/tbalgo-dev/yanling.yl/Luna/1.0.1/$3/output/$date/$4
         fi
     done
     echo ${result:1}
