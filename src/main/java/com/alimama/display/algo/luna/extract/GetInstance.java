@@ -80,7 +80,7 @@ public class GetInstance {
 		    	}
 		    	float beta = 1;
 		    	String outkey = "";
-		    	outkey += pv + Constants.CTRL_A + click + Constants.CTRL_A + beta + Constants.CTRL_A;
+		    	outkey += pv + Constants.CTRL_A + click + Constants.CTRL_C + beta + Constants.CTRL_A;
 		    	outkey += key.toString();
 		    	Text outText = new Text();
 		    	outText.set(outkey);

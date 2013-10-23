@@ -1,22 +1,7 @@
 <?xml version="1.0"?>
 
 <flow name="myInstance">
-	<!--
-	<node>
-    <name>DataFilter.step0</name>
-  </node>
-
   <node>
-    <name>DataFilter.step1</name>
-    <dependencies>DataFilter.step0</dependencies>
-  </node>
-
-      -->
-      
-  <node>
-    <name>Instance.train</name>
-  </node>
-  <node>
-    <name>Instance.test</name>
+    <name>Instance.step0</name>
   </node>
 </flow>

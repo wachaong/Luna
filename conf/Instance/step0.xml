@@ -6,13 +6,14 @@
 
   <property>
     <name>husky.flow.job.name</name>
-    <value>train</value>
+    <value>step0</value>
   </property>
   
   <property>
-    <name>feature_map</name>
-    <value>${feature.map}</value>
+    <name>crowdpower</name>
+    <value>${crowd.power}</value>
   </property>
+  
 <!--  
   <property>
   	<name>mapred.cache.files</name>
@@ -30,17 +31,6 @@
     <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
   </property>
 
-  <property>
-    <name>mapred.input.dir</name>
-    <value>${train.input}</value>
-  </property>
-
-  <property>
-    <name>mapred.output.dir</name>
-    <value>${application.output}/Instance/output/train</value>
-  </property>
-
-  
   <property>
     <name>mapreduce.map.class</name>
     <value>com.alimama.display.algo.luna.extract.GetInstance$Mapper</value>

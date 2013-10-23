@@ -26,6 +26,7 @@ public class FeatureGenerator {
 	
 	
 	//private Map<String, Long> shop2maincate = new  HashMap<String, Long>();
+	private static Map<String, Long> crowdPower2Feature = new HashMap<String, Long>();
 	private FeatureGenerator() {
 	}
 	
@@ -40,9 +41,28 @@ public class FeatureGenerator {
 		
 		System.out.println("Feature Generator init...");
 		//readShopId2MainCate(conf);
+		readCrowdPower2Feature(conf);
 		System.out.println("Feature Generator init Success!");
 
 	}
+	private void readCrowdPower2Feature(Configuration conf) {
+		System.out.println("readCrowdPower2Feature...");
+		String file = conf.get("crowdpower");
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				line = line.trim();
+				String[] temp = line.split("\t");
+				crowdPower2Feature.put(temp[0],Long.parseLong(temp[1]));
+			}
+			br.close();
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		System.out.println("crowdPower2Feature.size()="+crowdPower2Feature.size());
+	}
+	
 	/*
 	private void readShopId2MainCate(Configuration conf) {
 		System.out.println("read readShopId2MainCate...");
@@ -50,10 +70,10 @@ public class FeatureGenerator {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line = null;
-			long no = 1;
 			while ((line = br.readLine()) != null) {
 				line = line.trim();
-				shop2maincate.put(line,no++);
+				String[] temp = line.split(Constants.CTRL_A);
+				shop2maincate.put(temp[0],Long.parseLong(temp[1]));
 			}
 			br.close();
 		}catch (Exception e) {
@@ -169,8 +189,11 @@ public class FeatureGenerator {
 			if(l.getType() == 8){
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
-					temp =  LunaConstants.USER_CROWDPOWER_PREFIX + l.getTags(j).getId();
-					if(!s.contains(temp)) s.add(temp);
+					Long crowdFeature = crowdPower2Feature.get(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
+					temp =  LunaConstants.USER_CROWDPOWER_PREFIX + crowdFeature;
+					if(!s.contains(temp)){
+						s.add(temp);
+					}
 				}
 					
 			}

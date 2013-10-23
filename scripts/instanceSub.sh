@@ -14,29 +14,18 @@ function usage() {
 
 gmtdate=$(date +%Y%m%d)
 properties=()
-while getopts "c:t:q:D:h" opt; do
-    case $opt in
-        c) conf=$OPTARG;;
-        t) gmtdate=$OPTARG;;
-        q) properties=(${properties[@]-} "-D" "mapred.job.queue.name=$OPTARG");;
-        D) properties=(${properties[@]-} "-D" "$OPTARG");;
-        h) usage 0;;
-        \?) echo "Invalid option: -$OPTARG" >&2; usage 1;;
-    esac
-done
-shift $((OPTIND-1))
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
 
 [[ $# == 2 ]] || usage
-version=1.0.1
 flow=$1
-end_date=$2
+version=1.0.1
 DATE=$2
 NEXTDATE=$2
-num_days=1
-
 source $conf_dir/application.conf
+
+
+featuremap=$data_dir/featureMap.txt
 
 # set classpath
 classpath=$conf_dir
@@ -45,9 +34,10 @@ for jar in $lib_dir/*.jar; do classpath=$classpath:$jar; done
 source $application_home/scripts/hadoop.rc
 source $application_home/scripts/main.rc
 
-input_path=/group/tbalgo-dev/yanling.yl/Luna/${version}/DataFilter/output/${DATE}/step1
-output_path=/group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/${DATE}/step0
-#hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/${DATE}
+
+input_path=/group/tbalgo-dev/yanling.yl/Luna/1.0.1/DataFilter/output/$DATE/step1
+out_path=/group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/$DATE/step0
+#hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/$DATE/
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
@@ -63,5 +53,5 @@ HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
     -D mapred.output.dir=$output_path \
     ${properties[@]-} \
     $flow
-
+    
 

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<flow name="myMergeInstance">
+	<node>
+    <name>MergeInstance.train</name>
+ 	 </node>
+ 	 <node>
+    <name>MergeInstance.test</name>
+ 	 </node>
+
+   <!--   -->
+</flow>

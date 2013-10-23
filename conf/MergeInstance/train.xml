@@ -6,12 +6,12 @@
 
   <property>
     <name>husky.flow.job.name</name>
-    <value>test</value>
+    <value>train</value>
   </property>
   
   <property>
-    <name>feature_map</name>
-    <value>${feature.map}</value>
+    <name>crowdpower</name>
+    <value>${crowd.power}</value>
   </property>
   
 <!--  
@@ -33,12 +33,12 @@
 
   <property>
     <name>mapred.input.dir</name>
-    <value>${test.input}</value>
+    <value>${train.input}</value>
   </property>
 
   <property>
     <name>mapred.output.dir</name>
-    <value>${application.output}/Instance/output/test</value>
+    <value>${application.output}/Instance/output/train</value>
   </property>
 
   
