@@ -28,7 +28,7 @@ shift $((OPTIND-1))
 cmpdate=$(date -d "$gmtdate -1 day" +%Y%m%d)
 
 
-[[ $# == 3 ]] || usage
+[[ $# == 2 ]] || usage
 version=1.0.1
 flow=$1
 end_date=$2
