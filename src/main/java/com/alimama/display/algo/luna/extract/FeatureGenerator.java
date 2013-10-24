@@ -191,7 +191,9 @@ public class FeatureGenerator {
 				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
-					Long crowdFeature = crowdPower2Feature.get(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
+					Float value = l.getTags(j).getValue();
+					
+					Long crowdFeature = crowdPower2Feature.get(l.getTags(j).getId()+"_"+ value.intValue());
 					if(crowdFeature == null) System.out.println(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
 					temp =  LunaConstants.USER_CROWDPOWER_PREFIX + crowdFeature;
 					if(!s.contains(temp)){
