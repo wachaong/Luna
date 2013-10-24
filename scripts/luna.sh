@@ -25,7 +25,13 @@
 #    bash ~/Luna/scripts/instanceSub.sh Instance 201309$i &
 #done
 
-for ((i=1;i<10;i++)); do
+#for ((i=1;i<10;i++)); do
+#	job_name=instanceSub_2013100$i
+#	echo "Job: $job_name starting"
+#   bash ~/Luna/scripts/instanceSub.sh Instance 2013100$i &
+#done
+
+for ((i=7;i<10;i++)); do
 	job_name=instanceSub_2013100$i
 	echo "Job: $job_name starting"
    bash ~/Luna/scripts/instanceSub.sh Instance 2013100$i &

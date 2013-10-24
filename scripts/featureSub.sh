@@ -47,7 +47,7 @@ source $application_home/scripts/main.rc
 
 input_path=/group/tbalgo-dev/yanling.yl/Luna/${version}/DataFilter/output/${DATE}/step1
 output_path=/group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/${DATE}/step0
-#hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/${DATE}
+hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/FeatureMap/output/${DATE}
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \

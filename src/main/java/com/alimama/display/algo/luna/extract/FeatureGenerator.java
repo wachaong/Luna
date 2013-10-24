@@ -180,13 +180,15 @@ public class FeatureGenerator {
 	
 	public static ArrayList<String> GetUserFeatureList(User u){
 		ArrayList<String> result = new ArrayList<String>();
-		Set<String> s = new HashSet<String>();
+		Set<String> s;
+		Iterator<String> it;
 		String temp;
 		//Targetting Information
 		
 		for(int i = 0; i < u.getLabelsCount(); i++){
 			Label l = u.getLabels(i);
 			if(l.getType() == 8){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					Long crowdFeature = crowdPower2Feature.get(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
@@ -195,10 +197,15 @@ public class FeatureGenerator {
 						s.add(temp);
 					}
 				}
-					
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}	
 			}
 			
+			
 			else if(l.getType() == 128){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
@@ -209,19 +216,24 @@ public class FeatureGenerator {
 					temp =  LunaConstants.USER_MAINCATETARGETING_PREFIX + maincate;
 					if(!s.contains(temp)) s.add(temp);
 				}
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}	
 					
 			}
 			else if(l.getType() == 64){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					temp = LunaConstants.USER_INTEREST_PREFIX + l.getTags(j).getId();
 					if(!s.contains(temp)) s.add(temp);
 				}
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}	
 			}
-		}
-		Iterator<String> it = s.iterator();
-		while(it.hasNext()){
-			result.add(it.next());
 		}
 		return result;
 	}
@@ -230,7 +242,8 @@ public class FeatureGenerator {
 	
 	public static ArrayList<String> GetAdFeatureList(Ad a){
 		ArrayList<String> result = new ArrayList<String>();
-		Set<String> s = new HashSet<String>();
+		Set<String> s;
+		Iterator<String> it;
 		String temp;
 		
 		//Targetting Information
@@ -238,15 +251,21 @@ public class FeatureGenerator {
 		for(int i = 0; i < a.getLabelsCount(); i++){
 			Label l = a.getLabels(i);
 			if(l.getType() == 8){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					temp =  LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId();
 					if(!s.contains(temp)) s.add(temp);
 				}
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}
 					
 			}
 			
 			else if(l.getType() == 128){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
@@ -257,19 +276,34 @@ public class FeatureGenerator {
 					temp =  LunaConstants.AD_MAINCATETARGETING_PREFIX + maincate;
 					if(!s.contains(temp)) s.add(temp);
 				}
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}
 					
 			}
 			else if(l.getType() == 64){
+				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					temp = LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId();
 					if(!s.contains(temp)) s.add(temp);
 				}
+				it = s.iterator();
+				while(it.hasNext()){
+					result.add(it.next());
+				}
 			}
 		}
-		Iterator<String> it = s.iterator();
-		while(it.hasNext()){
-			result.add(it.next());
+		return result;
+	}
+	
+	public ArrayList<String> getUserADHybridFeatures(ArrayList<String> adTargetingFeatures, ArrayList<String> userTargetingFeatures){
+		ArrayList<String> result = new ArrayList<String>();
+		for(int i = 0; i<adTargetingFeatures.size(); i++){
+			for(int j = 0; j < userTargetingFeatures.size(); j++){
+				result.add(adTargetingFeatures.get(i)+"_"+userTargetingFeatures.get(j));
+			}
 		}
 		return result;
 	}
@@ -379,6 +413,9 @@ public class FeatureGenerator {
 		
 		ArrayList<String> userTargetingFeatures = GetUserFeatureList(u);
 		for(int i = 0; i < userTargetingFeatures.size(); i++) allFeatures.add(userTargetingFeatures.get(i));
+		
+		ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
+		for(int i = 0; i < hybridFeatures.size(); i++) allFeatures.add(hybridFeatures.get(i));
 		
 		//allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
 		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
