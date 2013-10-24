@@ -56,9 +56,9 @@ input_path_test=$(get_input_path $end_date_test $num_days_test Instance step0)
 
 
 hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/train
-hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/train.*
+hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/train.*
 hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/test
-hrmr /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/test.*
+hadoop fs -rm /group/tbalgo-dev/yanling.yl/Luna/${version}/Instance/output/test.*
 
 
 HADOHADOOP_HEAPSIZE=4000 HADOOP_CLASSPATH=$classpath \
