@@ -69,7 +69,7 @@
   
   <property>
     <name>mapred.mapoutput.key.class</name>
-    <value>org.apache.hadoop.io.LongWritable</value>
+    <value>org.apache.hadoop.io.Text</value>
   </property>
 
   <property>
