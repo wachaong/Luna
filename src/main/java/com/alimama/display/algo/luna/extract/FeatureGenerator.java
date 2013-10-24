@@ -192,6 +192,7 @@ public class FeatureGenerator {
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					Long crowdFeature = crowdPower2Feature.get(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
+					if(crowdFeature == null) System.out.println(l.getTags(j).getId()+"_"+l.getTags(j).getValue());
 					temp =  LunaConstants.USER_CROWDPOWER_PREFIX + crowdFeature;
 					if(!s.contains(temp)){
 						s.add(temp);
@@ -414,8 +415,8 @@ public class FeatureGenerator {
 		ArrayList<String> userTargetingFeatures = GetUserFeatureList(u);
 		for(int i = 0; i < userTargetingFeatures.size(); i++) allFeatures.add(userTargetingFeatures.get(i));
 		
-		ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
-		for(int i = 0; i < hybridFeatures.size(); i++) allFeatures.add(hybridFeatures.get(i));
+	//	ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
+	//	for(int i = 0; i < hybridFeatures.size(); i++) allFeatures.add(hybridFeatures.get(i));
 		
 		//allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
 		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
