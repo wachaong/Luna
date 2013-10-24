@@ -20,24 +20,24 @@
 #hadoop fs -put ~/Luna/data/shop2cate.txt /group/tbalgo-dev/yanling.yl/Luna/1.0.1/shop2cate.txt
 
 #for ((i=20;i<=30;i++)); do
-#	job_name=InstanceSub_201309$i
+#	job_name=instanceSub_201309$i
 #	echo "Job: $job_name starting"
-#    bash ~/Luna/scripts/InstanceSub.sh Instance 201309$i &
+#    bash ~/Luna/scripts/instanceSub.sh Instance 201309$i &
 #done
 
 for ((i=1;i<10;i++)); do
-	job_name=InstanceSub_2013100$i
+	job_name=instanceSub_2013100$i
 	echo "Job: $job_name starting"
-   bash ~/Luna/scripts/InstanceSub.sh Instance 2013100$i &
+   bash ~/Luna/scripts/instanceSub.sh Instance 2013100$i &
 done
-job_name=InstanceSub_20131010
+job_name=instanceSub_20131010
 echo "Job: $job_name starting"
-bash ~/Luna/scripts/InstanceSub.sh Instance 20131010 &
+bash ~/Luna/scripts/instanceSub.sh Instance 20131010 &
 
 wait
 echo "Data InstanceSub Done"
 
-bash ~/Luna/scripts/Instance.sh MergeInstance 20131009 3 20131010 1  
+bash ~/Luna/scripts/instance.sh MergeInstance 20131009 3 20131010 1  
 
 #usage(){
 #    echo "Usage: $0 NAME"
