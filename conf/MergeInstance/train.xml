@@ -9,11 +9,6 @@
     <value>train</value>
   </property>
   
-  <property>
-    <name>crowdpower</name>
-    <value>${crowd.power}</value>
-  </property>
-  
 <!--  
   <property>
   	<name>mapred.cache.files</name>
@@ -44,17 +39,17 @@
   
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetInstance$Mapper</value>
+    <value>com.alimama.display.algo.luna.extract.MergeInstance$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetInstance$Reducer</value>
+    <value>com.alimama.display.algo.luna.extract.MergeInstance$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetInstance$Reducer</value>
+    <value>com.alimama.display.algo.luna.extract.MergeInstance$Reducer</value>
   </property>
 
   <property>
@@ -69,17 +64,17 @@
 -->
 <property>
     <name>mapreduce.inputformat.class</name>
-    <value>org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat</value>
+    <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
   </property>
   
   <property>
     <name>mapred.mapoutput.key.class</name>
-    <value>org.apache.hadoop.io.Text</value>
+    <value>org.apache.hadoop.io.LongWritable</value>
   </property>
 
   <property>
     <name>mapred.mapoutput.value.class</name>
-    <value>org.apache.hadoop.io.LongWritable</value>
+    <value>org.apache.hadoop.io.Text</value>
   </property>
   <property>
     <name>mapred.output.key.class</name>
