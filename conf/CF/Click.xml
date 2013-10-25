@@ -20,17 +20,17 @@
   </property>
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetClickMatrix$Mapper</value>
+    <value>com.alimama.display.algo.luna.cf.GetClickMatrix$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetClickMatrix$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.GetClickMatrix$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetClickMatrix$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.GetClickMatrix$Reducer</value>
   </property>
 
   <property>

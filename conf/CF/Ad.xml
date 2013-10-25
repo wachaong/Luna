@@ -19,17 +19,17 @@
   </property>
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetAllAds$Mapper</value>
+    <value>com.alimama.display.algo.luna.cf.GetAllAds$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetAllAds$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.GetAllAds$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.extract.GetAllAds$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.GetAllAds$Reducer</value>
   </property>
 
   <property>
