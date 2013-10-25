@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<flow name="myCF">
+  <node>
+    <name>CF.Ad</name>
+  </node>
+  <node>
+    <name>CF.Click</name>
+  </node>
+  <node>
+    <name>CF.User</name>
+  </node>
+</flow>

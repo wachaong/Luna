@@ -294,7 +294,11 @@ public class FeatureGenerator {
 		for(int i = 0; i<adTargetingFeatures.size(); i++){
 			for(int j = 0; j < userTargetingFeatures.size(); j++){
 				//result.add(adTargetingFeatures.get(i)+"_"+userTargetingFeatures.get(j));
-				result.add(adTargetingFeatures.get(i)+userTargetingFeatures.get(j));
+				String a = adTargetingFeatures.get(i);
+				String b = userTargetingFeatures.get(j);
+				if(a.substring(0, 2).equals(b.substring(0, 2))){
+					result.add(adTargetingFeatures.get(i)+userTargetingFeatures.get(j));
+				}
 			}
 		}
 		return result;
