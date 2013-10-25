@@ -20,8 +20,6 @@ import com.alimama.display.algo.luna.message.Luna.Label;
 import com.alimama.display.algo.luna.message.Luna.User;
 import com.alimama.display.algo.luna.util.LunaConstants;
 
-import display.algo.common.Constants;
-
 public class FeatureGenerator {
 	
 	
@@ -250,25 +248,18 @@ public class FeatureGenerator {
 		String temp;
 		
 		//Targetting Information
-		
+		s = new HashSet<String>();
 		for(int i = 0; i < a.getLabelsCount(); i++){
 			Label l = a.getLabels(i);
 			if(l.getType() == 8){
-				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_CROWDPOWER_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					temp =  LunaConstants.AD_CROWDPOWER_PREFIX + l.getTags(j).getId();
 					if(!s.contains(temp)) s.add(temp);
 				}
-				it = s.iterator();
-				while(it.hasNext()){
-					result.add(it.next());
-				}
-					
 			}
 			
 			else if(l.getType() == 128){
-				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_SHOP_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					//get maincate of the shop
@@ -279,25 +270,22 @@ public class FeatureGenerator {
 					temp =  LunaConstants.AD_MAINCATETARGETING_PREFIX + maincate;
 					if(!s.contains(temp)) s.add(temp);
 				}
-				it = s.iterator();
-				while(it.hasNext()){
-					result.add(it.next());
-				}
 					
 			}
 			else if(l.getType() == 64){
-				s = new HashSet<String>();
 				//context.getCounter("USER_LABLE_INTEREST_CNT", String.valueOf(l.getTagsCount())).increment(1);
 				for(int j = 0; j < l.getTagsCount(); j++){
 					temp = LunaConstants.AD_INTEREST_PREFIX + l.getTags(j).getId();
 					if(!s.contains(temp)) s.add(temp);
 				}
-				it = s.iterator();
-				while(it.hasNext()){
-					result.add(it.next());
-				}
+
 			}
 		}
+		it = s.iterator();
+		while(it.hasNext()){
+			result.add(it.next());
+		}
+		
 		return result;
 	}
 	
