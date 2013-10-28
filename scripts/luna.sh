@@ -31,7 +31,19 @@
 #   bash ~/Luna/scripts/instanceSub.sh Instance 2013100$i &
 #done
 
-for ((i=7;i<10;i++)); do
+
+usage(){
+    echo "Usage: $0 NAME"
+    exit $1
+}
+[[ $# == 1 ]] || usage 
+
+for ((i=20;i<=30;i++)); do
+	job_name=instanceSub_201309$i
+	echo "Job: $job_name starting"
+    bash ~/Luna/scripts/instanceSub.sh Instance 201309$i &
+done
+for ((i=1;i<10;i++)); do
 	job_name=instanceSub_2013100$i
 	echo "Job: $job_name starting"
    bash ~/Luna/scripts/instanceSub.sh Instance 2013100$i &
@@ -43,7 +55,10 @@ bash ~/Luna/scripts/instanceSub.sh Instance 20131010 &
 wait
 echo "Data InstanceSub Done"
 
-bash ~/Luna/scripts/instance.sh MergeInstance 20131009 3 20131010 1  
+bash ~/Luna/scripts/instance.sh MergeInstance 20131003 14 20131010 7 
+hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance$1
+
+
 
 #usage(){
 #    echo "Usage: $0 NAME"
