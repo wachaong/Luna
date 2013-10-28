@@ -6,16 +6,15 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 
-import com.alimama.display.algo.luna.message.Luna.Ad;
 import com.alimama.display.algo.luna.message.Luna.Display;
+import com.alimama.display.algo.luna.message.Luna.User;
 
 import display.algo.common.Constants;
 
-public class GetAllAds {
+public class GetNewUsers {
 	static enum Counters{
 		  RECORD_TOTAL_CNT,
-		  AD_TOTAL_CNT,
-		  NO_TARGETING_INFO_AD,
+		  New_USER_TOTAL_CNT,
 	  }
 	
 	public static class Mapper
@@ -36,22 +35,26 @@ public class GetAllAds {
 	    protected void map(Display value, NullWritable n, Context context)
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
-	    		Ad a = value.getAd();
-	    		String adkey = a.getTransId() + "_" +a.getAdboardId();
-	    		int count = 0;
-	    		for(int i = 0; i<a.getLabelsCount(); i++){
-	    			count += a.getLabels(i).getTagsCount();
-	    		}
-	    		if(count <= 0){
-	    			context.getCounter(Counters.NO_TARGETING_INFO_AD).increment(1);
-	    		}
-	    		Long click = value.getClick();
-	    		Text outkey = new Text();
-	    		LongWritable outvalue = new LongWritable();
+	    		User u = value.getUser();
 	    		
-	    		outkey.set(adkey);
-	    		outvalue.set(click);
-	    		context.write(outkey, outvalue);
+	    		if(u.getAcookie() == null || u.getAcookie().equals("")){
+	    			context.getCounter(Counters.New_USER_TOTAL_CNT).increment(1);
+	    			
+	    			String nickname = u.getNickname();
+		    		String outkeyStr = nickname;
+		    		
+		    		for(int i = 0; i < u.getLabelsCount(); i++){
+		    			outkeyStr += Constants.CTRL_A + u.getLabels(i).getTagsCount();
+		    		}
+		    		Long click = value.getClick();
+		    		Text outkey = new Text();
+		    		LongWritable outvalue = new LongWritable();
+		    		
+		    		outkey.set(outkeyStr);
+		    		outvalue.set(click);
+		    		context.write(outkey, outvalue);
+	    		}
+	    		
 		}
 	}
 	
@@ -62,7 +65,7 @@ public class GetAllAds {
 		    @Override
 		    protected void reduce(Text key, Iterable<LongWritable> values, Context context)
 		        throws IOException, InterruptedException {
-		    	context.getCounter(Counters.AD_TOTAL_CNT).increment(1);
+		 
 		    	int pv = 0;
 		    	int click = 0;
 		    	for(LongWritable value: values){
@@ -73,11 +76,10 @@ public class GetAllAds {
 		    	}
 
 		    	String outkey = "";
-		    	outkey += key.toString() + Constants.CTRL_A + pv + Constants.CTRL_A + click;
+		    	outkey += key.toString() + Constants.CTRL_B + pv + Constants.CTRL_A + click;
 		    	Text outText = new Text();
 		    	outText.set(outkey);
 		    	context.write(outText, NullWritable.get());
 		    }
 	}
-
 }

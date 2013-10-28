@@ -10,4 +10,7 @@
   <node>
     <name>CF.User</name>
   </node>
+  <node>
+    <name>CF.NewUser</name>
+  </node>
 </flow>

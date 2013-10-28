@@ -66,7 +66,6 @@ public class GetAllUsers {
 
 		    	String outkey = "";
 		    	outkey += key.toString() + Constants.CTRL_A + pv + Constants.CTRL_A + click;
-		    	outkey += key.toString();
 		    	Text outText = new Text();
 		    	outText.set(outkey);
 		    	context.write(outText, NullWritable.get());
