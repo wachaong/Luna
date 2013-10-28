@@ -16,7 +16,7 @@
   </property>
   <property>
     <name>mapred.output.dir</name>
-    <value>${output.dir}/User</value>
+    <value>${output.dir}/NewUser</value>
   </property>
   
   <property>
