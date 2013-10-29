@@ -417,9 +417,9 @@ public class FeatureGenerator {
 		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
 		//allFeatures.add(LunaConstants.CONTEXT_TIME_PREFIX + c.getTime());
 		
-		allFeatures.add(LunaConstants.ADID_PREFIX + a.getAdboardId());
-		allFeatures.add(LunaConstants.TRANSID_PREFIX + a.getTransId());
-		allFeatures.add(LunaConstants.CUSTOMERID_PREFIX + a.getCustomerId());
+		//allFeatures.add(LunaConstants.ADID_PREFIX + a.getAdboardId());
+		//allFeatures.add(LunaConstants.TRANSID_PREFIX + a.getTransId());
+		//allFeatures.add(LunaConstants.CUSTOMERID_PREFIX + a.getCustomerId());
 		allFeatures.add(LunaConstants.MAINCATE_PREFIX + a.getMaincate());
 		allFeatures.add(LunaConstants.PRODUCTTYPE_PREFIX + a.getProductType());
 		
