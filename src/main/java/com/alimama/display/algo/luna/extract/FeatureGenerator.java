@@ -410,8 +410,8 @@ public class FeatureGenerator {
 		ArrayList<String> userTargetingFeatures = GetUserFeatureList(u);
 		for(int i = 0; i < userTargetingFeatures.size(); i++) allFeatures.add(userTargetingFeatures.get(i));
 		
-		//ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
-		//for(int i = 0; i < hybridFeatures.size(); i++) allFeatures.add(hybridFeatures.get(i));
+		ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
+		for(int i = 0; i < hybridFeatures.size(); i++) allFeatures.add(hybridFeatures.get(i));
 		
 		//allFeatures.add(LunaConstants.CONTEXT_PID_PREFIX + c.getPid());
 		//allFeatures.add(LunaConstants.CONTEXT_WEEK_PREFIX + c.getWeek());
