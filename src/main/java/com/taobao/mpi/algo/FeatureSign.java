@@ -10,6 +10,12 @@
  * @brief  :
  */
 
+/*
+ * modified by yanling.yl
+ * 2013/11/5
+ * hashcode length modified to 32bits, e.g. #ffffffff
+ */
+
 package com.taobao.mpi.algo;
 
 import java.io.IOException;
@@ -46,7 +52,7 @@ public class FeatureSign extends AbstractProcessor {
             byte b[] = md.digest(plainText.getBytes());
             int i = 0;
             //for (int offset = 0; offset < b.length; offset++) {
-            for (int offset = 0; offset < 8; offset++) {
+            for (int offset = 0; offset < 4; offset++) {
                 i = b[offset];
                 if (i < 0) {
                     i += 256;

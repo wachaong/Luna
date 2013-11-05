@@ -1,6 +1,8 @@
 #include <iostream>
 #include <deque>
 #include <fstream>
+#include <stdio.h>
+#include "string.h"
 
 #include "OWLQN.h"
 #include "leastSquares.h"
@@ -45,17 +47,24 @@ void printVector(const DblVec &vec, const char* filename) {
 }
 
 int main(int argc, char* argv[]) {
-
+/*
 	if (argc < 5 || !strcmp(argv[1], "-help") || !strcmp(argv[1], "--help") ||
 		!strcmp(argv[1], "-h") || !strcmp(argv[1], "-usage")) {
 			printUsageAndExit();
 	}
+*/
 
-	const char* feature_file = argv[1];
-	const char* label_file = argv[2];
-	double regweight = atof(argv[3]);
-	const char* output_file = argv[4];
+//	const char* feature_file = argv[1];
+//	const char* label_file = argv[2];
+//	double regweight = atof(argv[3]);
+//	const char* output_file = argv[4];
+	char* train_file = "ex2data1.txt";
+	int regweight = 0;
+	char* output_file = "output.mat";
+	
 
+	
+	
 	if (regweight < 0) {
 		cout << "L1 regularization weight must be non-negative." << endl;
 		exit(1);
@@ -103,11 +112,12 @@ int main(int argc, char* argv[]) {
 	DifferentiableFunction *obj;
 	size_t size;
 	if (leastSquares) {
-		LeastSquaresProblem *prob = new LeastSquaresProblem(feature_file, label_file);
-		obj = new LeastSquaresObjective(*prob, l2weight);
-		size = prob->NumFeats(); 
+//		LeastSquaresProblem *prob = new LeastSquaresProblem(feature_file, label_file);
+//		obj = new LeastSquaresObjective(*prob, l2weight);
+//		size = prob->NumFeats(); 
 	} else {
-		LogisticRegressionProblem *prob = new LogisticRegressionProblem(feature_file, label_file);
+		//LogisticRegressionProblem *prob = new LogisticRegressionProblem(feature_file, label_file);
+		LogisticRegressionProblem *prob = new LogisticRegressionProblem(train_file);
 		obj = new LogisticRegressionObjective(*prob, l2weight);
 		size = prob->NumFeats(); 
 	}

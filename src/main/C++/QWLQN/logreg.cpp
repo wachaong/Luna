@@ -10,7 +10,46 @@ void skipEmptyAndComment(ifstream& file, string& s) {
 		getline(file, s);
 	} while (s.size() == 0 || s[0] == '%');
 }
-
+LogisticRegressionProblem::LogisticRegressionProblem(const char* trainfile){
+	ifstream train(trainfile);
+	if(!train.good()) {
+		cerr << "error opening training file " << trainfile << endl;
+		exit(1);
+	}
+	string s;
+	size_t numIns = 0;
+	numFeats = 3;
+	double a, b;
+	int label;
+	vector<vector<float> > rowVals;
+	instance_starts.push_back(0);
+	while(getline(train, s)){
+		stringstream st(s);
+		st >> a >> b >> label;
+		vector<float> rowVal;
+		rowVal.push_back(1.0);
+		rowVal.push_back(a);
+		rowVal.push_back(b);
+		numIns++;
+		rowVals.push_back(rowVal);
+		bool bLabel;
+		switch(label){
+			case 1:
+				bLabel = true;
+				break;
+			case 0:
+				bLabel = false;
+				break;
+			default:
+				cout << "error label" << endl;
+				exit(1);
+		}
+		AddInstance(rowVal, bLabel);
+	}
+	
+	train.close();
+	
+}
 LogisticRegressionProblem::LogisticRegressionProblem(const char* matFilename, const char* labelFilename) {
 	ifstream matfile(matFilename);
 	if (!matfile.good()) {
