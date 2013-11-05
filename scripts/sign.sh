@@ -18,6 +18,7 @@ LIB_DIR="$WORK_DIR/jar"
 ts=`date +%s`
 
 HADOOP_CONF_DIR=/home/yanling.yl/conf
+HADOOP_HOME=/home/yunti/hadoop-current
 
 function FeatureSign() {
   if [ $# -ne 6 ]

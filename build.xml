@@ -47,7 +47,7 @@
 				<attribute name="Title" value="${ant.project.name}" />
 				<attribute name="Vendor" value="Taobao, Inc." />
                 <attribute name="Main-Class"
-                    value="com.alimama.display.algo.luna.extract.ShopMainCate"/>
+                    value="com.alimama.loganalyzer.common.Launcher"/>
 			</manifest>
 		</jar>
 		<delete dir="${build.dir}" />
