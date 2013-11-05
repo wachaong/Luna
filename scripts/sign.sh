@@ -45,7 +45,8 @@ function FeatureSign() {
   output_dir_tmp=${output_dir}/tmp
   feature_dir=${output_dir}/feature
   instance_dir=${output_dir}/instance
-
+  output_dir_tmp=${output_dir}/tmp
+  
   echo "FeatureSign start";
  
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} jar -files ${CONF_DIR}/log4j.xml \
