@@ -45,30 +45,30 @@ function FeatureSign() {
   feature_dir=${output_dir}/feature
   instance_dir=${output_dir}/instance
 
-  log_info "FeatureSign start";
+  echo "FeatureSign start";
  
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} jar -files ${CONF_DIR}/log4j.xml \
      ${LIB_DIR}/Luna.jar com.alimama.loganalyzer.common.Launcher com.taobao.mpi.algo.FeatureSign \
      $input_dir $output_dir_tmp $mapper_num $reducer_num $is_seq pv=$pv_threshold isFeaFilter=$is_fea_filter
   if [ $? -ne 0 ]
   then
-    log_error "FeatureSign failed!";
+    echo "FeatureSign failed!";
     return 1;
   else
-    log_info "FeatureSign success!";
+    echo "FeatureSign success!";
   fi
 
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -rmr $feature_dir
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mkdir $feature_dir
   if [ $? != 0 ]
   then
-    log_error "hadoop --config ${HADOOP_CONF_DIR} fs -mkdir ${feature_dir} failed"
+    echo "hadoop --config ${HADOOP_CONF_DIR} fs -mkdir ${feature_dir} failed"
     exit -1
   fi
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/fea* ${feature_dir}
   if [ $? != 0 ]
   then
-    log_error "hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/fea* ${feature_dir}"
+    echo "hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/fea* ${feature_dir}"
     exit -1
   fi
 
@@ -76,19 +76,19 @@ function FeatureSign() {
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mkdir $instance_dir
   if [ $? != 0 ]
   then
-    log_error "hadoop --config ${HADOOP_CONF_DIR} fs -mkdir ${instance_dir} failed"
+    echo "hadoop --config ${HADOOP_CONF_DIR} fs -mkdir ${instance_dir} failed"
     exit -1
   fi
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/ins* ${instance_dir}
   if [ $? != 0 ]
   then
-    log_error "hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/ins* ${instance_dir}"
+    echo "hadoop --config ${HADOOP_CONF_DIR} fs -mv $output_dir_tmp/ins* ${instance_dir}"
     exit -1
   fi
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -rmr $output_dir_tmp
   if [ $? != 0 ]
   then
-    log_error "hadoop --config ${HADOOP_CONF_DIR} fs -rmr $output_dir_tmp"
+    echo "hadoop --config ${HADOOP_CONF_DIR} fs -rmr $output_dir_tmp"
     exit -1
   fi
   return 0;
@@ -112,17 +112,17 @@ function FeatureFilter() {
     return -1
   fi
 
-  log_info "FeatureFilter start";
+  echo "FeatureFilter start";
 
   ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} jar -files ${CONF_DIR}/log4j.xml \
      ${LIB_DIR}/Luna.jar com.alimama.loganalyzer.common.Launcher com.taobao.mpi.algo.FeaFilter \
      $input_dir $output_dir $mapper_num $reducer_num $is_seq pv=$pv_threshold
   if [ $? -ne 0 ]
   then
-    log_error "FeatureFilter failed!";
+    echo "FeatureFilter failed!";
     return 1;
   else
-    log_info "FeatureFilter success!";
+    echo "FeatureFilter success!";
   fi
 
   return 0;
