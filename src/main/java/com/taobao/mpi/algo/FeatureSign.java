@@ -1,19 +1,13 @@
-/** 
- * @copyright (c) 2012 Taobao.com, Inc. All Rights Reserved
- * @author : xiaowen.zl
- * @fax    : +86.10.815.72428
- * @e-mail : xiaowen.zl@taobao.com
- * @date   : 2013-01-08 - 16:12
- * @version: 1.0.0.1
- * 
- * @file   : FeatureSign.java
- * @brief  :
- */
 
 /*
  * modified by yanling.yl
  * 2013/11/5
  * hashcode length modified to 32bits, e.g. #ffffffff
+ * 
+ * Add AdFeature, UserFeature, OtherFeature sign in front of all hash codes;
+ * AdFeature: a 		feature_type: 0
+ * UserFeature: u 		feature_type: 1 
+ * OtherFeature: o		feature_type: 2
  */
 
 package com.taobao.mpi.algo;
@@ -23,6 +17,8 @@ import java.util.Iterator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import com.alimama.display.algo.luna.message.Luna;
+import com.alimama.display.algo.luna.util.LunaConstants;
 import com.alimama.loganalyzer.common.*;
 
 import org.apache.hadoop.io.LongWritable;
@@ -44,7 +40,8 @@ public class FeatureSign extends AbstractProcessor {
     enum Error {
         err1, err2, err3, err4, err5, err6, err7, err8, err9;
     }
-
+    
+    
     static public String md5sum(String plainText) {
         StringBuffer buf = new StringBuffer("");
         try {
@@ -68,8 +65,51 @@ public class FeatureSign extends AbstractProcessor {
         }
         return buf.toString();
    }
+   
+   /*
+    * Get feature Type
+    * AdFeature: a 		return 0
+    * UserFeature: u 	return 1 
+    * OtherFeature: o 	return 2
+    */
+   public static int getFeatureType(String featureName){
+	   //Ad Targeting Feature
+	   if(featureName.startsWith(LunaConstants.AD_CROWDPOWER_PREFIX) 
+			   || featureName.startsWith(LunaConstants.AD_INTEREST_PREFIX)
+			   || featureName.startsWith(LunaConstants.AD_MAINCATETARGETING_PREFIX)){
+		   return 0;
+	   }
+	   
+	   //User Targeting Feature
+	   if(featureName.startsWith(LunaConstants.USER_CROWDPOWER_PREFIX)
+			   || featureName.startsWith(LunaConstants.USER_INTEREST_PREFIX)
+			   || featureName.startsWith(LunaConstants.USER_MAINCATETARGETING_PREFIX)){
+		   return 1;
+	   }
+	   
+	   //Other type Feature
+	   else{
+		   return 2;
+	   }
+   }
+    
+   public static String getFeatureSign(String featureName){
+	   StringBuffer result = new StringBuffer("");
+	   int type = getFeatureType(featureName);
+	   if(type == 0){
+		   result.append("a");
+	   }
+	   else if(type == 1){
+		   result.append("u");
+	   }
+	   else if(type == 2){
+		   result.append("o");
+	   }
+	   result.append(md5sum(featureName));
+	   return result.toString();
+   }
 
-
+   
    public static class Map extends MapReduceBase implements
        Mapper<LongWritable, Text, Text, Text> {
 
@@ -161,9 +201,9 @@ public class FeatureSign extends AbstractProcessor {
 
                    String feaname = fea[0].trim().replace('\t', '');
                    if (fea.length == 2) {
-                       feature +=  md5sum(feaname) + Common.CTRL_B + fea[1];
+                       feature +=  getFeatureSign(feaname) + Common.CTRL_B + fea[1];
                    }else {
-                       feature +=  md5sum(feaname);
+                       feature +=  getFeatureSign(feaname);
                    }
                }
                feature +=  Common.CTRL_C + group;
@@ -288,7 +328,7 @@ public class FeatureSign extends AbstractProcessor {
                    }
 
                    String feaname = key.toString().trim().replace('\t', '');
-                   outKey.set(feaNonClk + "\t" + feaClk + "\t" + feaCnt + "\t" + md5sum(feaname) + "\t" + feaname);
+                   outKey.set(feaNonClk + "\t" + feaClk + "\t" + feaCnt + "\t" + getFeatureSign(feaname) + "\t" + feaname);
                    output.collect(outKey, null);
                    reporter.incrCounter(Stat.ValidFea, 1);
                }

@@ -1,4 +1,3 @@
-#include <errno.h>
 #include <string>
 #include <stdio.h>
 #include <fstream>
@@ -7,26 +6,40 @@
 #include "inslookup.h"
 using namespace std;
 
-map<unsigned int, int> feasign2id_map;
+map<unsigned int, int> userfeasign2id_map;
+map<unsigned int, int> adfeasign2id_map;
+map<unsigned int, int> otherfeasign2id_map;
+
+
 char feamap_path[2048];
 char ins_path[2048];
 
 int get_param(int argc, char *argv[])
 {
-	int ret = 0;
-//	feasign2id_map = new map<uint64_t, int32_t>();
 	snprintf(feamap_path, 2048, "%s", "feat");
 	snprintf(ins_path, 2048, "%s", "ins");
-	return ret;
+	return 0;
+}
+
+	
+	/*
+    * Get feature Type
+    * AdFeature: a 		return 0
+    * UserFeature: u 	return 1 
+    * OtherFeature: o 	return 2
+    */
+    
+int get_feature(char* fsign){
+	//User feature
+	if()
 }
 
 int load_feamap(const char* feamap_path){
 	unsigned int feasign = 0;
-	size_t len = 0;
-	ssize_t read;
 	string line;
 	int feaid = 0;
 	ifstream pfeamap(feamap_path);
+	
 	
 	if(!pfeamap.good()){
 		cerr << "error feature map file" << endl;
@@ -34,17 +47,29 @@ int load_feamap(const char* feamap_path){
 	}
 	
 	while (getline(pfeamap, line)){
+		get_feature(line.c_str());
 		feasign = strtoul(line.c_str(), NULL, 16);
 		feasign2id_map[feasign] = feaid;
-		//cout << line << " " << feasign <<  endl;
-		//cout << line.c_str();
 		feaid++;
 	}
 	cout << feasign2id_map.size() << endl;
-	printf("totla_feature:%u\n", feaid);
-	return -1;
+	cout << "total_feature:" << feaid << "\n";
+	return 0;
 }
 
-int32_t trans_ins(const char* ins_path){
-	return -1;
+int trans_ins(const char* ins_path){
+	ifstream fins(ins_path);
+	
+	if(!fins.good()){
+		cerr << "error instance file" << endl;
+		exit(1);
+	}
+	
+	while(getline(fins, line)){
+		//instance parser
+		//Get each instance 
+		
+	}
+	
+	return 0;
 }
