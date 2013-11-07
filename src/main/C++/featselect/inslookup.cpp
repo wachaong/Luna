@@ -17,7 +17,7 @@ map<unsigned int, int> *feasign2id_map;
 char feamap_path[2048];
 char ins_path[2048];
 
-int get_param(int argc, char *argv[])
+int init()
 {
 	snprintf(feamap_path, 2048, "%s", "feat");
 	snprintf(ins_path, 2048, "%s", "ins");
