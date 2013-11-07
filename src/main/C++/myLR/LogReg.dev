@@ -28,8 +28,8 @@ Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000001000000
-UnitCount=8
+CompilerSettings=0000000000000000000000000
+UnitCount=9
 
 [VersionInfo]
 Major=1
@@ -51,9 +51,9 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=main.cpp
+FileName=inslookup.cpp
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -61,9 +61,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=OWLQN.h
+FileName=inslookup.h
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -71,9 +71,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=OWLQN.cpp
+FileName=logreg.cpp
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -81,9 +81,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=TerminationCriterion.h
+FileName=logreg.h
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -91,9 +91,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=TerminationCriterion.cpp
+FileName=main.cpp
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -101,9 +101,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit6]
-FileName=logreg.h
+FileName=OWLQN.cpp
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -111,9 +111,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit7]
-FileName=logreg.cpp
+FileName=OWLQN.h
 CompileCpp=1
-Folder=
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000
@@ -121,9 +121,19 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=featsel.h
+FileName=TerminationCriterion.cpp
 CompileCpp=1
-Folder=
+Folder=LogReg
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=TerminationCriterion.h
+CompileCpp=1
+Folder=LogReg
 Compile=1
 Link=1
 Priority=1000

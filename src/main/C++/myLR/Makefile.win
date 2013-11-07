@@ -4,14 +4,14 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o OWLQN.o TerminationCriterion.o logreg.o
-LINKOBJ  = main.o OWLQN.o TerminationCriterion.o logreg.o
-LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/mingw32/lib" -static-libstdc++ -static-libgcc -g3
+OBJ      = inslookup.o logreg.o main.o OWLQN.o TerminationCriterion.o
+LINKOBJ  = inslookup.o logreg.o main.o OWLQN.o TerminationCriterion.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/mingw32/lib" -static-libstdc++ -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib/gcc/mingw32/4.7.2/include/c++"
 BIN      = LogReg.exe
-CXXFLAGS = $(CXXINCS) -g3
-CFLAGS   = $(INCS) -g3
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
 RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -24,6 +24,12 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
+inslookup.o: inslookup.cpp
+	$(CPP) -c inslookup.cpp -o inslookup.o $(CXXFLAGS)
+
+logreg.o: logreg.cpp
+	$(CPP) -c logreg.cpp -o logreg.o $(CXXFLAGS)
+
 main.o: main.cpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
 
@@ -32,6 +38,3 @@ OWLQN.o: OWLQN.cpp
 
 TerminationCriterion.o: TerminationCriterion.cpp
 	$(CPP) -c TerminationCriterion.cpp -o TerminationCriterion.o $(CXXFLAGS)
-
-logreg.o: logreg.cpp
-	$(CPP) -c logreg.cpp -o logreg.o $(CXXFLAGS)

@@ -4,8 +4,8 @@
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o featureSel.o
-LINKOBJ  = main.o featureSel.o
+OBJ      = main.o featureSel.o inslookup.o OWLQN.o TerminationCriterion.o
+LINKOBJ  = main.o featureSel.o inslookup.o OWLQN.o TerminationCriterion.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW32/mingw32/lib" -static-libstdc++ -static-libgcc -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW32/lib/gcc/mingw32/4.7.2/include/c++"
@@ -29,3 +29,12 @@ main.o: main.cpp
 
 featureSel.o: featureSel.cpp
 	$(CPP) -c featureSel.cpp -o featureSel.o $(CXXFLAGS)
+
+inslookup.o: inslookup.cpp
+	$(CPP) -c inslookup.cpp -o inslookup.o $(CXXFLAGS)
+
+OWLQN.o: OWLQN.cpp
+	$(CPP) -c OWLQN.cpp -o OWLQN.o $(CXXFLAGS)
+
+TerminationCriterion.o: TerminationCriterion.cpp
+	$(CPP) -c TerminationCriterion.cpp -o TerminationCriterion.o $(CXXFLAGS)

@@ -106,9 +106,119 @@ int load_feamap(const char* feamap_path){
 	return 0;
 }
 
+void AddInstance(deque<size_t>& instance_start, const vector<size_t>& inds, bool label, 
+	std::deque<size_t>& indicesQ, std::deque<float>& valuesQ, std::deque<bool>& labelsQ){
+	for(size_t i = 0; i < inds.size(); i++){
+		indicesQ.push_back(inds[i]);
+		valuesQ.push_back(1.0);
+	}
+	instance_start.push_back(indicesQ.size());
+	labelsQ.push_back(label);
+}
 
-
-
+int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<float>& values, 
+	std::deque<size_t>& instance_starts, std::deque<bool>& labels, size_t& numFeats){
+		ifstream fins(ins_path);
+	
+	char line[MAX_BUF_LEN];
+	string linestr;
+	const char CTRL_A = '';
+	const char CTRL_B = '';
+    const char END = '\n';
+    
+	int nonclick = 0;
+	int click = 0;
+	char feasign[10];
+	int feaid = 0;
+	
+	if(!fins.good()){
+		cerr << "error instance file" << endl;
+		exit(1);
+	}
+	numFeats = getAllFeaCount();
+	instance_starts.push_back(0);
+	
+	int numInstance = 0;
+	while(getline(fins, linestr)){
+		strcpy(line, linestr.c_str());
+		line[linestr.size()] = END;
+		
+		vector <size_t> instance;
+		// Instance parser
+		// Get each instance 
+		// CLICK_NUM/NONCLICK_NUM/FEATUREIDLIST
+		// FEATUREIDLIST: 
+		//	AD FEATURE[0 - feaid[0]-1], 
+		//	USER FEATURE[feaid[0] - (feaid[1] + feaid[0] - 1)], 
+		//	OTHER FEATURE[(feaid[1]+feaid[0]) - (feaid[0] + feaid[1] +feaid[2] -1)]
+			
+		char *p_begin = line;
+		char *p_end = p_begin;
+		char *p_fea;
+		//nonclick
+		while(*p_begin != CTRL_A){
+			p_begin ++;
+		}
+		*p_begin=0;
+		sscanf(p_end, "%d", &nonclick);
+		p_begin++;
+		p_end = p_begin;
+		
+		//clk
+		while(*p_begin != CTRL_A){
+			p_begin++;
+		}
+		*p_begin = 0;
+		sscanf(p_end, "%d", &click);
+		p_begin++;
+		p_end = p_begin;
+		
+		bool bEnd = false;
+//		cout << nonclick << "x" << click << "\t";
+		while(!bEnd){
+			p_end = p_begin;
+			while(*p_end != CTRL_A && *p_end != END){
+				p_end++;
+			}
+			if(*p_end == END){
+				bEnd = true;
+			}
+			
+			if(*p_end == CTRL_A || *p_end == END){
+				p_fea = p_begin;
+				*p_end = 0;
+				sscanf(p_fea, "%s", feasign);
+				//getfeaid
+				feaid = get_featid(feasign);
+				//add to instance list
+				instance.push_back(feaid);
+				
+			}
+			
+			p_begin = p_end+1;
+			
+		}
+		sort(&instance[0], &instance[instance.size()]);
+		//for(size_t i = 0; i < instance.size(); i++)
+		//	features.push_back(instance[i]);
+		//instance_starts.push_back(features.size());
+		//nonClkQ.push_back(nonclick);
+		//ClkQ.push_back(click);
+		cout << "here" << endl;
+		for(int i = 0; i < nonclick; i++){
+			AddInstance(instance_starts, instance, false, indices, values,  labels);
+			numInstance++;
+		}
+		for(int i = 0; i < click; i++){
+			AddInstance(instance_starts, instance, true, indices, values,  labels);
+			numInstance++;
+		}
+		
+	}
+	return 0;		
+					
+}
+/*
 int trans_ins(const char* ins_path, 
 			std::deque<size_t>& features, 
 			std::deque<size_t>& instance_starts, 
@@ -204,3 +314,4 @@ int trans_ins(const char* ins_path,
 	}
 	return 0;
 }
+*/

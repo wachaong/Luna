@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-
+#include "inslookup.h"
 #include "OWLQN.h"
 
 class LogisticRegressionProblem {

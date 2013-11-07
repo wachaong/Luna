@@ -2,8 +2,8 @@
 #include <deque>
 #include <fstream>
 
-#include "OWLQN.h";
-#include "logreg.h";
+#include "OWLQN.h"
+#include "logreg.h"
 
 using namespace std;
 
@@ -47,9 +47,9 @@ int main(int argc, char** argv) {
 
 	//char* feature_file = "feature_file.mat";
 	//char* label_file = "label_file.mat";
-	char* train_file = "ex2data1.txt";
+	char train_file[20] = "ex2data1.txt";
 	int regweight = 0;
-	char* output_file = "output.mat";
+	char output_file[20] = "output.mat";
 	
 	double tol = 1e-6, l2weight = 0;
 	int m = 10;

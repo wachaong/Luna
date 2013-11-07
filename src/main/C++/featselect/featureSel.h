@@ -4,14 +4,10 @@
 #include <deque>
 #include <vector>
 #include <stdio.h>
+#include "OWLQN.h"
 
 typedef std::vector<double> DblVec;
 typedef std::vector<double>* DblMat;
-
-struct DifferentiableFunction {
-	virtual double Eval(const DblVec& input, DblVec& gradient) = 0;
-	virtual ~DifferentiableFunction() { }
-};
 
 
 class FeatureSelectionProblem{
@@ -38,17 +34,8 @@ public:
 	FeatureSelectionProblem(const char* instance_file, const char* feature_file);
 	void AddInstance();
 
-	double ScoreOf(size_t i) const;
+	double ScoreOf(size_t i, const std::vector<double>& weights) const;
 	double GroupLasso() const;
-	
-	void setW(const std::vector<double>& weights){
-		for(size_t i = 0; i < weights.size(); i++){
-		}
-	}
-	void setV(){
-	}
-	void setP(){
-	}
 	
 	DblMat getWAsMat() const{
 		DblMat WMat = new DblVec[numUserFeature];
@@ -65,7 +52,7 @@ public:
 		return VMat;
 	}
 	
-	AddMultToP(size_t i, double mult,  std::vector<double>& vec) const {
+	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) const {
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j] ;
 			vec[index] += mult * 1;
@@ -89,9 +76,9 @@ public:
 };
 
 struct FeatureSelectionObjectiveInit : public DifferentiableFunction {
-	const FeatureSelectionProblem& problem;
+	FeatureSelectionProblem& problem;
 	const double l2weight;
-	FeatureSelectionObjectiveInit(const FeatureSelectionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){ }
+	FeatureSelectionObjectiveInit(FeatureSelectionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){ }
 	double Eval(const DblVec& input, DblVec& gradient);
 };
 

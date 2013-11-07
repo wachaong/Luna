@@ -41,9 +41,9 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	//save into four deques
 	//features,instance_starts, nonclk, clk
 	
-	get_param();
+	init();
 	load_feamap(feamap_path);
-	trans_ins(ins_path, features, instance_starts, nonclk, clk);
+	trans_ins(ins_path, features, instance_starts, nonclk, clk, numInstance);
 	
 	
 	numAdFeature = getAdFeaCount();
@@ -51,21 +51,20 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	numOtherFeature = getOtherFeaCount();
 	
 	dimLatent = 10;
-	numInstance = 0;
 	epsilon = 1e-4;
-	instance_starts.push_back(0);
+	
 	
 	
 	
 	
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			W.push_back(i);
+			W.push_back(0);
 		}
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			V.push_back(i+1);
+			V.push_back(0);
 		}
 	}
 	
@@ -73,10 +72,14 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 		P.push_back(0);
 	}
 	
-	printMatrix(getWAsMat(), numUserFeature);
-	printMatrix(getVAsMat(), numAdFeature);
+	cout << numAdFeature << endl;
+	cout << numUserFeature << endl;
+	cout << numInstance << endl;
+	
+//	printMatrix(getWAsMat(), numUserFeature);
+//	printMatrix(getVAsMat(), numAdFeature);
 
-	cout << W.size() << endl;
+//	cout << W.size() << endl;
 	
 	
 }
@@ -122,7 +125,7 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 */
 
 //calculate f(x)
-double FeatureSelectionProblem::ScoreOf(size_t i) const{
+double FeatureSelectionProblem::ScoreOf(size_t i, const std::vector<double>& weights) const{
 	//f(x)=(UW)(TV)' + Px
 	double score = 0;
 	DblMat W = getWAsMat();
@@ -139,11 +142,12 @@ double FeatureSelectionProblem::ScoreOf(size_t i) const{
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 		X.push_back(features[j]);
-		score += P[features[j]];
+		score += weights[features[j]];
 		if(features[j] < NumAdFeats()){
 			T.push_back(features[j]);
 			for(size_t k = 0; k < dimLatent; k++){
 				TV[k]+=V[features[j]][k];
+	//			cout << V[features[j]][k]<< " ";
 			}
 		} 
 		else if(features[j] < NumAdFeats() + NumUserFeats()){
@@ -192,18 +196,27 @@ double FeatureSelectionProblem::GroupLasso() const{
 }
 
 
-
+void displayGradient(DblVec& gradientP){
+	cout << "DEBUG DISPLAY GRADIENT\n";
+	for(size_t i = 0; i < gradientP.size(); i++){
+		if(gradientP[i] != 0) cout << i << " : " << gradientP[i] << endl;
+	}
+	cout << "DEBUG DISPLAY GRADIENT OVER\n";
+}
 double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradientP){
 	double loss = 0.0;
-	problem.setP(input);
-	for(size_t i = 0; i < P.size(); i++){
-		loss += 0.5*P[i]*P[i]*l2weight;
-		gradientP[i] += l2weight*P[i];
+//	DblVec P = problem.getP();
+	for(size_t i = 0; i < input.size(); i++){
+	//	P[i] = input[i];
+		loss += 0.5*input[i]*input[i]*l2weight;
+		gradientP[i] += l2weight*input[i];
 	}
 	
 	for(size_t i = 0; i < problem.NumInstance(); i++){
-		double score = problem.ScoreOf(i);
+		double score = problem.ScoreOf(i, input);
+	//	cout << "score:" << score << endl;
 		double insLoss, insProb;
+	//	cout << problem.ClkOf(i) << " " <<problem.NonClkOf(i) << endl;
 		if(problem.ClkOf(i) > 0){
 			if(score < -30){
 				insLoss = -score;
@@ -221,8 +234,7 @@ double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient
 			loss +=  problem.ClkOf(i) * insLoss;
 			problem.AddMultToP(i, -problem.ClkOf(i)*(1.0 - insProb), gradientP);
 		}
-		
-		
+	//	displayGradient(gradientP);
 		if(problem.NonClkOf(i) > 0){
 			score = -score;
 			if(score < -30){
@@ -241,7 +253,14 @@ double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient
 			loss +=  problem.NonClkOf(i) * insLoss;
 			problem.AddMultToP(i, problem.NonClkOf(i)*(1.0 - insProb), gradientP);
 		}
+		
+//		displayGradient(gradientP);
+		
+//		if(i==2)	break;
+		
 	}
+//	cout << "LOSS:" <<loss << endl;
+//	exit(1);
 	return loss;
 }
 

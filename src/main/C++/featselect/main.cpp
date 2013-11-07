@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "featureSel.h"
-
+#include "OWLQN.h"
 
 int main(int argc, char** argv) {
 	/*
@@ -46,7 +46,21 @@ int main(int argc, char** argv) {
 	}
 	*/
 	
-	FeatureSelectionProblem("ins", "fea");
+	FeatureSelectionProblem *fsp = new FeatureSelectionProblem("ins", "fea");
+	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
+	OWLQN opt;
+	
+	int regweight = 0;
+	char* output_file = "output.mat";
+	
+	double tol = 1e-6, l2weight = 0;
+	int m = 10;
+	
+	int size = fsp->NumAllFeats();
+	DblVec initx(size), ans(size);
+	
+	opt.Minimize(*o0, initx, ans, regweight, tol, m);
+//	printVector(ans, output_file);
 	return 0;
 	
 }

@@ -1,7 +1,9 @@
+#include "inslookup.h"
 #include "logreg.h"
 #include <fstream>
 #include <sstream>
 #include <string>
+
 
 using namespace std;
 
@@ -11,6 +13,15 @@ void skipEmptyAndComment(ifstream& file, string& s){
 	}while (s.size() == 0 || s[0] == '%');
 }
 
+
+LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path){
+	init();
+	load_feamap("feat");
+	trans_ins(ins_path, indices, values, instance_starts, labels, numFeats);
+	//cout << "here" << endl;
+}
+
+/*
 LogisticRegressionProblem::LogisticRegressionProblem(const char* trainfile){
 	ifstream train(trainfile);
 	if(!train.good()) {
@@ -51,6 +62,7 @@ LogisticRegressionProblem::LogisticRegressionProblem(const char* trainfile){
 	train.close();
 	
 }
+*/
 
 LogisticRegressionProblem::LogisticRegressionProblem(const char* matFilename, const char* labelFilename){
 	ifstream matfile(matFilename);
