@@ -171,7 +171,13 @@ double LogisticRegressionProblem::ScoreOf(size_t i, const vector<double>& weight
 	if(!labels[i]) score *= -1;
 	return score;
 }
-
+void displayGradient(DblVec& gradientP){
+	cout << "DEBUG DISPLAY GRADIENT\n";
+	for(size_t i = 0; i < gradientP.size(); i++){
+		if(gradientP[i] != 0) cout << i << " : " << gradientP[i] << endl;
+	}
+	cout << "DEBUG DISPLAY GRADIENT OVER\n";
+}
 double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
 	double loss = 0.0;
 	for (size_t i = 0; i < input.size(); i++){
@@ -197,7 +203,8 @@ double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
 		problem.AddMultTo(i, 1.0 - insProb, gradient);
 		
 	}
-	
+//	displayGradient(gradient);
+//	exit(1);
 	return loss ;
 }
 

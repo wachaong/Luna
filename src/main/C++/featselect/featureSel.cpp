@@ -127,8 +127,8 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 //calculate f(x)
 double FeatureSelectionProblem::ScoreOf(size_t i, const std::vector<double>& weights) const{
 	//f(x)=(UW)(TV)' + Px
-	double score = 0;
-	DblMat W = getWAsMat();
+	double score = 0.0;
+/*	DblMat W = getWAsMat();
 	DblMat V = getVAsMat();
 	DblVec UW;
 	DblVec TV;
@@ -165,7 +165,11 @@ double FeatureSelectionProblem::ScoreOf(size_t i, const std::vector<double>& wei
 	
 	delete []W;
 	delete []V;
+	*/
 	
+	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		score += weights[features[j]];
+	}
 	return score;
 }
 
@@ -209,14 +213,12 @@ double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient
 	for(size_t i = 0; i < input.size(); i++){
 	//	P[i] = input[i];
 		loss += 0.5*input[i]*input[i]*l2weight;
-		gradientP[i] += l2weight*input[i];
+		gradientP[i] = l2weight*input[i];
 	}
 	
 	for(size_t i = 0; i < problem.NumInstance(); i++){
 		double score = problem.ScoreOf(i, input);
-	//	cout << "score:" << score << endl;
 		double insLoss, insProb;
-	//	cout << problem.ClkOf(i) << " " <<problem.NonClkOf(i) << endl;
 		if(problem.ClkOf(i) > 0){
 			if(score < -30){
 				insLoss = -score;
@@ -228,11 +230,12 @@ double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient
 			}
 			else{
 				double temp = 1.0 + exp(-score);
+				if(temp < 1) cout << temp << endl;
 				insLoss = log(temp);
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.ClkOf(i) * insLoss;
-			problem.AddMultToP(i, -problem.ClkOf(i)*(1.0 - insProb), gradientP);
+			problem.AddMultToP(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), gradientP);
 		}
 	//	displayGradient(gradientP);
 		if(problem.NonClkOf(i) > 0){
@@ -251,15 +254,15 @@ double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.NonClkOf(i) * insLoss;
-			problem.AddMultToP(i, problem.NonClkOf(i)*(1.0 - insProb), gradientP);
-		}
-		
-//		displayGradient(gradientP);
+			problem.AddMultToP(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), gradientP);
+		}	
 		
 //		if(i==2)	break;
 		
 	}
 //	cout << "LOSS:" <<loss << endl;
+//	exit(1);
+//	displayGradient(gradientP);
 //	exit(1);
 	return loss;
 }

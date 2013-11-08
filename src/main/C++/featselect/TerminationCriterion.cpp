@@ -14,6 +14,10 @@ double RelativeMeanImprovementCriterion::GetValue(const OptimizerState& state, s
 		double prevVal = prevVals.front();
 		if (prevVals.size() == 10) prevVals.pop_front();
 		double averageImprovement = (prevVal - state.GetValue()) / prevVals.size();
+		if(state.GetValue() < 1e-13) {
+			message << "   value zero" << flush;
+			return -retVal;
+		}
 		double relAvgImpr = averageImprovement / fabs(state.GetValue());
 		
 		message << setprecision(4) << scientific << right;

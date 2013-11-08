@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 
 	//char* feature_file = "feature_file.mat";
 	//char* label_file = "label_file.mat";
-	char train_file[20] = "ex2data1.txt";
+	char train_file[20] = "ins";
 	int regweight = 0;
 	char output_file[20] = "output.mat";
 	

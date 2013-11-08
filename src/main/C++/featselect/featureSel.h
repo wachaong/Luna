@@ -55,7 +55,7 @@ public:
 	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) const {
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j] ;
-			vec[index] += mult * 1;
+			vec[index] += mult * 1.0;
 		}
 	}
 	
@@ -70,8 +70,6 @@ public:
 	size_t NumUserFeats() const { return numUserFeature;}
 	size_t NumOtherFeats() const { return numOtherFeature;}
 	size_t NumAllFeats() const { return numAdFeature+numUserFeature+numOtherFeature;}
-	
-	
 	
 };
 

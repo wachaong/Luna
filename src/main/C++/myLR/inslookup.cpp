@@ -106,7 +106,7 @@ int load_feamap(const char* feamap_path){
 	return 0;
 }
 
-void AddInstance(deque<size_t>& instance_start, const vector<size_t>& inds, bool label, 
+void MyAddInstance(deque<size_t>& instance_start, const vector<size_t>& inds, bool label, 
 	std::deque<size_t>& indicesQ, std::deque<float>& valuesQ, std::deque<bool>& labelsQ){
 	for(size_t i = 0; i < inds.size(); i++){
 		indicesQ.push_back(inds[i]);
@@ -118,16 +118,15 @@ void AddInstance(deque<size_t>& instance_start, const vector<size_t>& inds, bool
 
 int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<float>& values, 
 	std::deque<size_t>& instance_starts, std::deque<bool>& labels, size_t& numFeats){
-		ifstream fins(ins_path);
-	
+	ifstream fins(ins_path);
+	ofstream out("ins_out");
 	char line[MAX_BUF_LEN];
 	string linestr;
 	const char CTRL_A = '';
 	const char CTRL_B = '';
-    const char END = '\n';
+    const char END = '';
     
-	int nonclick = 0;
-	int click = 0;
+	
 	char feasign[10];
 	int feaid = 0;
 	
@@ -144,6 +143,8 @@ int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<floa
 		line[linestr.size()] = END;
 		
 		vector <size_t> instance;
+		size_t temp_nonclick = 0;
+		size_t temp_click = 0;
 		// Instance parser
 		// Get each instance 
 		// CLICK_NUM/NONCLICK_NUM/FEATUREIDLIST
@@ -155,12 +156,13 @@ int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<floa
 		char *p_begin = line;
 		char *p_end = p_begin;
 		char *p_fea;
+	//	cout << p_begin;
 		//nonclick
 		while(*p_begin != CTRL_A){
 			p_begin ++;
 		}
 		*p_begin=0;
-		sscanf(p_end, "%d", &nonclick);
+		sscanf(p_end, "%u", &temp_nonclick);
 		p_begin++;
 		p_end = p_begin;
 		
@@ -169,7 +171,9 @@ int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<floa
 			p_begin++;
 		}
 		*p_begin = 0;
-		sscanf(p_end, "%d", &click);
+//		cout << p_end << endl;
+		sscanf(p_end, "%u", &temp_click);
+//		cout << temp_click << endl;
 		p_begin++;
 		p_end = p_begin;
 		
@@ -198,26 +202,35 @@ int trans_ins(const char* ins_path, std::deque<size_t>& indices, std::deque<floa
 			p_begin = p_end+1;
 			
 		}
+//		cout << temp_click << endl;
 		sort(&instance[0], &instance[instance.size()]);
-		//for(size_t i = 0; i < instance.size(); i++)
-		//	features.push_back(instance[i]);
+		out << temp_nonclick << "_"<<temp_click<<":";
+		for(size_t i = 0; i < instance.size(); i++)
+			out << instance[i] << " ";
+		out << "\n";
 		//instance_starts.push_back(features.size());
 		//nonClkQ.push_back(nonclick);
 		//ClkQ.push_back(click);
-		cout << "here" << endl;
-		for(int i = 0; i < nonclick; i++){
-			AddInstance(instance_starts, instance, false, indices, values,  labels);
+//		cout << "here" << endl;
+//		cout << temp_nonclick << "  " << temp_click << " ";
+		for(int i = 0; i < temp_nonclick; i++){
+			MyAddInstance(instance_starts, instance, false, indices, values,  labels);
 			numInstance++;
 		}
-		for(int i = 0; i < click; i++){
-			AddInstance(instance_starts, instance, true, indices, values,  labels);
+//		cout << numInstance << " ";
+		for(int i = 0; i < temp_click; i++){
+			MyAddInstance(instance_starts, instance, true, indices, values,  labels);
 			numInstance++;
 		}
-		
+//		cout << numInstance << endl;
 	}
+	cout << "NUMINSTANCE:" << numInstance << endl;
+	out.close();
 	return 0;		
 					
 }
+
+
 /*
 int trans_ins(const char* ins_path, 
 			std::deque<size_t>& features, 

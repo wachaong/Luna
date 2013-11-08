@@ -113,18 +113,21 @@ void OptimizerState::UpdateDir() {
 	MakeSteepestDescDir();
 	MapDirByInverseHessian();
 	FixDirSigns();
-#ifdef _DEBUG_
+//#ifdef _DEBUG_
 	TestDirDeriv();
-#endif
+//#endif
 }
 
 
 void OptimizerState::TestDirDeriv() {
-/*
+
 	double dirNorm = sqrt(dotProduct(dir, dir));
 	double eps = 1.05e-8 / dirNorm;
 	GetNextPoint(eps);
-*/	
+	double val2 = EvalL1();
+	double numDeriv = (val2 - value) / eps;
+	double deriv = DirDeriv();
+	cout << "  Grad check: " << numDeriv << " vs. " << deriv << "  ";
 }
 
 double OptimizerState::DirDeriv() const {

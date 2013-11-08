@@ -113,22 +113,16 @@ void OptimizerState::UpdateDir() {
 	MakeSteepestDescDir();
 	MapDirByInverseHessian();
 	FixDirSigns();
-#ifdef _DEBUG_
+//#ifdef _DEBUG_
 	TestDirDeriv();
-#endif
+//#endif
 }
 
 
 void OptimizerState::TestDirDeriv() {
-/*
 	double dirNorm = sqrt(dotProduct(dir, dir));
 	double eps = 1.05e-8 / dirNorm;
 	GetNextPoint(eps);
-*/	
-	double dirNorm = sqrt(dotProduct(dir, dir));
-	double eps = 1.05e-8 / dirNorm;
-	GetNextPoint(eps);
-	cout << eps << endl;
 	double val2 = EvalL1();
 	double numDeriv = (val2 - value) / eps;
 	double deriv = DirDeriv();
@@ -195,7 +189,6 @@ void OptimizerState::BackTrackingLineSearch() {
 	if (iter == 1){
 		double normDir = sqrt(dotProduct(dir, dir));
 		alpha = (1 / normDir);
-		cout << "XXXX" << alpha << endl;
 		backoff = 0.1;
 	}
 	
@@ -208,7 +201,7 @@ void OptimizerState::BackTrackingLineSearch() {
 	
 		if(value <= oldValue + c1 * origDirDeriv * alpha) break;
 		
-		cout << "." << flush;		
+		cout << "." << flush;
 		alpha *= backoff;
 	}
 	cout << endl;
@@ -269,7 +262,7 @@ void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, Db
 	while(true) {
 		state.UpdateDir();
 		state.BackTrackingLineSearch();
-		state.TestDirDeriv();
+
 		ostringstream str;
 		double termCritVal = termCrit->GetValue(state, str);
 		cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;

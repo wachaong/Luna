@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 	
 	int size = fsp->NumAllFeats();
 	DblVec initx(size), ans(size);
-	
+	std::cout << initx[12] << "fuck its bug";
 	opt.Minimize(*o0, initx, ans, regweight, tol, m);
 //	printVector(ans, output_file);
 	return 0;
