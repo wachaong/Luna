@@ -17,7 +17,7 @@ map<unsigned int, int> *feasign2id_map;
 char feamap_path[2048];
 char ins_path[2048];
 
-int init()
+int init_inslookup()
 {
 	snprintf(feamap_path, 2048, "%s", "feat");
 	snprintf(ins_path, 2048, "%s", "ins");

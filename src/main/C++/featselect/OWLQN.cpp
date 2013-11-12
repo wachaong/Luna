@@ -12,7 +12,9 @@ using namespace std;
 
 double OptimizerState::dotProduct(const DblVec& a, const DblVec& b){
 	double result = 0;
+//	cout << a[0] << " " << b[0] << endl;
 	for(size_t i=0; i < a.size(); i++){
+		
 		result += a[i] * b[i];
 	}
 	return result;
@@ -55,7 +57,6 @@ void OptimizerState::MapDirByInverseHessian() {
 			alphas[i] = -dotProduct(*sList[i], dir) / roList[i];
 			addMult(dir, *yList[i], alphas[i]);
 		}
-		
 		const DblVec& lastY = *yList[count-1];
 		double yDotY = dotProduct(lastY, lastY);
 		double scalar = roList[count - 1] / yDotY;
@@ -120,7 +121,12 @@ void OptimizerState::UpdateDir() {
 
 
 void OptimizerState::TestDirDeriv() {
+	//cout << dotProduct(dir, dir) << endl;
 	double dirNorm = sqrt(dotProduct(dir, dir));
+	if(dirNorm == 0){
+		cout << "Zero Direction\n" << endl;
+		return;
+	}
 	double eps = 1.05e-8 / dirNorm;
 	GetNextPoint(eps);
 	double val2 = EvalL1();
@@ -179,11 +185,10 @@ void OptimizerState::BackTrackingLineSearch() {
 	double origDirDeriv = DirDeriv();
 	//if a non-descent direction is chosen, the line search will break anyway, so throw here
 	//The most likely reason for this is a bug in your function's gradient computation
-	if (origDirDeriv >= 0){
+	if (origDirDeriv > 0){
 		cerr << "L-BFGS chose a non-descent direction: check your gradient!" << endl;
 		exit(1);
 	}
-	
 	double alpha = 1.0;
 	double backoff = 0.5;
 	if (iter == 1){
@@ -194,11 +199,10 @@ void OptimizerState::BackTrackingLineSearch() {
 	
 	const double c1 = 1e-4;
 	double oldValue = value;
-	
+
 	while (true){
 		GetNextPoint(alpha);
 		value = EvalL1();
-	
 		if(value <= oldValue + c1 * origDirDeriv * alpha) break;
 		
 		cout << "." << flush;
@@ -234,11 +238,9 @@ void OptimizerState::Shift() {
 	addMultInto(*nextS, newX, x, -1);
 	addMultInto(*nextY, newGrad, grad, -1);
 	double ro = dotProduct(*nextS, *nextY);
-	
 	sList.push_back(nextS);
 	yList.push_back(nextY);
 	roList.push_back(ro);
-	
 	x.swap(newX);
 	grad.swap(newGrad);
 	
@@ -261,6 +263,7 @@ void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, Db
 	
 	while(true) {
 		state.UpdateDir();
+		if(state.DirDeriv() == 0) break;
 		state.BackTrackingLineSearch();
 
 		ostringstream str;

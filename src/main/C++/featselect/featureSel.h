@@ -27,14 +27,12 @@ class FeatureSelectionProblem{
 	DblVec P;
 	double epsilon;
 public:
-	FeatureSelectionProblem(size_t numAdFeature, size_t numUserFeature, size_t numOtherFeature) : numAdFeature(numAdFeature), numUserFeature(numUserFeature), numOtherFeature(numOtherFeature){
-		instance_starts.push_back(0);
-	}
-	
-	FeatureSelectionProblem(const char* instance_file, const char* feature_file);
+	FeatureSelectionProblem(const char* instance_file, const char* feature_file, int K);
 	void AddInstance();
 
-	double ScoreOf(size_t i, const std::vector<double>& weights) const;
+	double ScoreOfForP(size_t i, const std::vector<double>& weights) const;
+	double ScoreOfForW(size_t i, const std::vector<double>& weights) const;
+	double ScoreOfForV(size_t i, const std::vector<double>& weights) const;
 	double GroupLasso() const;
 	
 	DblMat getWAsMat() const{
@@ -59,6 +57,60 @@ public:
 		}
 	}
 	
+	//mult* u*w_j * T_i
+	void AddMultToV(size_t i, double mult, std::vector<double> &vec) const{
+		DblVec u, a;
+		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+			size_t index = features[j];
+			//Ad Feature
+			if(index < numAdFeature){
+				a.push_back(index);
+			}
+			//User Feature
+			else if(index < numAdFeature + numUserFeature){
+				u.push_back(index-numAdFeature);
+			}
+		}
+		for(size_t a_index = 0; a_index < a.size(); a_index++){
+			size_t i_index = a[a_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t u_index = 0; u_index < u.size(); u_index++){
+					sum += W[u[u_index]*dimLatent + j_index];
+				}
+				vec[i_index*dimLatent+j_index] += mult * sum;
+			}
+		}
+	}
+	//mult*u_i *T*v_j
+	void AddMultToW(size_t i, double mult, std::vector<double> &vec) const{
+		DblVec u, a;
+		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+			size_t index = features[j];
+			//Ad Feature
+			if(index < numAdFeature){
+				a.push_back(index);
+			}
+			//User Feature
+			else if(index < numAdFeature + numUserFeature){
+				u.push_back(index-numAdFeature);
+			}
+		}
+		for(size_t u_index = 0; u_index < u.size(); u_index++){
+			size_t i_index = u[u_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t a_index = 0; a_index < a.size(); a_index++){
+					sum += V[a[a_index]*dimLatent+j_index];
+				}
+				vec[i_index*dimLatent+j_index] += mult * sum;
+			}
+		}
+	}	
+	
+	void setW(DblVec& w){ W = w; }
+	void setV(DblVec& v){ V = v; }
+	void setP(DblVec& p){ P = p; }
 	DblVec& getW(){ return W; }
 	DblVec& getV() { return V;}
 	DblVec& getP(){ return P;}
@@ -70,7 +122,8 @@ public:
 	size_t NumUserFeats() const { return numUserFeature;}
 	size_t NumOtherFeats() const { return numOtherFeature;}
 	size_t NumAllFeats() const { return numAdFeature+numUserFeature+numOtherFeature;}
-	
+	size_t getDimLatent() const {return dimLatent;}
+	double getEpsilon() const {return epsilon;}
 };
 
 struct FeatureSelectionObjectiveInit : public DifferentiableFunction {
@@ -82,12 +135,20 @@ struct FeatureSelectionObjectiveInit : public DifferentiableFunction {
 
 
 struct FeatureSelectionObjectiveFixUser : public DifferentiableFunction {
-	
+	FeatureSelectionProblem& problem;
+	const double l2weight;
+	const double l21weight;
+	FeatureSelectionObjectiveFixUser(FeatureSelectionProblem& p, double l21weight = 0, double l2weight = 0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
+	double Eval(const DblVec& input, DblVec& gradient);
 };
 
 
 struct FeatureSelectionObjectiveFixAd : public DifferentiableFunction {
-	
+	FeatureSelectionProblem& problem;
+	const double l2weight;
+	const double l21weight;
+	FeatureSelectionObjectiveFixAd(FeatureSelectionProblem& p, double l21weight = 0, double l2weight = 0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
+	double Eval(const DblVec& input, DblVec& gradient);
 };
 
 #endif
