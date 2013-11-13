@@ -238,9 +238,12 @@ void OptimizerState::Shift() {
 	addMultInto(*nextS, newX, x, -1);
 	addMultInto(*nextY, newGrad, grad, -1);
 	double ro = dotProduct(*nextS, *nextY);
-	sList.push_back(nextS);
-	yList.push_back(nextY);
-	roList.push_back(ro);
+	if (ro != 0){
+		sList.push_back(nextS);
+		yList.push_back(nextY);
+		roList.push_back(ro);
+	}
+		
 	x.swap(newX);
 	grad.swap(newGrad);
 	
@@ -248,7 +251,7 @@ void OptimizerState::Shift() {
 }
 
 
-void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m) const {
+double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m) const {
 	OptimizerState state(function, initial, m, l1weight);
 	cout << setprecision(4) << scientific << right;
 	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
@@ -274,11 +277,12 @@ void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, Db
 		if (termCritVal < tol) break;
 		
 		state.Shift(); 
+		if(state.iter >= 100) break;
 	}
 	
 	cout << endl;
 	minimum = state.newX;
-
+	return state.value;
 }
 
 

@@ -15,41 +15,48 @@ void printVector(const DblVec &vec, const char* filename) {
 	outfile << "%%MatrixMarket matrix array real general" << endl;
 	outfile << "1 " << vec.size() << endl;
 	for (size_t i=0; i<vec.size(); i++) {
-		outfile << vec[i] << endl;
+		if(vec[i] < 1e-6){
+			outfile << 0 << endl;
+		}
+		else
+			outfile << vec[i] << endl;
 	}
 	outfile.close();
 }
 
 int main(int argc, char** argv) {	
 	int K = 10; //latent factor dimension
+	double l21reg = 0.1;
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem("ins", "fea", K);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
-	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp);
-	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp);
+	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
+	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
 	
 	
 	
 	int l1regweight = 0;
-	double tol = 1e-6, l2weight = 0;
+	double tol = 1e-4, l2weight = 0;
 	int m = 10;
 	int size = fsp->NumAllFeats();
 	OWLQN opt;
 	opt.Minimize(*o0, fsp->getP(), fsp->getP(), l1regweight, tol, m);
-	
-	
-		OWLQN opt1;
-		opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m);
 			
-	/*
-	for(int iter = 0; iter < 10; iter++){
-		
+	double loss = 1e8;
+	for(int iter = 0; iter < 10; iter++){	
 		OWLQN opt1;
 		opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m);
 		OWLQN opt2;
-		opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m);
+		double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m);
+	//	if ((loss - newloss) / loss > 1e-4){
+	//		loss = newloss;
+	//	}
+	//	else{
+	//		cout << "LARGE ITERATION: " << iter << " END" << endl;
+	//		break;
+	//	}
 	}
 
-*/
+
 	printVector(fsp->getP(), "OUT_P");
 	printVector(fsp->getW(), "OUT_W");
 	printVector(fsp->getV(), "OUT_V");

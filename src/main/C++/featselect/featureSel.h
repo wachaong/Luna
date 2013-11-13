@@ -34,7 +34,7 @@ public:
 	double ScoreOfForW(size_t i, const std::vector<double>& weights) const;
 	double ScoreOfForV(size_t i, const std::vector<double>& weights) const;
 	double GroupLasso() const;
-	
+	/*
 	DblMat getWAsMat() const{
 		DblMat WMat = new DblVec[numUserFeature];
 		for(size_t i = 0; i < W.size(); i++){
@@ -49,7 +49,7 @@ public:
 		}
 		return VMat;
 	}
-	
+	*/
 	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) const {
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j] ;
