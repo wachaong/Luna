@@ -1,0 +1,34 @@
+#include "TerminationCriterion.h"
+
+#include "OWLQN.h"
+#include <limits>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+double RelativeMeanImprovementCriterion::GetValue(const OptimizerState& state, std::ostream& message){
+	double retVal = numeric_limits<double>::infinity();
+	
+	if(prevVals.size() > 5){
+		double prevVal = prevVals.front();
+		if (prevVals.size() == 10) prevVals.pop_front();
+		double averageImprovement = (prevVal - state.GetValue()) / prevVals.size();
+		if(state.GetValue() < 1e-13) {
+			message << "   value zero" << flush;
+			return -retVal;
+		}
+		
+		double relAvgImpr = averageImprovement / fabs(state.GetValue());
+		
+		message << setprecision(4) << scientific << right;
+		message << "   (" << setw(10) << relAvgImpr << ") " << flush;
+		retVal = relAvgImpr;
+	} else {
+		message << "  (wait for five iters) " << flush;
+	}
+	
+	prevVals.push_back(state.GetValue());
+	return retVal;
+}
+

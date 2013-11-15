@@ -1,15 +1,15 @@
-# Project: LogReg
+# Project: mpiLR
 # Makefile created by Dev-C++ 5.5.2
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = inslookup.o logreg.o main.o OWLQN.o TerminationCriterion.o
-LINKOBJ  = inslookup.o logreg.o main.o OWLQN.o TerminationCriterion.o
-LIBS     = -L"C:/Dev-Cpp/MinGW32/lib" -L"C:/Dev-Cpp/MinGW32/mingw32/lib" -static-libstdc++ -static-libgcc
+OBJ      = main.o logreg.o inslookup.o OWLQN.o TerminationCriterion.o
+LINKOBJ  = main.o logreg.o inslookup.o OWLQN.o TerminationCriterion.o
+LIBS     = -L"C:/Dev-Cpp/MinGW32/lib" -L"C:/Dev-Cpp/MinGW32/mingw32/lib" -static-libstdc++ -static-libgcc C:/MPICH2/lib/mpi.lib 
 INCS     = -I"C:/Dev-Cpp/MinGW32/include"
 CXXINCS  = -I"C:/Dev-Cpp/MinGW32/include" -I"C:/Dev-Cpp/MinGW32/lib/gcc/mingw32/4.7.2/include/c++" -I"C:/MPICH2/include"
-BIN      = LogReg.exe
+BIN      = mpiLR.exe
 CXXFLAGS = $(CXXINCS) 
 CFLAGS   = $(INCS) 
 RM       = rm -f
@@ -24,14 +24,14 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-inslookup.o: inslookup.cpp
-	$(CPP) -c inslookup.cpp -o inslookup.o $(CXXFLAGS)
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
 
 logreg.o: logreg.cpp
 	$(CPP) -c logreg.cpp -o logreg.o $(CXXFLAGS)
 
-main.o: main.cpp
-	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+inslookup.o: inslookup.cpp
+	$(CPP) -c inslookup.cpp -o inslookup.o $(CXXFLAGS)
 
 OWLQN.o: OWLQN.cpp
 	$(CPP) -c OWLQN.cpp -o OWLQN.o $(CXXFLAGS)
