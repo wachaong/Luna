@@ -53,7 +53,7 @@ struct LogisticRegressionObjective : public DifferentiableFunction {
 	const LogisticRegressionProblem& problem;
 	const double l2weight;
 	LogisticRegressionObjective(const LogisticRegressionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){	}
-	double Eval(DblVec& input, DblVec& gradient);
+	double Eval(const DblVec& input, DblVec& gradient);
 	double EvalLocal(const DblVec& input, DblVec& gradient);
 	int handler(size_t rankid, size_t command); 
 };

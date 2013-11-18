@@ -1,0 +1,118 @@
+#!/bin/bash
+
+local_train_dict="FeaDict"
+local_feature_folder="FeatureFold"
+local_train_path="download_output/ins"
+local_test_path="TestIns"
+local_dict_path="FeaDict.dat"
+
+i=0;
+
+CMD_NAME[$i]="mkdir"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data"
+((i++))
+
+CMD_NAME[$i]="mkdir"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data/train"
+((i++))
+
+CMD_NAME[$i]="mkdir"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data/eval"
+((i++))
+
+CMD_NAME[$i]="mkdir"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data/score"
+((i++))
+
+
+CMD_NAME[$i]="download Feature"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} /home/a/share/algo1/mpi-download/bin/mpi_download -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ -l /home/a/share/algo1/mpi-download/conf/log4cpp.conf -n $ppn -x 200 -s [FEATURE_HADOOP_PATH] ${local_feature_folder}"
+((i++))
+
+CMD_NAME[$i]="merge feature"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh mergeDict.sh ${WORKSPACE}/${local_feature_folder} ${WORKSPACE}/feature"
+((i++))
+#CMD_NAME[$i]="download feature"
+#MPI_CMD[$i]="${HADOOP_HOME}/bin/hadoop --config ./hadoop_conf/ fs -getmerge [FEATURE_HADOOP_PATH] ${WORKSPACE}/feature"
+#((i++))
+CMD_NAME[$i]="downloadDict"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} /home/a/share/algo1/mpi-download/bin/mpi_download -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ -l /home/a/share/algo1/mpi-download/conf/log4cpp.conf -n $ppn -x 200 -s [VALID_FEATURE_HADOOP_PATH] ${local_train_dict}"
+((i++))
+
+CMD_NAME[$i]="mergeDict"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh mergeDict.sh ${WORKSPACE}/${local_train_dict} ${WORKSPACE}/${local_dict_path}"
+((i++))
+
+CMD_NAME[$i]="mvFile"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/download_output ${WORKSPACE}/data/train"
+((i++))
+
+CMD_NAME[$i]="mkdir"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/rank-00000"
+((i++))
+
+CMD_NAME[$i]="logireg"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-lr -c ${WORKSPACE}/logireg.conf -f [FEATURE_NUM]"
+((i++))
+
+
+CMD_NAME[$i]="getLoss"
+MPI_CMD[$i]="grep Iter log/logireg.log"
+((i++))
+
+CMD_NAME[$i]="transModel"
+MPI_CMD[$i]="cat rank-00000/model >rank-00000/model.last"
+((i++))
+
+# eval train data
+CMD_NAME[$i]="mvFile"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveInsToEval.sh ${WORKSPACE}/data/train ${WORKSPACE}/data/eval"
+((i++))
+
+CMD_NAME[$i]="train-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/data/eval/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="train-score-backup"
+MPI_CMD[$i]="mpirun cp ./data/score/ins  ./data/score/ins.train"
+((i++))
+
+CMD_NAME[$i]="merge columns of feature data and score data"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mergeInsScore.sh  ${WORKSPACE}/download_output/ins ./data/score/ins ins_score"
+((i++))
+
+CMD_NAME[$i]="train-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="train-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/train_auc.txt"
+((i++))
+
+#run test data for result evaluation
+#[EVALUATE]
+# eval test data
+#CMD_NAME[$i]="downloadTestSet"
+#MPI_CMD[$i]="/home/a/share/algo1/mpi-download/script/mpi_get -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ [TEST_INSTANCE_HADOOP_PATH]:${local_test_path}:0"
+#((i++))
+#
+#CMD_NAME[$i]="serializeTestIns"
+#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi_inslookup ${WORKSPACE}/log4cpp.conf ${WORKSPACE}/${local_dict_path} ${WORKSPACE}/${local_test_path}/ins 24"
+#((i++))
+#
+#CMD_NAME[$i]="mvFile"
+#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/${local_test_path} ${WORKSPACE}/data/eval"
+#((i++))
+#
+#CMD_NAME[$i]="test-score"
+#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/data/eval/ins ./data/score/ins"
+#((i++))
+#
+#CMD_NAME[$i]="test-pre-auc"
+#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+#((i++))
+#
+#CMD_NAME[$i]="test-auc"
+#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/test_auc.txt "
+#((i++))
+#[END EVALUATE]         

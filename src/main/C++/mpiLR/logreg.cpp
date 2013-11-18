@@ -31,14 +31,14 @@ void displayGradient(DblVec& gradientP){
 	cout << "DEBUG DISPLAY GRADIENT OVER\n";
 }
 
-double LogisticRegressionObjective::Eval(DblVec& input, DblVec& gradient){
+double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
 	DblVec localInput = input;
 	DblVec localGradient = gradient;
 	MPI_Bcast(&localInput[0], localInput.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);	
 	MPI_Bcast(&localGradient[0], localGradient.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	double loss = EvalLocal(localInput, localGradient);	
 	double gloss = 0.0;
-	MPI_Reduce(&localInput[0], &input[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+//	MPI_Reduce(&localInput[0], &input[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&localGradient[0], &gradient[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&loss, &gloss, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	return gloss;

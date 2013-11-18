@@ -113,9 +113,9 @@ void OptimizerState::UpdateDir() {
 	MakeSteepestDescDir();
 	MapDirByInverseHessian();
 	FixDirSigns();
-//#ifdef _DEBUG_
+#ifdef _DEBUG_
 	TestDirDeriv();
-//#endif
+#endif
 }
 
 
