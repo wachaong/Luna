@@ -1,49 +1,32 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/mman.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <signal.h>
-#include <time.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/epoll.h>
-#include <fcntl.h>
-#include <math.h>
+#include <stdio.h>
 #include <fstream>
+#include <iostream>
+#include <stdlib.h>
+#include "inslookup.h"
 #include <vector>
 #include <algorithm>
-#include <iostream>
-#include <deque>
-
-#include <map>
-#include <mpi.h>
-
-#include "Log_r.h"
-
 using namespace std;
 
 map<unsigned int, int> *feasign2id_map;
-map<unsigned int, double> id2weight_map;
-char g_str_logconf[1024] ="/home/a/share/phoenix/mpi-algo-platform/conf/log4cpp.conf";
+map<unsigned int, double> *id2weight_map;
+
+//feasign2id_map[0]	Ad featuremap 
+//feasign2id_map[1] User featuremap
+//feasign2id_map[2] Other featuremap
 
 char feamap_path[2048];
 char ins_path[2048];
-char model_path[2048];
 
-int init(const char* feamap, const char* model, const char* ins)
+int init()
 {
-	snprintf(feamap_path, 2048, "%s", feamap);
-	snprintf(model_path, 2048, "%s", model);
-	snprintf(ins_path, 2048, "%s", ins);
+	snprintf(feamap_path, 2048, "%s", "./FeaDict.dat");
+	snprintf(ins_path, 2048, "%s", "ins");
 	feasign2id_map = new map<unsigned int, int>[3];
-	load_feamap(feamap_path);
-	load_model(model_path);
+	id2weight_map = new map<unsigned int, double>();
 	return 0;
 }
+
 int getAdFeaCount(){
 	return feasign2id_map[0].size();
 }
@@ -122,7 +105,6 @@ int load_feamap(const char* feamap_path){
 	cout << "User Feature: "<<getUserFeaCount() << endl;
 	cout << "Other Feature: "<<getOtherFeaCount() << endl;
 	cout << "Total Feature: " << getAllFeaCount() << "\n";
-	pfeamap.close();
 	return 0;
 }
 
@@ -137,39 +119,21 @@ int load_model(const char* model_path){
 		exit(1);
 	}
 
-	int fea_idx = 0;
 	while (getline(pmodel, line)){
-	//	 char * p_idx = strchr(line, '\t');
-	//	 *p_idx = '\0';
-    //     int fea_idx = atoi(line);
-    //     double fea_weight = atof(p_idx + 1);
-    //     id2weight_map[fea_idx] = fea_weight;
-    	double fea_weight = atof(line.c_str());
-    	id2weight_map[fea_idx++] = fea_weight;
+		 char * p_idx = strchr(line, '\t');
+		 *p_idx = '\0';
+         int fea_idx = atoi(line);
+         double fea_weight = atof(p_idx + 1);
+         id2weight_map[fea_idx] = fea_weight;
 	}
-	pmodel.close();
 	return 0;
 }
 
-double cal_score(vector <size_t> instance){
-	double score = 0.0;
-	for(size_t i = 0; i < instance.size(); i++){
-		score += id2weight_map[instance[i]];
-	}
-	return score;
-}
 
-double get_ctr(double score) {
-    double ctr = 1/(1 + exp(-score));
-    return ctr;
-}
-
-
-int score_ins(const char* score_path){
+int score_ins(const char* ins_path, const char* score_path){
 	char insinput[50];
 	sprintf(insinput, "%s", ins_path);
 	ifstream fins(insinput);
-	FILE* p_out = fopen(score_path, "w");
 	char line[MAX_BUF_LEN];
 	string linestr;
 	const char CTRL_A = '';
@@ -248,56 +212,13 @@ int score_ins(const char* score_path){
 		}
 		sort(&instance[0], &instance[instance.size()]);
 		//score and output to file
-		double score = cal_score(instance);
-		cout << score << endl;
-		double ctr = get_ctr(score);
-		fprintf(p_out, "%lf%d%d%s\n", 1.0*ctr, temp_nonclick, temp_click, "Q");
 		
+		score(instance);
+		
+
 	}
-	delete []feasign2id_map;
-	fins.close();
-	fclose(p_out);
+	out.close();
 	return 0;				
 }
 
-int main(int argc, char *argv[]) {
-
-    int rank_id = 0;
-    int num_procs = 0;
-    MPI_Init(&argc,&argv);
-    MPI_Comm_size(MPI_COMM_WORLD,&num_procs);
-    MPI_Comm_rank(MPI_COMM_WORLD,&rank_id);
-    if(3 >= argc) {
-        fprintf(stderr, "Args : model instance output.\n");
-		MPI_Finalize();
-        return -1;
-    }
-    if (Log_r::Init(g_str_logconf)) {
-        fprintf(stderr, "log init fail str_logconf[%s]\n", g_str_logconf);
-		MPI_Finalize();
-        return -1;
-    }
-    Log_r_Info("Log_r::Init ok");
-
-
-    Log_r_Info("argv[1]:%s\n", argv[1]);
-    Log_r_Info("argv[2]:%s\n", argv[2]);
-    Log_r_Info("argv[3]:%s\n", argv[3]);
-
-
-   
-    char inst_file[1024];
-    inst_file[0] = '\0';
-    snprintf(inst_file, sizeof(inst_file), "%s-%05d", argv[2], rank_id);
-
-    Log_r_Info("Rank[%d][Eval Ins:%s]\n", rank_id, inst_file);
-
-	init("./FeaDict.dat", argv[1], inst_file);
-	score_ins(argv[3]);
-
-
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Finalize();
-    return 0;
-}
 

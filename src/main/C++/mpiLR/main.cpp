@@ -15,18 +15,18 @@ void printVector(const DblVec &vec, const char* filename) {
 		cerr << "error opening matrix file " << filename << endl;
 		exit(1);
 	}
-	outfile << "%%MatrixMarket matrix array real general" << endl;
-	outfile << "1 " << vec.size() << endl;
 	for (size_t i=0; i<vec.size(); i++) {
-		outfile << vec[i] << endl;
+		outfile << i << "\t" << vec[i] << endl;
 	}
 	outfile.close();
 }
 
 int main(int argc, char** argv) {
+
+
 	int my_rankid;
 	int cnt_processors;
-	char train_file[100] = "D://workspace/Luna/src/main/C++/mpiLR/ins";
+	char train_file[100] = "./data/train/ins";
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rankid);
 	MPI_Comm_size(MPI_COMM_WORLD, &cnt_processors);
@@ -40,9 +40,8 @@ int main(int argc, char** argv) {
 	size_t size = prob->NumFeats();
 	if(my_rankid == 0){
 		int regweight = 0;
-		char output_file[100] = "D://workspace/Luna/src/main/C++/mpiLR/output.mat";
+		char output_file[100] = "./rank-00000/model";
 		int m = 10;
-		
 		
 		DblVec init(size), ans(size);
 		
@@ -73,5 +72,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	MPI_Finalize();
+	delete obj;
+	delete prob;
 	return 0;
 }

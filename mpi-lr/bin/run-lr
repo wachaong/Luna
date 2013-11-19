@@ -16,6 +16,17 @@ source ~/.bashrc
 source /home/a/share/phoenix/algo_db/common/script/algo_db_common.sh
 
 HADOOP_CONF_DIR=`cd ~/conf; pwd`
+HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
+HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
+
+output=${HADOOP_OUTPUT_PATH}/model
+jobName=my-mpi-lr
+nodes=60
+ppn=1
+cpuct=24
+user=yanling.yl
+walltime=36000
+pmem=30G
 
 
 VALID_FEATURE_HADOOP_PATH=${output}/valid
@@ -24,7 +35,6 @@ TEST_INSTANCE_HADOOP_PATH=${output}/test/instance
 
 
 #run the mpi phase
-
 FEATURE_NUM=`${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -cat ${VALID_FEATURE_HADOOP_PATH}/* | wc -l`
 threadNum=`expr $nodes \* $ppn \* $cpuct`
   #compose a batch.inc file
@@ -44,12 +54,9 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
     -j $jobName \
     -i ${output}/instance \
     -o ${output}/model \
-    -f ${BIN_DIR}/mpi-plr-train \
+    -f ${BIN_DIR}/mpiLR \
     -f ${BIN_DIR}/mpi-plr-score \
-    -f ${BIN_DIR}/mpi_inslookup \
-    -f ${LOG_DIR}/lr.inc \
     -f ${CONF_DIR}/log4cpp.conf \
-    -f ${LOG_DIR}/logireg.conf \
     -f ${BIN_DIR}/mergeDict.sh \
     -f ${BIN_DIR}/moveFile.sh \
     -f ${BIN_DIR}/moveInsToEval.sh \
@@ -58,9 +65,6 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
     -f ${BIN_DIR}/pre-auc.sh \
     -f ${BIN_DIR}/mpi-peval \
     -f ${BIN_DIR}/transModel.awk \
-    -f ${BIN_DIR}/filter_feature.awk \
-    -f ${BIN_DIR}/filter_feature.sh \
-    -f ${BIN_DIR}/feature_sign_to_feature_name.py \
     -f ${BIN_DIR}/mergeInsScore.sh \
     -b ${LOG_DIR}/batch.inc \
     -n ${nodes} \
@@ -68,7 +72,6 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
     -t ${cpuct} \
     -u ${user} \
     -q ${queue} \
-    -r "${receiver}" \
     -w ${walltime} \
     -m ${pmem}
   if [ $? != 0 ]

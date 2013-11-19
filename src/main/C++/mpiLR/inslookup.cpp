@@ -19,7 +19,7 @@ char ins_path[2048];
 
 int init()
 {
-	snprintf(feamap_path, 2048, "%s", "D://workspace/Luna/src/main/C++/mpiLR/feat");
+	snprintf(feamap_path, 2048, "%s", "./FeaDict.dat");
 	snprintf(ins_path, 2048, "%s", "ins");
 	feasign2id_map = new map<unsigned int, int>[3];
 	return 0;
@@ -120,8 +120,8 @@ int trans_ins(const char* ins_path, size_t rankid, std::deque<size_t>& indices, 
 	std::deque<size_t>& instance_starts, std::deque<bool>& labels, size_t& numFeats){
 	char insinput[50];
 	char insoutput[50];
-	sprintf(insinput, "%s%d", ins_path, rankid);
-	sprintf(insoutput, "ins_out%d", rankid);
+	sprintf(insinput, "%s-%05d", ins_path, rankid);
+	sprintf(insoutput, "ins_out%05d", rankid);
 	ifstream fins(insinput);
 	ofstream out(insoutput);
 	char line[MAX_BUF_LEN];

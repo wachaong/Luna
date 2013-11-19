@@ -52,7 +52,7 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/rank-00000"
 ((i++))
 
 CMD_NAME[$i]="logireg"
-MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-lr -c ${WORKSPACE}/logireg.conf -f [FEATURE_NUM]"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiLR"
 ((i++))
 
 

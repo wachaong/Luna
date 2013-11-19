@@ -7,7 +7,7 @@
 
 LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path, size_t rankid):rankid(rankid){
 	init();
-	load_feamap("D://workspace/Luna/src/main/C++/mpiLR/feat");
+	load_feamap("./FeaDict.dat");
 	trans_ins(ins_path, rankid, indices, values, instance_starts, labels, numFeats);
 }
 	
@@ -38,7 +38,6 @@ double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
 	MPI_Bcast(&localGradient[0], localGradient.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	double loss = EvalLocal(localInput, localGradient);	
 	double gloss = 0.0;
-//	MPI_Reduce(&localInput[0], &input[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&localGradient[0], &gradient[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&loss, &gloss, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	return gloss;
