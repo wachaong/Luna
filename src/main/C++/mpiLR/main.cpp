@@ -26,7 +26,8 @@ int main(int argc, char** argv) {
 
 	int my_rankid;
 	int cnt_processors;
-	char train_file[100] = "./data/train/ins";
+//	char train_file[100] = "./data/train/ins";
+	char train_file[100] = "ins";
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rankid);
 	MPI_Comm_size(MPI_COMM_WORLD, &cnt_processors);
@@ -40,7 +41,8 @@ int main(int argc, char** argv) {
 	size_t size = prob->NumFeats();
 	if(my_rankid == 0){
 		int regweight = 0;
-		char output_file[100] = "./rank-00000/model";
+		char output_file[100] = "model";
+	//	char output_file[100] = "./rank-00000/model";
 		int m = 10;
 		
 		DblVec init(size), ans(size);
@@ -72,7 +74,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	MPI_Finalize();
-	delete obj;
-	delete prob;
+//	delete obj;
+//	delete prob;
 	return 0;
 }

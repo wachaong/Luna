@@ -8,7 +8,7 @@
 
 typedef std::vector<double> DblVec;
 struct DifferentiableFunction {
-	virtual double Eval(DblVec& input, DblVec &gradient) = 0;
+	virtual double Eval(const DblVec& input, DblVec &gradient) = 0;
 	virtual int handler(size_t rankid, size_t cmd) = 0;
 	virtual ~DifferentiableFunction() {}
 };

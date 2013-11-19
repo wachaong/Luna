@@ -17,8 +17,8 @@ class RelativeMeanImprovementCriterion : public TerminationCriterion {
 	
 public:
 	RelativeMeanImprovementCriterion(int numItersToAvg = 5): numItersToAvg(numItersToAvg) {}
-	
 	double GetValue(const OptimizerState& state, std::ostream& message);
+	~RelativeMeanImprovementCriterion(){}
 };
 
 #endif 

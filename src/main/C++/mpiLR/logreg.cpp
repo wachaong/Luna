@@ -4,10 +4,14 @@
 #include <sstream>
 #include <string>
 #include <mpi.h>
+#include <pthread.h>
+
+pthread_t* threadList;
 
 LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path, size_t rankid):rankid(rankid){
 	init();
-	load_feamap("./FeaDict.dat");
+//	load_feamap("./FeaDict.dat");
+	load_feamap("feat");
 	trans_ins(ins_path, rankid, indices, values, instance_starts, labels, numFeats);
 }
 	
@@ -36,7 +40,8 @@ double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
 	DblVec localGradient = gradient;
 	MPI_Bcast(&localInput[0], localInput.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);	
 	MPI_Bcast(&localGradient[0], localGradient.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	double loss = EvalLocal(localInput, localGradient);	
+	double loss = EvalLocalMultiThread(localInput, localGradient);	
+//	double loss = EvalLocal(localInput, localGradient);	
 	double gloss = 0.0;
 	MPI_Reduce(&localGradient[0], &gradient[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&loss, &gloss, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -68,6 +73,87 @@ double LogisticRegressionObjective::EvalLocal(const DblVec& input, DblVec& gradi
 		problem.AddMultTo(i, 1.0 - insProb, gradient);	
 	}
 	return loss ;
+}
+
+/*
+MultiThread
+*/
+
+struct Parameter{
+	LogisticRegressionObjective &obj;
+	const DblVec&input;
+	DblVec&gradient;
+	double& loss;
+	Parameter(LogisticRegressionObjective &obj, const DblVec&input, DblVec&gradient, double& loss):obj(obj),input(input),gradient(gradient),loss(loss){}
+};
+
+void* ThreadEvalLocal(void * arg){
+	
+	Parameter* p  = ( Parameter*) arg;
+	p->loss = 0.0;
+	
+	for (size_t i = 0; i < p->input.size(); i++){
+		p->loss += 0.5 * p->input[i] * p->input[i] * p->obj.l2weight;
+		p->gradient[i] = p->obj.l2weight * p->input[i];
+	}
+	
+	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
+		double score = p->obj.problem.ScoreOf(i, p->input);
+		double insLoss, insProb;
+		if (score < -30){
+			insLoss = -score;
+			insProb = 0;
+		}else if (score > 30){
+			insLoss = 0;
+			insProb = 1;
+		}else {
+			double temp = 1.0 + exp(-score);
+			insLoss = log(temp);
+			insProb = 1.0/ temp;
+		}
+		p->loss += insLoss;
+		p->obj.problem.AddMultTo(i, 1.0 - insProb, p->gradient);	
+	}
+}
+
+double LogisticRegressionObjective::EvalLocalMultiThread(const DblVec& input, DblVec& gradient){
+	
+	/*
+	create 24 thread;
+	each thread calculate a loss and gradient
+	*/
+	int threadNum = 2;
+	double lossList[threadNum];
+	DblVec *gradList = new DblVec[threadNum];
+	for(int i = 0; i < threadNum; i++){
+		gradList[i] = DblVec(gradient.size());
+	}
+	threadList = new pthread_t[threadNum];
+	
+	for(int i = 0; i < threadNum; i++){
+		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i]);
+		pthread_create(&threadList[i], NULL, ThreadEvalLocal, p);
+	}
+	
+	for(int i = 0; i < threadNum; i++){
+		pthread_join(threadList[i], NULL);
+	}
+	
+	double loss = 0.0;
+	for(int j = 0; j < gradient.size(); j++){
+		gradient[j] = 0.0;
+	}
+	for(int i = 0; i < threadNum; i++){
+		loss += lossList[i];
+		for(int j = 0; j < gradient.size(); j++){
+			gradient[j] += gradList[i][j];
+		}
+	}
+	for(int j = 0; j < gradient.size(); j++){
+		gradient[j] /= threadNum;
+	}
+	return loss / threadNum;
+	
 }
 
 

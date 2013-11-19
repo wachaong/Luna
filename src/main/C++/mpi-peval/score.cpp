@@ -25,7 +25,7 @@
 #include "Log_r.h"
 
 using namespace std;
-
+const int MAX_BUF_LEN = 1024*20;
 map<unsigned int, int> *feasign2id_map;
 map<unsigned int, double> id2weight_map;
 char g_str_logconf[1024] ="/home/a/share/phoenix/mpi-algo-platform/conf/log4cpp.conf";
@@ -34,16 +34,7 @@ char feamap_path[2048];
 char ins_path[2048];
 char model_path[2048];
 
-int init(const char* feamap, const char* model, const char* ins)
-{
-	snprintf(feamap_path, 2048, "%s", feamap);
-	snprintf(model_path, 2048, "%s", model);
-	snprintf(ins_path, 2048, "%s", ins);
-	feasign2id_map = new map<unsigned int, int>[3];
-	load_feamap(feamap_path);
-	load_model(model_path);
-	return 0;
-}
+
 int getAdFeaCount(){
 	return feasign2id_map[0].size();
 }
@@ -258,6 +249,17 @@ int score_ins(const char* score_path){
 	fins.close();
 	fclose(p_out);
 	return 0;				
+}
+
+int init(const char* feamap, const char* model, const char* ins)
+{
+	snprintf(feamap_path, 2048, "%s", feamap);
+	snprintf(model_path, 2048, "%s", model);
+	snprintf(ins_path, 2048, "%s", ins);
+	feasign2id_map = new map<unsigned int, int>[3];
+	load_feamap(feamap_path);
+	load_model(model_path);
+	return 0;
 }
 
 int main(int argc, char *argv[]) {

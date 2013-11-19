@@ -19,7 +19,8 @@ char ins_path[2048];
 
 int init()
 {
-	snprintf(feamap_path, 2048, "%s", "./FeaDict.dat");
+//	snprintf(feamap_path, 2048, "%s", "./FeaDict.dat");
+	snprintf(feamap_path, 2048, "%s", "feat");
 	snprintf(ins_path, 2048, "%s", "ins");
 	feasign2id_map = new map<unsigned int, int>[3];
 	return 0;
@@ -120,7 +121,8 @@ int trans_ins(const char* ins_path, size_t rankid, std::deque<size_t>& indices, 
 	std::deque<size_t>& instance_starts, std::deque<bool>& labels, size_t& numFeats){
 	char insinput[50];
 	char insoutput[50];
-	sprintf(insinput, "%s-%05d", ins_path, rankid);
+//	sprintf(insinput, "%s-%05d", ins_path, rankid);
+	sprintf(insinput, "%s", ins_path);
 	sprintf(insoutput, "ins_out%05d", rankid);
 	ifstream fins(insinput);
 	ofstream out(insoutput);
@@ -215,7 +217,6 @@ int trans_ins(const char* ins_path, size_t rankid, std::deque<size_t>& indices, 
 			MyAddInstance(instance_starts, instance, true, indices, values,  labels);
 			numInstance++;
 		}
-
 	}
 	cout << "RANKID:" <<rankid << "\tNUMINSTANCE:" << numInstance << endl;
 	out.close();
