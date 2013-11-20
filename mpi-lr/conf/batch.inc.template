@@ -56,9 +56,9 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiLR"
 ((i++))
 
 
-CMD_NAME[$i]="getLoss"
-MPI_CMD[$i]="grep Iter log/logireg.log"
-((i++))
+#CMD_NAME[$i]="getLoss"
+#MPI_CMD[$i]="grep Iter log/logireg.log"
+#((i++))
 
 CMD_NAME[$i]="transModel"
 MPI_CMD[$i]="cat rank-00000/model >rank-00000/model.last"
@@ -78,7 +78,7 @@ MPI_CMD[$i]="mpirun cp ./data/score/ins  ./data/score/ins.train"
 ((i++))
 
 CMD_NAME[$i]="merge columns of feature data and score data"
-MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mergeInsScore.sh  ${WORKSPACE}/download_output/ins ./data/score/ins ins_score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh mergeInsScore.sh  ${WORKSPACE}/download_output/ins ./data/score/ins ins_score"
 ((i++))
 
 CMD_NAME[$i]="train-pre-auc"

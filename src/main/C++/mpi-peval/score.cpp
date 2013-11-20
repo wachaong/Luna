@@ -119,7 +119,7 @@ int load_feamap(const char* feamap_path){
 
 int load_model(const char* model_path){
 	unsigned int feasign = 0;
-	string line;
+	char line[100];
 	ifstream pmodel(model_path);
 
 	
@@ -130,13 +130,11 @@ int load_model(const char* model_path){
 
 	int fea_idx = 0;
 	while (getline(pmodel, line)){
-	//	 char * p_idx = strchr(line, '\t');
-	//	 *p_idx = '\0';
-    //     int fea_idx = atoi(line);
-    //     double fea_weight = atof(p_idx + 1);
-    //     id2weight_map[fea_idx] = fea_weight;
-    	double fea_weight = atof(line.c_str());
-    	id2weight_map[fea_idx++] = fea_weight;
+		 char * p_idx = strchr(line, '\t');
+		 *p_idx = '\0';
+         int fea_idx = atoi(line);
+         double fea_weight = atof(p_idx + 1);
+         id2weight_map[fea_idx] = fea_weight;
 	}
 	pmodel.close();
 	return 0;

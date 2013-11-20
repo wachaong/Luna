@@ -157,7 +157,7 @@ double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>&
 	return score;
 }
 
-
+/*
 
 double FeatureSelectionProblem::GroupLasso() const{
 	//||W||_21 + ||V||_21
@@ -184,7 +184,7 @@ double FeatureSelectionProblem::GroupLasso() const{
 	}
 	return result;
 }
-
+*/
 void displayGradient(DblVec& gradientP){
 	cout << "DEBUG DISPLAY GRADIENT\n";
 	for(size_t i = 0; i < gradientP.size(); i++){

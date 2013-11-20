@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
 	opt.Minimize(*o0, fsp->getP(), fsp->getP(), l1regweight, tol, m);
 			
 	double loss = 1e8;
-	for(int iter = 0; iter < 10; iter++){	
+	for(int iter = 0; iter < 3; iter++){	
 		OWLQN opt1;
 		opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m);
 		OWLQN opt2;

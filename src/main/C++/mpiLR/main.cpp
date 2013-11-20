@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
 
 	int my_rankid;
 	int cnt_processors;
-//	char train_file[100] = "./data/train/ins";
-	char train_file[100] = "ins";
+	char train_file[100] = "./data/train/ins";
+//	char train_file[100] = "ins";
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rankid);
 	MPI_Comm_size(MPI_COMM_WORLD, &cnt_processors);
@@ -39,25 +39,20 @@ int main(int argc, char** argv) {
 	double tol = 1e-6, l2weight = 0;
 	obj = new LogisticRegressionObjective(*prob, l2weight);
 	size_t size = prob->NumFeats();
+	DblVec init(size), ans(size);
 	if(my_rankid == 0){
 		int regweight = 0;
-		char output_file[100] = "model";
-	//	char output_file[100] = "./rank-00000/model";
+	//	char output_file[100] = "model";
 		int m = 10;
-		
-		DblVec init(size), ans(size);
-		
 		OWLQN opt;
 		opt.Minimize(*obj, init, ans, regweight, tol, m);
-		
 		obj->handler(0, 0);  //inform all non-root work finish
 		
 		int nonZero = 0;
 		for(size_t i = 0; i < ans.size(); i++){
 			if (ans[i] != 0) nonZero++;	
 		}
-		printVector(ans, output_file);
-		cout <<"HAHAHHAHAHA GAME OVER\n";
+		
 	}
 	else{
 		int ret;
@@ -73,6 +68,10 @@ int main(int argc, char** argv) {
 			}
 		}
 	}
+	MPI_Bcast(&ans[0], ans.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	char output_file[100] = "./rank-00000/model";
+	printVector(ans, output_file);
+	cout <<"HAHAHHAHAHA GAME OVER\n";
 	MPI_Finalize();
 //	delete obj;
 //	delete prob;
