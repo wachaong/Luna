@@ -10,8 +10,8 @@ pthread_t* threadList;
 
 LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path, size_t rankid):rankid(rankid){
 	init();
-//	load_feamap("./FeaDict.dat");
-	load_feamap("feat");
+	load_feamap("./FeaDict.dat");
+//	load_feamap("feat");
 	trans_ins(ins_path, rankid, indices, values, instance_starts, labels, numFeats);
 }
 	
@@ -84,7 +84,9 @@ struct Parameter{
 	const DblVec&input;
 	DblVec&gradient;
 	double& loss;
-	Parameter(LogisticRegressionObjective &obj, const DblVec&input, DblVec&gradient, double& loss):obj(obj),input(input),gradient(gradient),loss(loss){}
+	int threadId;
+	int threadNum;
+	Parameter(LogisticRegressionObjective &obj, const DblVec&input, DblVec&gradient, double& loss, int threadId, int threadNum):obj(obj),input(input),gradient(gradient),loss(loss), threadId(threadId), threadNum(threadNum){}
 };
 
 void* ThreadEvalLocal(void * arg){
@@ -98,6 +100,7 @@ void* ThreadEvalLocal(void * arg){
 	}
 	
 	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
+		if(i%p->threadNum != p->threadId) continue;
 		double score = p->obj.problem.ScoreOf(i, p->input);
 		double insLoss, insProb;
 		if (score < -30){
@@ -122,7 +125,7 @@ double LogisticRegressionObjective::EvalLocalMultiThread(const DblVec& input, Db
 	create 24 thread;
 	each thread calculate a loss and gradient
 	*/
-	int threadNum = 2;
+	int threadNum = 24;
 	double lossList[threadNum];
 	DblVec *gradList = new DblVec[threadNum];
 	for(int i = 0; i < threadNum; i++){
@@ -131,7 +134,7 @@ double LogisticRegressionObjective::EvalLocalMultiThread(const DblVec& input, Db
 	threadList = new pthread_t[threadNum];
 	
 	for(int i = 0; i < threadNum; i++){
-		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i]);
+		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i], i, threadNum);
 		pthread_create(&threadList[i], NULL, ThreadEvalLocal, p);
 	}
 	
@@ -149,10 +152,9 @@ double LogisticRegressionObjective::EvalLocalMultiThread(const DblVec& input, Db
 			gradient[j] += gradList[i][j];
 		}
 	}
-	for(int j = 0; j < gradient.size(); j++){
-		gradient[j] /= threadNum;
-	}
-	return loss / threadNum;
+	delete []gradList;
+	delete []threadList;
+	return loss;
 	
 }
 
