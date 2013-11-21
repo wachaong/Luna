@@ -8,6 +8,7 @@
 #include "OWLQN.h"
 
 typedef std::vector<double> DblVec;
+typedef std::vector<int> IntVec;
 typedef std::vector<double>* DblMat;
 
 
@@ -61,7 +62,7 @@ public:
 	
 	//mult* u*w_j * T_i
 	void AddMultToV(size_t i, double mult, std::vector<double> &vec) const{
-		DblVec u, a;
+		IntVec u, a;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j];
 			//Ad Feature
@@ -86,7 +87,7 @@ public:
 	}
 	//mult*u_i *T*v_j
 	void AddMultToW(size_t i, double mult, std::vector<double> &vec) const{
-		DblVec u, a;
+		IntVec u, a;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j];
 			//Ad Feature
