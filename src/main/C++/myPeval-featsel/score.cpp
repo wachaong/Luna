@@ -15,9 +15,13 @@ Load instance and eval
 #include <fcntl.h>
 using namespace std;
 
+
 map<unsigned int, int> *feasign2id_map;
 typedef std::vector<double> DblVec;
+
 DblVec W;
+DblVec V;
+DblVec P;
 
 //feasign2id_map[0]	Ad featuremap 
 //feasign2id_map[1] User featuremap
@@ -27,16 +31,7 @@ char feamap_path[2048];
 char ins_path[2048];
 char model_path[2048];
 
-int init(const char* feamap, const char* model, const char* ins)
-{
-	snprintf(feamap_path, 2048, "%s", feamap);
-	snprintf(model_path, 2048, "%s", model);
-	snprintf(ins_path, 2048, "%s", ins);
-	feasign2id_map = new map<unsigned int, int>[3];
-	load_feamap(feamap_path);
-	load_model(model_path);
-	return 0;
-}
+
 
 int getAdFeaCount(){
 	return feasign2id_map[0].size();
@@ -121,31 +116,85 @@ int load_feamap(const char* feamap_path){
 }
 
 int load_model(const char* model_path){
-	unsigned int feasign = 0;
 	string line;
-	ifstream pmodel(model_path);
-
+	char model_file_name[50];
+	sprintf(model_file_name, "%sP", model_path);
+	double fea_weight;
 	
+	//load P
+	ifstream pmodel(model_file_name);
 	if(!pmodel.good()){
-		cerr << "error model file" << endl;
+		cerr << "error model file " << model_file_name << endl;
 		exit(1);
 	}
-
-	int fea_idx = 0;
 	while (getline(pmodel, line)){
-    	double fea_weight = atof(line.c_str());
-    	W.push_back(fea_weight);
+    	fea_weight = atof(line.c_str());
+    	P.push_back(fea_weight);
 	}
 	pmodel.close();
+	
+	
+	//load W
+	sprintf(model_file_name, "%sW", model_path);
+	ifstream wmodel(model_file_name);
+	if(!wmodel.good()){
+		cerr << "error model file " << model_file_name  << endl;
+		exit(1);
+	}
+	while (getline(wmodel, line)){
+    	fea_weight = atof(line.c_str());
+    	W.push_back(fea_weight);
+	}
+	wmodel.close();
+	
+	
+	//load V
+	sprintf(model_file_name, "%sV", model_path);
+	ifstream vmodel(model_file_name);
+	if(!vmodel.good()){
+		cerr << "error model file " << model_file_name << endl;
+		exit(1);
+	}
+	while (getline(vmodel, line)){
+    	fea_weight = atof(line.c_str());
+    	V.push_back(fea_weight);
+	}
+	vmodel.close();	
 	return 0;
 }
 
 double cal_score(vector <size_t> instance){
+	//f(x)=(UW)(TV)' + Px
 	double score = 0.0;
-	for(size_t i = 0; i < instance.size(); i++){
-		score += W[instance[i]];
+	DblVec UW;
+	DblVec TV;
+	int dimLatent = W.size() / getUserFeaCount();
+	for (size_t j = 0 ; j < dimLatent; j++){
+		UW.push_back(0);
+		TV.push_back(0);
 	}
+	for (size_t j = 0; j < instance.size(); j++){
+		score += P[instance[j]] * 1.0;
+		if(instance[j] < getAdFeaCount()){
+			for(size_t k = 0; k < dimLatent; k++){
+				int v_index = instance[j] * dimLatent + k;
+				TV[k]+=V[v_index];
+			}
+		} 
+		else if(instance[j] < getAdFeaCount() + getUserFeaCount()){
+			for(size_t k = 0; k < dimLatent; k++){
+				int w_index = (instance[j] - getAdFeaCount())*dimLatent + k;
+				UW[k] += W[w_index];
+			}
+		}
+	}
+	
+	for (size_t j = 0; j < dimLatent; j++){
+		score += UW[j]*TV[j];
+	}
+
 	return score;
+	
 }
 
 double get_ctr(double score) {
@@ -238,10 +287,9 @@ int score_ins(const char* score_path){
 		sort(&instance[0], &instance[instance.size()]);
 		//score and output to file
 		double score = cal_score(instance);
-	//	cout << score << endl;
+		cout << score << endl;
 		double ctr = get_ctr(score);
 		fprintf(p_out, "%lf%d%d%s\n", 1.0*ctr, temp_nonclick, temp_click, "Q");
-		
 	}
 	delete []feasign2id_map;
 	fins.close();
@@ -249,4 +297,13 @@ int score_ins(const char* score_path){
 	return 0;				
 }
 
-
+int init(const char* feamap, const char* model, const char* ins)
+{
+	snprintf(feamap_path, 2048, "%s", feamap);
+	snprintf(model_path, 2048, "%s", model);
+	snprintf(ins_path, 2048, "%s", ins);
+	feasign2id_map = new map<unsigned int, int>[3];
+	load_feamap(feamap_path);
+	load_model(model_path);
+	return 0;
+}

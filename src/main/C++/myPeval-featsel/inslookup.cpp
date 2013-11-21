@@ -1,23 +1,15 @@
-/*
-Load FeatureMap
-Load Model
-Load instance and eval
-*/
-
 #include <string.h>
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
-#include "score.h"
+#include "inslookup.h"
 #include <vector>
 #include <algorithm>
-#include <fcntl.h>
 using namespace std;
 
 map<unsigned int, int> *feasign2id_map;
-typedef std::vector<double> DblVec;
-DblVec W;
+map<unsigned int, double> *id2weight_map;
 
 //feasign2id_map[0]	Ad featuremap 
 //feasign2id_map[1] User featuremap
@@ -25,16 +17,13 @@ DblVec W;
 
 char feamap_path[2048];
 char ins_path[2048];
-char model_path[2048];
 
-int init(const char* feamap, const char* model, const char* ins)
+int init()
 {
-	snprintf(feamap_path, 2048, "%s", feamap);
-	snprintf(model_path, 2048, "%s", model);
-	snprintf(ins_path, 2048, "%s", ins);
+	snprintf(feamap_path, 2048, "%s", "./FeaDict.dat");
+	snprintf(ins_path, 2048, "%s", "ins");
 	feasign2id_map = new map<unsigned int, int>[3];
-	load_feamap(feamap_path);
-	load_model(model_path);
+	id2weight_map = new map<unsigned int, double>();
 	return 0;
 }
 
@@ -116,7 +105,6 @@ int load_feamap(const char* feamap_path){
 	cout << "User Feature: "<<getUserFeaCount() << endl;
 	cout << "Other Feature: "<<getOtherFeaCount() << endl;
 	cout << "Total Feature: " << getAllFeaCount() << "\n";
-	pfeamap.close();
 	return 0;
 }
 
@@ -131,34 +119,21 @@ int load_model(const char* model_path){
 		exit(1);
 	}
 
-	int fea_idx = 0;
 	while (getline(pmodel, line)){
-    	double fea_weight = atof(line.c_str());
-    	W.push_back(fea_weight);
+		 char * p_idx = strchr(line, '\t');
+		 *p_idx = '\0';
+         int fea_idx = atoi(line);
+         double fea_weight = atof(p_idx + 1);
+         id2weight_map[fea_idx] = fea_weight;
 	}
-	pmodel.close();
 	return 0;
 }
 
-double cal_score(vector <size_t> instance){
-	double score = 0.0;
-	for(size_t i = 0; i < instance.size(); i++){
-		score += W[instance[i]];
-	}
-	return score;
-}
 
-double get_ctr(double score) {
-    double ctr = 1/(1 + exp(-score));
-    return ctr;
-}
-
-
-int score_ins(const char* score_path){
+int score_ins(const char* ins_path, const char* score_path){
 	char insinput[50];
 	sprintf(insinput, "%s", ins_path);
 	ifstream fins(insinput);
-	FILE* p_out = fopen(score_path, "w");
 	char line[MAX_BUF_LEN];
 	string linestr;
 	const char CTRL_A = '';
@@ -237,15 +212,12 @@ int score_ins(const char* score_path){
 		}
 		sort(&instance[0], &instance[instance.size()]);
 		//score and output to file
-		double score = cal_score(instance);
-	//	cout << score << endl;
-		double ctr = get_ctr(score);
-		fprintf(p_out, "%lf%d%d%s\n", 1.0*ctr, temp_nonclick, temp_click, "Q");
 		
+		score(instance);
+		
+
 	}
-	delete []feasign2id_map;
-	fins.close();
-	fclose(p_out);
+	out.close();
 	return 0;				
 }
 

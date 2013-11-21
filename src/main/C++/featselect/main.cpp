@@ -12,13 +12,13 @@ void printVector(const DblVec &vec, const char* filename) {
 		cerr << "error opening matrix file " << filename << endl;
 		exit(1);
 	}
-	outfile << "%%MatrixMarket matrix array real general" << endl;
-	outfile << "1 " << vec.size() << endl;
+//	outfile << "%%MatrixMarket matrix array real general" << endl;
+//	outfile << "1 " << vec.size() << endl;
 	for (size_t i=0; i<vec.size(); i++) {
-		if(vec[i] < 1e-6){
-			outfile << 0 << endl;
-		}
-		else
+	//	if(vec[i] < 1e-6){
+	//		outfile << 0 << endl;
+	//	}
+	//	else
 			outfile << vec[i] << endl;
 	}
 	outfile.close();
@@ -26,7 +26,7 @@ void printVector(const DblVec &vec, const char* filename) {
 
 int main(int argc, char** argv) {	
 	int K = 10; //latent factor dimension
-	double l21reg = 0.1;
+	double l21reg = 10;
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem("ins", "fea", K);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
@@ -40,26 +40,27 @@ int main(int argc, char** argv) {
 	int size = fsp->NumAllFeats();
 	OWLQN opt;
 	opt.Minimize(*o0, fsp->getP(), fsp->getP(), l1regweight, tol, m);
-			
+
 	double loss = 1e8;
-	for(int iter = 0; iter < 3; iter++){	
+
+	for(int iter = 0; iter < 8; iter++){	
 		OWLQN opt1;
 		opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m);
 		OWLQN opt2;
 		double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m);
-	//	if ((loss - newloss) / loss > 1e-4){
-	//		loss = newloss;
-	//	}
-	//	else{
-	//		cout << "LARGE ITERATION: " << iter << " END" << endl;
-	//		break;
-	//	}
+		if ((loss - newloss) / loss > 1e-8){
+			loss = newloss;
+		}
+		else{
+			cout << "LARGE ITERATION: " << iter << " END" << endl;
+			break;
+		}
 	}
 
 
-	printVector(fsp->getP(), "OUT_P");
-	printVector(fsp->getW(), "OUT_W");
-	printVector(fsp->getV(), "OUT_V");
+	printVector(fsp->getP(), "modelP");
+	printVector(fsp->getW(), "modelW");
+	printVector(fsp->getV(), "modelV");
 	return 0;
 	
 }

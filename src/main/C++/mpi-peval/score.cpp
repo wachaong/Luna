@@ -27,7 +27,9 @@
 using namespace std;
 const int MAX_BUF_LEN = 1024*20;
 map<unsigned int, int> *feasign2id_map;
-map<unsigned int, double> id2weight_map;
+typedef std::vector<double> DblVec;
+DblVec W;
+
 char g_str_logconf[1024] ="/home/a/share/phoenix/mpi-algo-platform/conf/log4cpp.conf";
 
 char feamap_path[2048];
@@ -130,11 +132,8 @@ int load_model(const char* model_path){
 
 	int fea_idx = 0;
 	while (getline(pmodel, line)){
-		 char * p_idx = strchr(line, '\t');
-		 *p_idx = '\0';
-         int fea_idx = atoi(line);
-         double fea_weight = atof(p_idx + 1);
-         id2weight_map[fea_idx] = fea_weight;
+		double fea_weight = atof(line.c_str());
+    	W.push_back(fea_weight);
 	}
 	pmodel.close();
 	return 0;
@@ -143,7 +142,7 @@ int load_model(const char* model_path){
 double cal_score(vector <size_t> instance){
 	double score = 0.0;
 	for(size_t i = 0; i < instance.size(); i++){
-		score += id2weight_map[instance[i]];
+		score += W[instance[i]];
 	}
 	return score;
 }
@@ -238,7 +237,7 @@ int score_ins(const char* score_path){
 		sort(&instance[0], &instance[instance.size()]);
 		//score and output to file
 		double score = cal_score(instance);
-		cout << score << endl;
+		//cout << score << endl;
 		double ctr = get_ctr(score);
 		fprintf(p_out, "%lf%d%d%s\n", 1.0*ctr, temp_nonclick, temp_click, "Q");
 		

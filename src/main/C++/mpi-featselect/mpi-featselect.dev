@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000000000000
-UnitCount=10
+UnitCount=9
 
 [VersionInfo]
 Major=1
@@ -90,26 +90,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit5]
-FileName=mpi-featselect.dev
-Folder=mpi-featselect
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit6]
-FileName=OWLQN.cpp
-CompileCpp=1
-Folder=mpi-featselect
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit7]
 FileName=OWLQN.h
 CompileCpp=1
 Folder=mpi-featselect
@@ -119,7 +100,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit8]
+[Unit7]
 FileName=TerminationCriterion.cpp
 CompileCpp=1
 Folder=mpi-featselect
@@ -129,8 +110,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit8]
 FileName=TerminationCriterion.h
+CompileCpp=1
+Folder=mpi-featselect
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit9]
+FileName=main.cpp
 CompileCpp=1
 Folder=mpi-featselect
 Compile=1
@@ -141,6 +132,16 @@ BuildCmd=
 
 [Unit10]
 FileName=main.cpp
+CompileCpp=1
+Folder=mpi-featselect
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=OWLQN.cpp
 CompileCpp=1
 Folder=mpi-featselect
 Compile=1

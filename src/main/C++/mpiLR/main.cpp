@@ -16,7 +16,7 @@ void printVector(const DblVec &vec, const char* filename) {
 		exit(1);
 	}
 	for (size_t i=0; i<vec.size(); i++) {
-		outfile << i << "\t" << vec[i] << endl;
+		outfile << vec[i] << endl;
 	}
 	outfile.close();
 }
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
 	printVector(ans, output_file);
 	cout <<"HAHAHHAHAHA GAME OVER\n";
 	MPI_Finalize();
-//	delete obj;
-//	delete prob;
+	delete obj;
+	delete prob;
 	return 0;
 }
