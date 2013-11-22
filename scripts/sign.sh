@@ -137,7 +137,7 @@ evaluate_inputs=${HDHOME}/Luna/1.0.1/${NAME}/output/test/part*
 
 
 HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
-HADOOP_OUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_${NAME}
+HADOOP_OUT_PATH=${HADOOP_MODEL_PATH}/JOB_${NAME}
 hadoop fs -rmr $HADOOP_OUT_PATH
 
 output=${HADOOP_OUT_PATH}/model

@@ -405,9 +405,12 @@ public class FeatureGenerator {
 		for(int i = 0; i < contextFeatures.size(); i++) allFeatures.add(contextFeatures.get(i));
 		
 		ArrayList<String> adTargetingFeatures = GetAdFeatureList(a);
+		if(adTargetingFeatures.size() < 5) return null;
 		for(int i = 0; i < adTargetingFeatures.size(); i++) allFeatures.add(adTargetingFeatures.get(i));
 		
 		ArrayList<String> userTargetingFeatures = GetUserFeatureList(u);
+		if(userTargetingFeatures.size() < 3) return null;
+		
 		for(int i = 0; i < userTargetingFeatures.size(); i++) allFeatures.add(userTargetingFeatures.get(i));
 		
 		//ArrayList<String> hybridFeatures = getUserADHybridFeatures(adTargetingFeatures, userTargetingFeatures);
