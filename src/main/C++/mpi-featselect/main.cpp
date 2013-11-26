@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 	int size = fsp->NumAllFeats();
 	int l1regweight = 0;
 	double tol = 1e-4, l2weight = 0;
-	int m = 10;
+	int m = 5;
 	if(my_rankid == 0){
 		OWLQN opt;
 		opt.Minimize(*o0, fsp->getP(), fsp->getP(), l1regweight, tol, m);
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
 		size = fsp->getW().size();
 		if(my_rankid == 0){
 			OWLQN opt1;
-			opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m);
+			opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m, iter);
 			o1->handler(0, 0); // inform all non-root worker finish
 			
 		}
@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
 		size = fsp->getV().size();
 		if(my_rankid == 0){
 			OWLQN opt2;
-			double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m);
+			double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
 		}
 		

@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 	//In the LR problem <load local dataset to memory>
 	LogisticRegressionProblem *prob = new LogisticRegressionProblem(train_file, my_rankid);
 	DifferentiableFunction *obj;
-	double tol = 1e-6, l2weight = 0;
+	double tol = 1e-4, l2weight = 0;
 	obj = new LogisticRegressionObjective(*prob, l2weight);
 	size_t size = prob->NumFeats();
 	DblVec init(size), ans(size);

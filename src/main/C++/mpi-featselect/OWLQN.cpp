@@ -252,7 +252,7 @@ void OptimizerState::Shift() {
 }
 
 
-double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m) const {
+double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m, int iter) const {
 	OptimizerState state(function, initial, m, l1weight);
 	cout << setprecision(4) << scientific << right;
 	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
@@ -278,6 +278,7 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 		if (termCritVal < tol) break;
 		
 		state.Shift(); 
+		if(iter < 3 && state.iter >= 20) break;
 	//	if(state.iter >= 100) break;
 	}
 	

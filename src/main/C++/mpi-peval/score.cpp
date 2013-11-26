@@ -121,7 +121,7 @@ int load_feamap(const char* feamap_path){
 
 int load_model(const char* model_path){
 	unsigned int feasign = 0;
-	char line[100];
+	string line;
 	ifstream pmodel(model_path);
 
 	

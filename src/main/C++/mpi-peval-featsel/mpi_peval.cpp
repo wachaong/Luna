@@ -1,14 +1,3 @@
-/** 
- * @copyright (c) 2012 Taobao.com, Inc. All Rights Reserved
- * @author : huayong.ljx
- * @fax : +86.10.815.72625
- * @e-mail : huayong.ljx@taobao.com
- * @date : 2012-04-18 - 18:40
- * @version: 1.0.0.1
- * 
- * @file : mpi_peval.cpp
- * @brief :
- */
 
 #include "mpi_peval.h"
 #include "prediction.h"

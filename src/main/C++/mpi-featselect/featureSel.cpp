@@ -51,19 +51,19 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	numUserFeature = getUserFeaCount();
 	numOtherFeature = getOtherFeaCount();
 	dimLatent = K;
-	epsilon = 1e-4;
+	epsilon = 1e-8;
 	
 	//initialize W, V, P
 	srand((unsigned)time(NULL)); 
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			W.push_back(rand() / double(RAND_MAX));
+			W.push_back(rand() / double(RAND_MAX) * 0.01);
 		//W.push_back(0);
 		}
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			V.push_back(rand() / double(RAND_MAX));
+			V.push_back(rand() / double(RAND_MAX) * 0.01);
 		}
 	}
 	

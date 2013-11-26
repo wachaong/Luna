@@ -1,14 +1,4 @@
-/** 
- * @copyright (c) 2012 Taobao.com, Inc. All Rights Reserved
- * @author : huayong.ljx
- * @fax    : +86.10.815.72625
- * @e-mail : huayong.ljx@taobao.com
- * @date   : 2012-04-11 - 19:58
- * @version: 1.0.0.1
- * 
- * @file   : prediction.h
- * @brief  : header file of prediction.cpp and mpi_auc.cpp
- */
+
 
 #ifndef LR4CTR_PREDICTION_H
 #define LR4CTR_PREDICTION_H
