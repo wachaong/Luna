@@ -1,0 +1,29 @@
+#!/bin/bash
+
+local_train_path="download_output/ins"
+
+i=0;
+CMD_NAME[$i]="mkdir train"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data/train"
+((i++))
+
+CMD_NAME[$i]="mkdir score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/data/score"
+((i++))
+
+CMD_NAME[$i]="mvFile"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/download_output ${WORKSPACE}/data/train"
+((i++))
+
+CMD_NAME[$i]="train-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./model ${WORKSPACE}/data/train/ins ${WORKSPACE}/data/score/ins"
+((i++))
+
+CMD_NAME[$i]="train-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="train-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/train_auc.txt"
+((i++))
+

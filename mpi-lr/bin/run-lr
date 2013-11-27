@@ -49,7 +49,7 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
   cp ${CONF_DIR}/batch.inc.template ${LOG_DIR}/batch.inc.tmp
   #   begin variable substitution
   cat ${LOG_DIR}/batch.inc.tmp \
-	  | sed 's/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH}/g" \
+	  | sed "s/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH}/g" \
       | sed "s/\[FEATURE_NUM\]/${FEATURE_NUM}/g" \
       | sed "s/\[VALID_FEATURE_HADOOP_PATH\]/${VALID_FEATURE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_HADOOP_PATH\]/${FEATURE_HADOOP_PATH_TMP}/g" > ${LOG_DIR}/batch.inc

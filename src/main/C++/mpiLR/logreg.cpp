@@ -5,7 +5,9 @@
 #include <string>
 #include <mpi.h>
 #include <pthread.h>
+#include <time.h>
 
+typedef long clock_t;
 pthread_t* threadList;
 
 LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path, size_t rankid):rankid(rankid){
@@ -36,15 +38,27 @@ void displayGradient(DblVec& gradientP){
 }
 
 double LogisticRegressionObjective::Eval(const DblVec& input, DblVec& gradient){
+//	clock_t start,finish;
+//	double totaltime;
+
 	DblVec localInput = input;
 	DblVec localGradient = gradient;
 	MPI_Bcast(&localInput[0], localInput.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);	
 	MPI_Bcast(&localGradient[0], localGradient.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	double loss = EvalLocalMultiThread(localInput, localGradient);	
+
+	
+
+	double loss = EvalLocalMultiThread(localInput, localGradient);
+	
+	
+//	start=clock();
 //	double loss = EvalLocal(localInput, localGradient);	
 	double gloss = 0.0;
 	MPI_Reduce(&localGradient[0], &gradient[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 	MPI_Reduce(&loss, &gloss, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+//	finish=clock();
+//	totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+//	cout<<"\nReduce Time: "<<totaltime<<"seconds"<<endl;
 	return gloss;
 }
 
@@ -55,6 +69,7 @@ double LogisticRegressionObjective::EvalLocal(const DblVec& input, DblVec& gradi
 		gradient[i] = l2weight * input[i];
 	}
 	
+
 	for (size_t i = 0; i < problem.NumInstances(); i++){
 		double score = problem.ScoreOf(i, input);
 		double insLoss, insProb;
@@ -82,7 +97,7 @@ MultiThread
 struct Parameter{
 	LogisticRegressionObjective &obj;
 	const DblVec&input;
-	DblVec&gradient;
+	DblVec& gradient;
 	double& loss;
 	int threadId;
 	int threadNum;
@@ -90,6 +105,8 @@ struct Parameter{
 };
 
 void* ThreadEvalLocal(void * arg){
+	clock_t start,finish;
+	double totaltime;
 	
 	Parameter* p  = ( Parameter*) arg;
 	p->loss = 0.0;
@@ -99,6 +116,45 @@ void* ThreadEvalLocal(void * arg){
 		p->gradient[i] = p->obj.l2weight * p->input[i];
 	}
 	
+	start=clock();
+	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
+		if(i%p->threadNum != p->threadId) continue;
+		double score = p->obj.problem.ScoreOf(i, p->input);
+	}
+	
+	finish=clock();
+	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
+		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+		cout<<"Score Time: "<<totaltime<<"seconds"<<endl;
+	}
+	
+	start=clock();
+	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
+		if(i%p->threadNum != p->threadId) continue;
+		double score = p->obj.problem.ScoreOf(i, p->input);
+		double insLoss, insProb;
+		if (score < -30){
+			insLoss = -score;
+			insProb = 0;
+		}else if (score > 30){
+			insLoss = 0;
+			insProb = 1;
+		}else {
+			double temp = 1.0 + exp(-score);
+			insLoss = log(temp);
+			insProb = 1.0/ temp;
+		}
+		p->loss += insLoss;
+	}
+	
+	finish=clock();
+	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
+		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+		cout<<"Score+Loss time Time: "<<totaltime<<"seconds"<<endl;
+	}
+	
+	p->loss = 0.0;
+	start=clock();
 	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
 		if(i%p->threadNum != p->threadId) continue;
 		double score = p->obj.problem.ScoreOf(i, p->input);
@@ -117,6 +173,13 @@ void* ThreadEvalLocal(void * arg){
 		p->loss += insLoss;
 		p->obj.problem.AddMultTo(i, 1.0 - insProb, p->gradient);	
 	}
+	
+	finish=clock();
+	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
+		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+		cout<<"All Time: "<<totaltime<<"seconds"<<endl;
+	}
+	
 }
 
 double LogisticRegressionObjective::EvalLocalMultiThread(const DblVec& input, DblVec& gradient){

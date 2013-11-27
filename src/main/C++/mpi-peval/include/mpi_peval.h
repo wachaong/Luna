@@ -1,4 +1,3 @@
-/** 
 
 
 #ifndef LR4CTR_MPI_AUC_H

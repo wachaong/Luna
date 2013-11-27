@@ -57,13 +57,13 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	srand((unsigned)time(NULL)); 
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			W.push_back(rand() / double(RAND_MAX) * 0.01);
+			W.push_back((rand() * 2 - 1) / double(RAND_MAX) * 0.01);
 		//W.push_back(0);
 		}
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			V.push_back(rand() / double(RAND_MAX) * 0.01);
+			V.push_back((rand() * 2 - 1) / double(RAND_MAX) * 0.01);
 		}
 	}
 	
