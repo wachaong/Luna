@@ -22,7 +22,7 @@ HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
 HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 output=${HADOOP_OUTPUT_PATH}/model
-jobName=my-mpi-lr-auc
+jobName=my-mpi-featsel-auc
 nodes=30
 ppn=1
 cpuct=24
@@ -37,7 +37,7 @@ TEST_INSTANCE_HADOOP_PATH=${output}/test/instance
 
 rm -rf ${WORK_DIR}/model
 rm -rf ${WORK_DIR}/FeaDict.dat
-hadoop fs -get ${output}/model/model ${WORK_DIR}/
+hadoop fs -get ${output}/model/model* ${WORK_DIR}/
 hadoop fs -cat ${output}/valid/* > ${WORK_DIR}/FeaDict.dat
 hadoop fs -rmr ${output}/auc
 
@@ -49,7 +49,7 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
   -f ${BIN_DIR}/mpi_inslookup \
   -f ${CONF_DIR}/log4cpp.conf \
   -f ${BIN_DIR}/moveFile.sh \
-  -f ${WORK_DIR}/model \
+  -f ${WORK_DIR}/model* \
   -f ${WORK_DIR}/FeaDict.dat \
   -f ${BIN_DIR}/pre-auc.sh \
   -f ${BIN_DIR}/mergeInsScore.sh \

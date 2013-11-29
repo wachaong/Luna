@@ -98,27 +98,23 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval-featsel ./data/score/ins
 #run test data for result evaluation
 #[EVALUATE]
 # eval test data
-#CMD_NAME[$i]="downloadTestSet"
-#MPI_CMD[$i]="/home/a/share/algo1/mpi-download/script/mpi_get -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ [TEST_INSTANCE_HADOOP_PATH]:${local_test_path}:0"
-#((i++))
-#
-#CMD_NAME[$i]="serializeTestIns"
-#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi_inslookup ${WORKSPACE}/log4cpp.conf ${WORKSPACE}/${local_dict_path} ${WORKSPACE}/${local_test_path}/ins 24"
-#((i++))
-#
-#CMD_NAME[$i]="mvFile"
-#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/${local_test_path} ${WORKSPACE}/data/eval"
-#((i++))
-#
-#CMD_NAME[$i]="test-score"
-#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/data/eval/ins ./data/score/ins"
-#((i++))
-#
-#CMD_NAME[$i]="test-pre-auc"
-#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
-#((i++))
-#
-#CMD_NAME[$i]="test-auc"
-#MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/test_auc.txt "
-#((i++))
-#[END EVALUATE]         
+CMD_NAME[$i]="downloadTestSet"
+MPI_CMD[$i]="/home/a/share/algo1/mpi-download/script/mpi_get -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ [TEST_INSTANCE_HADOOP_PATH]:${local_test_path}:0"
+((i++))
+
+CMD_NAME[$i]="mvFile"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/${local_test_path} ${WORKSPACE}/data/eval"
+((i++))
+
+CMD_NAME[$i]="test-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-pfs-score ./rank-00000/model ${WORKSPACE}/data/eval/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="test-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="test-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval-featsel ./data/score/ins ./data/score/qid rank-00000/test_auc.txt "
+((i++))
+        

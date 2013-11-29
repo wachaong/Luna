@@ -19,17 +19,17 @@ HDHOME=/group/tbalgo-dev/yanling.yl
 HADOOP_HOME=/home/yunti/hadoop-current
 HADOOP_CONF_DIR=`cd ~/conf; pwd`
 HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
-#HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
-HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
+HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
+#HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 
 output=${HADOOP_OUTPUT_PATH}/model
 jobName=my-mpi-lr
-nodes=60
+nodes=30
 ppn=1
 cpuct=24
 user=yanling.yl
 walltime=36000
-pmem=30G
+pmem=50G
 queue=batch
 
 VALID_FEATURE_HADOOP_PATH=${output}/valid
@@ -46,12 +46,12 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
   #compose a batch.inc file
   VALID_FEATURE_HADOOP_PATH_TMP=`echo ${VALID_FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   FEATURE_HADOOP_PATH_TMP=`echo ${FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
-  TEST_HADOOP_PATH_TMP=`echo ${FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  TEST_INSTANCE_HADOOP_PATH_TMP=`echo ${TEST_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   
   cp ${CONF_DIR}/batch.inc.template ${LOG_DIR}/batch.inc.tmp
   #   begin variable substitution
   cat ${LOG_DIR}/batch.inc.tmp \
-	  | sed "s/\[TEST_HADOOP_PATH_TMP\]/${TEST_INSTANCE_HADOOP_PATH}/g" \
+	  | sed "s/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_NUM\]/${FEATURE_NUM}/g" \
       | sed "s/\[VALID_FEATURE_HADOOP_PATH\]/${VALID_FEATURE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_HADOOP_PATH\]/${FEATURE_HADOOP_PATH_TMP}/g" > ${LOG_DIR}/batch.inc
@@ -68,8 +68,6 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
     -f ${BIN_DIR}/mergeDict.sh \
     -f ${BIN_DIR}/moveFile.sh \
     -f ${BIN_DIR}/moveInsToEval.sh \
-    -f ${BIN_DIR}/model_analysis.sh \
-    -f ${BIN_DIR}/single_auc.sh \
     -f ${BIN_DIR}/pre-auc.sh \
     -f ${BIN_DIR}/mpi-peval \
     -f ${BIN_DIR}/mergeInsScore.sh \
