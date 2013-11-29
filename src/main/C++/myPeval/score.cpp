@@ -26,7 +26,6 @@ DblVec W;
 char feamap_path[2048];
 char ins_path[2048];
 char model_path[2048];
-
 int init(const char* feamap, const char* model, const char* ins)
 {
 	snprintf(feamap_path, 2048, "%s", feamap);
@@ -79,6 +78,9 @@ int get_featid(const char* fsign){
 	unsigned int feasign = 0;
 	int type = get_feature(fsign, feasign);
 	int featid = 0;
+	if(feasign2id_map[type].find(feasign) == feasign2id_map[type].end())
+		return -1;
+	
 	if(type == 0) {
 		featid = feasign2id_map[type][feasign];
 	}
@@ -136,6 +138,7 @@ int load_model(const char* model_path){
     	double fea_weight = atof(line.c_str());
     	W.push_back(fea_weight);
 	}
+	
 	pmodel.close();
 	return 0;
 }
@@ -227,6 +230,10 @@ int score_ins(const char* score_path){
 				sscanf(p_fea, "%s", feasign);
 				//getfeaid
 				feaid = get_featid(feasign);
+				if(feaid == -1) {
+					p_begin = p_end + 1;
+					continue;
+				}
 				//add to instance list
 				instance.push_back(feaid);
 				

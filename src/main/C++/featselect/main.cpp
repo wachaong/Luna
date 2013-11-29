@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 	
 	
 	int l1regweight = 0;
-	double tol = 1e-4, l2weight = 0;
+	double tol = 1e-6, l2weight = 0;
 	int m = 10;
 	int size = fsp->NumAllFeats();
 	OWLQN opt;

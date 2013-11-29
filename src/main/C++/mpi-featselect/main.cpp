@@ -39,14 +39,14 @@ int main(int argc, char** argv) {
 	
 	
 	int K = 10; //latent factor dimension
-	double l21reg = 1e5;
+	double l21reg = 0;
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem(train_file, fea_file, K, my_rankid);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
 	int size = fsp->NumAllFeats();
 	int l1regweight = 0;
-	double tol = 1e-4, l2weight = 0;
+	double tol = 1e-6, l2weight = 0;
 	int m = 5;
 	if(my_rankid == 0){
 		OWLQN opt;

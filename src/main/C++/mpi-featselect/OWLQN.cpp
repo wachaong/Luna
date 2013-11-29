@@ -278,8 +278,8 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 		if (termCritVal < tol) break;
 		
 		state.Shift(); 
-		if(iter < 3 && state.iter >= 20) break;
-	//	if(state.iter >= 100) break;
+	//	if(iter < 3 && state.iter >= 20) break;
+		if(state.iter >= 400) break;
 	}
 	
 	cout << endl;

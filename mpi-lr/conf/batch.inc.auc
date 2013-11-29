@@ -19,6 +19,10 @@ CMD_NAME[$i]="train-score"
 MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./model ${WORKSPACE}/data/train/ins ${WORKSPACE}/data/score/ins"
 ((i++))
 
+CMD_NAME[$i]="merge columns of feature data and score data"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh mergeInsScore.sh  ${WORKSPACE}/data/eval/ins ./data/score/ins ins_score"
+((i++))
+
 CMD_NAME[$i]="train-pre-auc"
 MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
 ((i++))

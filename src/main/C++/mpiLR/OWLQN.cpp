@@ -271,7 +271,7 @@ void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, Db
 		cout << str.str() << flush;
 		
 		if (termCritVal < tol) break;
-		
+		if (state.value >= 500) break;
 		state.Shift(); 
 	}
 	

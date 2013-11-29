@@ -79,6 +79,7 @@ int get_featid(const char* fsign){
 	unsigned int feasign = 0;
 	int type = get_feature(fsign, feasign);
 	int featid = 0;
+	if(feasign2id_map[type].find(feasign) == feasign2id_map[type].end()) return -1;
 	if(type == 0) {
 		featid = feasign2id_map[type][feasign];
 	}
@@ -280,6 +281,10 @@ int score_ins(const char* score_path){
 				sscanf(p_fea, "%s", feasign);
 				//getfeaid
 				feaid = get_featid(feasign);
+				if(feaid == -1){
+					p_begin = p_end + 1;
+					continue;
+				}
 				//add to instance list
 				instance.push_back(feaid);
 				

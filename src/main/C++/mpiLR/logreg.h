@@ -30,8 +30,9 @@ public:
 	void AddMultTo(size_t i, double mult, std::vector<double>& vec) const {
 		if (labels[i]) mult *= -1;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-			size_t index = (indices.size() > 0) ? indices[j] : j - instance_starts[i];
-			vec[index] += mult * values[j];
+		//	size_t index = (indices.size() > 0) ? indices[j] : j - instance_starts[i];
+		//	vec[index] += mult * values[j];
+			vec[indices[j]] += mult;
 		}
 	}
 	

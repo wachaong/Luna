@@ -20,9 +20,10 @@ LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path, size_
 double LogisticRegressionProblem::ScoreOf(size_t i, const vector<double>& weights) const{
 	double score = 0;
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		double value = values[j];
-		size_t index = (indices.size() > 0) ? indices[j] : j - instance_starts[i];
-		score += weights[index] * value;
+	//	double value = values[j];
+	//	size_t index = (indices.size() > 0) ? indices[j] : j - instance_starts[i];
+	//	score += weights[index] * value;
+		score += weights[indices[j]];
 	}
 		
 	if(!labels[i]) score *= -1;
@@ -109,53 +110,11 @@ void* ThreadEvalLocal(void * arg){
 	double totaltime;
 	
 	Parameter* p  = ( Parameter*) arg;
+
 	p->loss = 0.0;
-	
-	for (size_t i = 0; i < p->input.size(); i++){
-		p->loss += 0.5 * p->input[i] * p->input[i] * p->obj.l2weight;
-		p->gradient[i] = p->obj.l2weight * p->input[i];
-	}
-	
+	int NumIns = p->obj.problem.NumInstances();
 	start=clock();
-	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
-		if(i%p->threadNum != p->threadId) continue;
-		double score = p->obj.problem.ScoreOf(i, p->input);
-	}
-	
-	finish=clock();
-	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
-		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
-		cout<<"Score Time: "<<totaltime<<"seconds"<<endl;
-	}
-	
-	start=clock();
-	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
-		if(i%p->threadNum != p->threadId) continue;
-		double score = p->obj.problem.ScoreOf(i, p->input);
-		double insLoss, insProb;
-		if (score < -30){
-			insLoss = -score;
-			insProb = 0;
-		}else if (score > 30){
-			insLoss = 0;
-			insProb = 1;
-		}else {
-			double temp = 1.0 + exp(-score);
-			insLoss = log(temp);
-			insProb = 1.0/ temp;
-		}
-		p->loss += insLoss;
-	}
-	
-	finish=clock();
-	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
-		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
-		cout<<"Score+Loss time Time: "<<totaltime<<"seconds"<<endl;
-	}
-	
-	p->loss = 0.0;
-	start=clock();
-	for (size_t i = 0; i < p->obj.problem.NumInstances(); i++){
+	for (size_t i = 0; i < NumIns; i++){
 		if(i%p->threadNum != p->threadId) continue;
 		double score = p->obj.problem.ScoreOf(i, p->input);
 		double insLoss, insProb;
