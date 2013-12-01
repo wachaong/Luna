@@ -24,7 +24,7 @@ public:
 	~OWLQN(){
 		delete termCrit;
 	}
-	double Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight = 0.0, double tol = 1e-4, int m = 10) const;
+	double Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight = 0.0, double tol = 1e-4, int m = 10, int iter=500) const;
 	
 };
 
