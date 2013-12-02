@@ -6,8 +6,8 @@ INCLUDES = -I/home/a/share/algo1/openmpi-current/include -I/home/a/include -I/ho
 
 .PHONY:all
 all: mpi-pfs-score mpi-peval-featsel
-	cp mpi-peval-featsel ../../../../mpi-featsel/bin/
-	cp mpi-pfs-score ../../../../mpi-featsel/bin/
+	cp mpi-peval-featsel ../../../../mpi-featsel-v2/bin/
+	cp mpi-pfs-score ../../../../mpi-featsel-v2/bin/
 
 %.o : %.cpp
 	 mpic++ $(CPPFLAGS) -c $< -o $@ $(INCLUDES)
@@ -21,5 +21,5 @@ mpi-peval-featsel: mpi_peval_main.o mpi_peval.o prediction.o Log_r.o
 .PHONY:clean
 clean:
 	rm -fr *.o
-	rm -f mpi-pfs-score ../../../../mpi-featsel/bin/mpi-pfs-score
-	rm -f mpi-peval-featsel ../../../../mpi-featsel/bin/mpi-peval-featsel
+	rm -f mpi-pfs-score ../../../../mpi-featsel-v2/bin/mpi-pfs-score
+	rm -f mpi-peval-featsel ../../../../mpi-featsel-v2/bin/mpi-peval-featsel

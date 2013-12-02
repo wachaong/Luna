@@ -44,19 +44,27 @@ int main(int argc, char** argv) {
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
-	int size = fsp->NumAllFeats();
+	int size = fsp->getP().size() + fsp->getP1().size() + fsp->getP2().size();
+
 	int l1regweight = 0;
 	double tol = 1e-6, l2weight = 0;
 	int m = 5;
+	DblVec input(size), gradient(size);
+	for(int i = 0; i < fsp->getP().size(); i++) input[i] = fsp->getP()[i];
+	for(int i = 0; i < fsp->getP1().size(); i++) input[i+fsp->getP().size()] = fsp->getP1()[i];
+	for(int i = 0; i < fsp->getP2().size(); i++) input[i+fsp->getP().size()+fsp->getP1().size()] = fsp->getP2()[i];
+	
 	if(my_rankid == 0){
 		OWLQN opt;
-		opt.Minimize(*o0, fsp->getP(), fsp->getP(), l1regweight, tol, m);
+		opt.Minimize(*o0, input, input, l1regweight, tol, m);
 		o0->handler(0, 0); // inform all non-root worker finish
+		for(int i = 0; i < fsp->getP().size(); i++) fsp->getP()[i] = input[i];
+		for(int i = 0; i < fsp->getP1().size(); i++) fsp->getP1()[i] = input[i+fsp->getP().size()];
+		for(int i = 0; i < fsp->getP2().size(); i++) fsp->getP2()[i] = input[i+fsp->getP().size()+fsp->getP1().size()];
 	}
 	else{
 		int ret;
 		int command = 0;
-		DblVec input(size), gradient(size);
 		while(1){
 			ret = o0->handler(my_rankid, command);
 			if(ret == 0){
@@ -70,6 +78,9 @@ int main(int argc, char** argv) {
 	}
 	//broadcast P to all slaver node
 	MPI_Bcast(&((fsp->getP())[0]), size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&((fsp->getP1())[0]), fsp->getP1().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&((fsp->getP2())[0]), fsp->getP2().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	
 	if(my_rankid == 0)
 		cout << "HAHAHAHAHAHA INIT finished" << endl;
 		
@@ -82,21 +93,17 @@ int main(int argc, char** argv) {
 	MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
 	double loss = 1e8;
-	int size1 = fsp->getW().size() + fsp->getP().size();
-	int size2 = fsp->getV().size() + fsp->getP().size();
+	int size1 = fsp->getW().size();
+	int size2 = fsp->getV().size();
 	DblVec input1(size1), gradient1(size1);
 	DblVec input2(size2), gradient2(size2);
 	
 	for(int iter = 0; iter < 5; iter++){
-		for(int i = 0; i < fsp->getW().size(); i++) input1[i] = fsp->getW()[i];
-		for(int i = 0; i < fsp->getP().size(); i++) input1[i+fsp->getW().size()] = fsp->getP()[i];
 		if(my_rankid == 0){
 			OWLQN opt1;	
-		//	opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m, iter);
-			opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
+			opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m, iter);
+		//	opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
 			o1->handler(0, 0); // inform all non-root worker finish
-			for(int i = 0; i < fsp->getW().size(); i++) fsp->getW()[i] = input1[i];
-			for(int i = 0; i < fsp->getP().size(); i++) fsp->getP()[i] = input1[i+fsp->getW().size()];
 				
 		}
 		else{
@@ -113,20 +120,13 @@ int main(int argc, char** argv) {
 			}
 		}
 		
-		cout << ">>Iter" <<iter << " OPT1 END" << endl;
-		MPI_Bcast(&((fsp->getP())[0]), fsp->getP().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		if(my_rankid == 0) cout << ">>Iter" <<iter << " OPT1 END" << endl;
 		MPI_Bcast(&((fsp->getW())[0]), fsp->getW().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		
-		
-		for(int i = 0; i < fsp->getW().size(); i++) input2[i] = fsp->getV()[i];
-		for(int i = 0; i < fsp->getP().size(); i++) input2[i+fsp->getV().size()] = fsp->getP()[i];
 		
 		if(my_rankid == 0){
 			OWLQN opt2;
-			double newloss = opt2.Minimize(*o2, input2, input2, l1regweight, tol, m, iter);
+			double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
-			for(int i = 0; i < fsp->getV().size(); i++) fsp->getV()[i] = input2[i];
-			for(int i = 0; i < fsp->getP().size(); i++) fsp->getP()[i] = input2[i+fsp->getV().size()];
 		}
 		
 		else{
@@ -143,8 +143,7 @@ int main(int argc, char** argv) {
 			}
 		}
 		
-		cout << ">>Iter" <<iter << " OPT2 END" << endl;
-		MPI_Bcast(&((fsp->getP())[0]), fsp->getP().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		if(my_rankid == 0)  cout << ">>Iter" <<iter << " OPT2 END" << endl;
 		MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		
 		
@@ -161,10 +160,12 @@ int main(int argc, char** argv) {
 	}
 
 	printVector(fsp->getP(), "./rank-00000/modelP");
+	printVector(fsp->getP1(), "./rank-00000/modelP1");
+	printVector(fsp->getP2(), "./rank-00000/modelP2");
 	printVector(fsp->getW(), "./rank-00000/modelW");
 	printVector(fsp->getV(), "./rank-00000/modelV");
-	
-	cout <<"HAHAHHAHAHA GAME OVER\n";
+	if(my_rankid == 0)
+		cout <<"HAHAHHAHAHA GAME OVER\n";
 	MPI_Finalize();
 	return 0;
 	

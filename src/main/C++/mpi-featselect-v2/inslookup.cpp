@@ -96,10 +96,10 @@ int load_feamap(const char* feamap_path){
 		feasign2id_map[type][feasign] = feaid[type];
 		feaid[type]++;
 	}
-	cout << "Ad Feature: "<<getAdFeaCount() << endl;
-	cout << "User Feature: "<<getUserFeaCount() << endl;
-	cout << "Other Feature: "<<getOtherFeaCount() << endl;
-	cout << "Total Feature: " << getAllFeaCount() << "\n";
+//	cout << "Ad Feature: "<<getAdFeaCount() << endl;
+//	cout << "User Feature: "<<getUserFeaCount() << endl;
+//	cout << "Other Feature: "<<getOtherFeaCount() << endl;
+//	cout << "Total Feature: " << getAllFeaCount() << "\n";
 	return 0;
 }
 
@@ -121,8 +121,8 @@ int trans_ins(const char* ins_path, size_t rankid,
 			size_t& numInstance){
 	char insinput[50];
 	char insoutput[50];
-//	sprintf(insinput, "%s-%05d", ins_path, rankid);
-	sprintf(insinput, "%s", ins_path);
+	sprintf(insinput, "%s-%05d", ins_path, rankid);
+//	sprintf(insinput, "%s", ins_path);
 //	sprintf(insinput, "%s%d", ins_path, rankid);
 	ifstream fins(insinput);
 	ofstream out("ins_out");

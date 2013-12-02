@@ -1,5 +1,4 @@
-# Project: mpiLR
-# Makefile created by Dev-C++ 5.5.2
+# Project: mpi-featselect-v2
 
 CPPFLAGS = -O2
 LDFLAGS = -Xlinker "-(" -lpthread -lcrypto -lz -lm -lalgo_common -llog4cpp -lrt -Xlinker "-)" -L/home/a/lib64  

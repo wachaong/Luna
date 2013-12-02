@@ -37,6 +37,7 @@ public:
 	double ScoreOfForP(size_t i, const std::vector<double>& weights) const;
 	double ScoreOfForW(size_t i, const std::vector<double>& weights) const;
 	double ScoreOfForV(size_t i, const std::vector<double>& weights) const;
+	double ScoreSubForALLP(size_t i, const DblVec& Ptemp, const DblVec& P1temp, const DblVec& P2temp) const;
 	/*
 	double GroupLasso() const;
 	
@@ -56,9 +57,41 @@ public:
 	}
 	*/
 	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) const {
+		IntVec u, a;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-			size_t index = features[j] ;
+			size_t index = features[j];
+			//Ad Feature
+			if(index < numAdFeature){
+				a.push_back(index);
+			}
+			//User Feature
+			else if(index < numAdFeature + numUserFeature){
+				u.push_back(index-numAdFeature);
+			}
 			vec[index] += mult * 1.0;
+			
+		}
+		
+		for(size_t u_index = 0; u_index < u.size(); u_index++){
+			size_t i_index = u[u_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t a_index = 0; a_index < a.size(); a_index++){
+					sum += P1[a[a_index]*dimLatent+j_index];
+				}
+				vec[P.size() + i_index*dimLatent+j_index] += mult * sum;
+			}
+		}
+		
+		for(size_t a_index = 0; a_index < a.size(); a_index++){
+			size_t i_index = a[a_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t u_index = 0; u_index < u.size(); u_index++){
+					sum += P2[u[u_index]*dimLatent + j_index];
+				}
+				vec[P.size()+P1.size()+i_index*dimLatent+j_index] += mult * sum;
+			}
 		}
 	}
 	
