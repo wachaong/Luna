@@ -196,7 +196,7 @@ int load_model(const char* model_path){
 
 
 double cal_score(vector <size_t> instance){
-	//f(x)=(UW)(TV)' + P x+ (UP1)(UP1)' + (TP2)(TP2)'
+	//f(x)=(UW)(TV)' + Px+ (UP1)(UP1)' + (TP2)(TP2)'
 	double score = 0.0;
 	
 	DblVec UP1;
@@ -233,7 +233,6 @@ double cal_score(vector <size_t> instance){
 		TV.push_back(0);
 	}
 	for (size_t j = 0; j < instance.size(); j++){
-		score += P[instance[j]] * 1.0;
 		if(instance[j] < getAdFeaCount()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = instance[j] * dimLatent + k;

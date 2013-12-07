@@ -279,7 +279,7 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 		
 		state.Shift(); 
 	//	if(iter < 3 && state.iter >= 20) break;
-		if(state.iter >= 400) break;
+		if(state.iter >= 500) break;
 	}
 	
 	cout << endl;
