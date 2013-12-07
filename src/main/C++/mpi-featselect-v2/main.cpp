@@ -44,23 +44,32 @@ int main(int argc, char** argv) {
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
-	int size = fsp->getP().size() + fsp->getP1().size() + fsp->getP2().size();
-
+	
+	DblVec& P = fsp->getP();
+	DblVec& P1 = fsp->getP1();
+	DblVec& P2 = fsp->getP2();
+	
+	int Psize = P.size();
+	int P1size = P1.size();
+	int P2size = P2.size();
+	
+	int size = Psize + P1size + P2size;
+	
 	int l1regweight = 0;
 	double tol = 1e-6, l2weight = 0;
 	int m = 5;
 	DblVec input(size), gradient(size);
-	for(int i = 0; i < fsp->getP().size(); i++) input[i] = fsp->getP()[i];
-	for(int i = 0; i < fsp->getP1().size(); i++) input[i+fsp->getP().size()] = fsp->getP1()[i];
-	for(int i = 0; i < fsp->getP2().size(); i++) input[i+fsp->getP().size()+fsp->getP1().size()] = fsp->getP2()[i];
+	for(int i = 0; i < Psize; i++) input[i] = P[i];
+	for(int i = 0; i < P1size; i++) input[i+Psize] = P1[i];
+	for(int i = 0; i < P2size; i++) input[i+Psize+P1size] = P2[i];
 	
 	if(my_rankid == 0){
 		OWLQN opt;
 		opt.Minimize(*o0, input, input, l1regweight, tol, m);
 		o0->handler(0, 0); // inform all non-root worker finish
-		for(int i = 0; i < fsp->getP().size(); i++) fsp->getP()[i] = input[i];
-		for(int i = 0; i < fsp->getP1().size(); i++) fsp->getP1()[i] = input[i+fsp->getP().size()];
-		for(int i = 0; i < fsp->getP2().size(); i++) fsp->getP2()[i] = input[i+fsp->getP().size()+fsp->getP1().size()];
+		for(int i = 0; i < Psize; i++) P[i] = input[i];
+		for(int i = 0; i < P1size; i++) P1[i] = input[i+Psize];
+		for(int i = 0; i < P2size; i++) P2[i] = input[i+Psize+P1size];
 	}
 	else{
 		int ret;
@@ -77,9 +86,9 @@ int main(int argc, char** argv) {
 		
 	}
 	//broadcast P to all slaver node
-	MPI_Bcast(&((fsp->getP())[0]), size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&((fsp->getP1())[0]), fsp->getP1().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&((fsp->getP2())[0]), fsp->getP2().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(P[0]), Psize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(P1[0]), P1size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
 	if(my_rankid == 0)
 		cout << "HAHAHAHAHAHA INIT finished" << endl;
