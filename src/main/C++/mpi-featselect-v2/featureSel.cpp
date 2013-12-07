@@ -33,9 +33,7 @@ void printMatrix(DblMat m, int row){
 	}
 }
 
-/*
-For test
-*/
+
 extern char feamap_path[2048];
 extern char ins_path[2048];
 extern int init_inslookup(const char*instance_file, const char* feature_file);
@@ -72,6 +70,12 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	
 	for(size_t i = 0; i<NumAllFeats(); i++){
 		P.push_back(0);
+	}
+	for(size_t i = 0; i<numAdFeature; i++){
+		a.push_back(0);
+	}
+	for(size_t i = 0; i<numUserFeature; i++){
+		u.push_back(0);
 	}
 	
 	if(rankid == 0){
@@ -120,104 +124,54 @@ double FeatureSelectionProblem::ScoreSubForALLP(size_t i, const DblVec& Ptemp, c
 //calculate f(x) for P/P1/P2
 double FeatureSelectionProblem::ScoreOfForP(size_t i, const std::vector<double>& weights) const{
 	
-	
-	DblVec Ptemp;
-	DblVec P1temp;
-	DblVec P2temp;
-	
-	for (size_t j = 0; j < P.size(); j++) Ptemp.push_back(weights[j]);
-	for (size_t j = 0; j < P1.size(); j++) P1temp.push_back(weights[P.size() + j]);
-	for (size_t j = 0; j < P2.size(); j++) P2temp.push_back(weights[P.size()+P1.size() + j]);
-	
-	return ScoreSubForALLP(i, Ptemp, P1temp, P2temp);
-
-	
-}
-
-
-double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>& weights) const{
-
-	DblVec UW;
-	DblVec TV;
-
-	double score = ScoreSubForALLP(i, P, P1, P2);
+	DblVec UP1;
+	DblVec TP2;
+	double score = 0.0;
 	for (size_t j = 0 ; j < dimLatent; j++){
-		UW.push_back(0);
-		TV.push_back(0);
+		UP1.push_back(0);
+		TP2.push_back(0);
 	}
+	int Psize = P.size();
+	int P1size = P1.size();
+	int numAdFeats = NumAdFeats();
+	int numAdandUserFeats = NumAdFeats() + NumUserFeats();
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		if(features[j] < NumAdFeats()){
+		score += weights[features[j]];
+		if(features[j] < numAdFeats){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
-				TV[k]+=V[v_index];
+				TP2[k]+=weights[v_index+Psize+P1size];
 			}
 		} 
-		else if(features[j] < NumAdFeats() + NumUserFeats()){
+		else if(features[j] < numAdandUserFeats){
 			for(size_t k = 0; k < dimLatent; k++){
 				int w_index = (features[j] - NumAdFeats()) * dimLatent + k;
-				UW[k] += weights[w_index];
+				UP1[k] += weights[w_index+Psize];
 			}
 		}
 	}
 	
 	for (size_t j = 0; j < dimLatent; j++){
-		score += UW[j]*TV[j];
+		score += (UP1[j]*UP1[j] + TP2[j]*TP2[j]) / 2;
 	}
 	return score;
-}
 
-
-//calculate f(x) for V when fix W and P
-double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>& weights) const{
-	//f(x)=(UW)(TV)' + Px
-
-	DblVec UW;
-	DblVec TV;
-	double score = ScoreSubForALLP(i, P, P1, P2);
 	
-	for (size_t j = 0 ; j < dimLatent; j++){
-		UW.push_back(0);
-		TV.push_back(0);
-	}
-	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		if(features[j] < NumAdFeats()){
-			for(size_t k = 0; k < dimLatent; k++){
-				int v_index = features[j] * dimLatent + k;
-				TV[k]+=weights[v_index];
-			}
-		} 
-		else if(features[j] < NumAdFeats() + NumUserFeats()){
-			for(size_t k = 0; k < dimLatent; k++){
-				int w_index = (features[j] - NumAdFeats())*dimLatent + k;
-				UW[k] += W[w_index];
-			}
-		}
-	}
-	
-	for (size_t j = 0; j < dimLatent; j++){
-		score += UW[j]*TV[j];
-	}
-
-	return score;
 }
-
 
 /*
-//calculate f(x) for W when fix V and P 
-//Don't fix P
+//calculate f(x) for W
 double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>& weights) const{
-	//f(x)=(UW)(TV)' + Px
-	double score = 0.0;
+
 	DblVec UW;
 	DblVec TV;
-	DblVec Ptemp;
-	for (size_t j = 0; j < P.size(); j++) Ptemp.push_back(weights[W.size()+j]);
+
+	double score = ScoreSubForALLP(i, P, P1, P2);
 	for (size_t j = 0 ; j < dimLatent; j++){
 		UW.push_back(0);
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += Ptemp[features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -239,23 +193,19 @@ double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>&
 }
 
 
-//calculate f(x) for V when fix W and P
-//don't fix P
+//calculate f(x) for V 
 double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>& weights) const{
 	//f(x)=(UW)(TV)' + Px
-	double score = 0.0;
+
 	DblVec UW;
 	DblVec TV;
-	
-	DblVec Ptemp;
-	for (size_t j = 0; j < P.size(); j++) Ptemp[j] = weights[V.size()+j];
+	double score = ScoreSubForALLP(i, P, P1, P2);
 	
 	for (size_t j = 0 ; j < dimLatent; j++){
 		UW.push_back(0);
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += Ptemp[features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -278,6 +228,148 @@ double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>&
 }
 
 */
+
+//calculate f(x) for W when fix V 
+//Don't fix P
+double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>& weights) const{
+	//f(x)=(UW)(TV)' + Px + (UP1)(UP1)' + (TP2)(TP2)'
+	
+	DblVec UP1;
+	DblVec TP2;
+	double score = 0.0;
+	for (size_t j = 0 ; j < dimLatent; j++){
+		UP1.push_back(0);
+		TP2.push_back(0);
+	}
+	int Psize = P.size();
+	int P1size = P1.size();
+	int P2size = P2.size();
+	int Wsize = W.size();
+	
+	int numAdFeats = NumAdFeats();
+	int numAdandUserFeats = NumAdFeats() + NumUserFeats();
+	
+	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		score += weights[Wsize + features[j]];
+		if(features[j] < numAdFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int v_index = features[j] * dimLatent + k;
+				TP2[k]+=weights[Wsize + v_index+Psize+P1size];
+			}
+		} 
+		else if(features[j] < numAdandUserFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int w_index = (features[j] - numAdFeats) * dimLatent + k;
+				UP1[k] += weights[Wsize + w_index+Psize];
+			}
+		}
+	}
+	
+	for (size_t j = 0; j < dimLatent; j++){
+		score += (UP1[j]*UP1[j] + TP2[j]*TP2[j]) / 2;
+	}
+	
+
+	DblVec UW;
+	DblVec TV;
+
+	for (size_t j = 0 ; j < dimLatent; j++){
+		UW.push_back(0);
+		TV.push_back(0);
+	}
+	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		if(features[j] < numAdFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int v_index = features[j] * dimLatent + k;
+				TV[k]+=V[v_index];
+			}
+		} 
+		else if(features[j] < numAdandUserFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int w_index = (features[j] - numAdFeats) * dimLatent + k;
+				UW[k] += weights[w_index];
+			}
+		}
+	}
+	
+	for (size_t j = 0; j < dimLatent; j++){
+		score += UW[j]*TV[j];
+	}
+	return score;
+}
+
+
+//calculate f(x) for V when fix W 
+//don't fix P
+double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>& weights) const{
+	//f(x)=(UW)(TV)' + Px + (UP1)(UP1)' + (TP2)(TP2)'
+	
+	DblVec UP1;
+	DblVec TP2;
+	double score = 0.0;
+	for (size_t j = 0 ; j < dimLatent; j++){
+		UP1.push_back(0);
+		TP2.push_back(0);
+	}
+	int Psize = P.size();
+	int P1size = P1.size();
+	int P2size = P2.size();
+	int Vsize = V.size();
+	
+	int numAdFeats = NumAdFeats();
+	int numAdandUserFeats = NumAdFeats() + NumUserFeats();
+	
+	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		score += weights[Vsize+features[j]];
+		if(features[j] < numAdFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int v_index = features[j] * dimLatent + k;
+				TP2[k]+=weights[Vsize+v_index+Psize+P1size];
+			}
+		} 
+		else if(features[j] < numAdandUserFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int w_index = (features[j] - numAdFeats) * dimLatent + k;
+				UP1[k] += weights[Vsize+w_index+Psize];
+			}
+		}
+	}
+	
+	for (size_t j = 0; j < dimLatent; j++){
+		score += (UP1[j]*UP1[j] + TP2[j]*TP2[j]) / 2;
+	}
+	
+	DblVec UW;
+	DblVec TV;
+	
+	
+	for (size_t j = 0 ; j < dimLatent; j++){
+		UW.push_back(0);
+		TV.push_back(0);
+	}
+	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		if(features[j] < numAdFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int v_index = features[j] * dimLatent + k;
+				TV[k]+=weights[v_index];
+			}
+		} 
+		else if(features[j] < numAdandUserFeats){
+			for(size_t k = 0; k < dimLatent; k++){
+				int w_index = (features[j] - numAdFeats)*dimLatent + k;
+				UW[k] += W[w_index];
+			}
+		}
+	}
+	
+	for (size_t j = 0; j < dimLatent; j++){
+		score += UW[j]*TV[j];
+	}
+
+	return score;
+}
+
+
 /*
 double FeatureSelectionProblem::GroupLasso() const{
 	//||W||_21 + ||V||_21
@@ -581,7 +673,7 @@ void* ThreadEvalLocalForP(void * arg){
 	}
 }
 
-//Fix P
+//Don't Fix P
 void* ThreadEvalLocalForV(void * arg){
 	Parameter* p  = ( Parameter*) arg;
 	p->loss = 0.0;
@@ -590,13 +682,17 @@ void* ThreadEvalLocalForV(void * arg){
 	double epsilon = o.problem.getEpsilon();
 	size_t dimLatent = o.problem.getDimLatent();
 	DblVec& W = o.problem.getW();
-	DblVec& P = o.problem.getP();
-
 	
-	for(size_t i = 0; i < P.size(); i++){
-		p->loss += 0.5*P[i]*P[i]*o.l2weight / p->threadNum;
+	int Vsize = o.problem.getV().size();
+	
+	const DblVec& input = p->input;
+	
+	for(size_t i = Vsize; i < input.size(); i++){
+		p->loss += 0.5*input[i]*input[i]*o.l2weight / p->threadNum;
+		p->gradient[i] = o.l2weight * input[i] / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumUserFeats(); i++){
+	int numUserFeats = o.problem.NumUserFeats();
+	for(size_t i = 0; i < numUserFeats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += W[i*dimLatent + j] * W[i*dimLatent + j] ;
@@ -604,21 +700,22 @@ void* ThreadEvalLocalForV(void * arg){
 		sum += epsilon;
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumAdFeats(); i++){
+	int numAdFeats = o.problem.NumAdFeats();
+	for(size_t i = 0; i < numAdFeats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
-			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
+			sum += input[i*dimLatent + j] * input[i*dimLatent + j];
 		}
 		sum += epsilon;
 		double sqrt_sum = sqrt(sum);
 		
 		for (size_t j = 0; j < dimLatent; j++){
-			p->gradient[i*dimLatent + j] = o.l21weight * p->input[i*dimLatent + j] / sqrt_sum / p->threadNum;
+			p->gradient[i*dimLatent + j] = o.l21weight * input[i*dimLatent + j] / sqrt_sum / p->threadNum;
 		}
 		p->loss += sqrt_sum * o.l21weight / p->threadNum;
 	}
-	
-	for(size_t i = 0; i < o.problem.NumInstance(); i++){
+	int numIns = o.problem.NumInstance();
+	for(size_t i = 0; i < numIns; i++){
 		if(i%p->threadNum != p->threadId) continue;
 		double score = o.problem.ScoreOfForV(i, p->input);
 		double insLoss, insProb;
@@ -661,7 +758,7 @@ void* ThreadEvalLocalForV(void * arg){
 	}
 }
 
-//fix P
+//Don't fix P
 
 void* ThreadEvalLocalForW(void * arg){
 	Parameter* p  = ( Parameter*) arg;
@@ -671,13 +768,16 @@ void* ThreadEvalLocalForW(void * arg){
 	double epsilon = o.problem.getEpsilon();
 	size_t dimLatent = o.problem.getDimLatent();
 	DblVec& V = o.problem.getV();
-	DblVec& P = o.problem.getP();
 
+	int Wsize = o.problem.getW().size();
+	const DblVec& input = p->input;
 	
-	for(size_t i = 0; i < P.size(); i++){
-		p->loss += 0.5*P[i]*P[i]*o.l2weight / p->threadNum;
+	for(size_t i = Wsize; i < input.size(); i++){
+		p->loss += 0.5*input[i]*input[i]*o.l2weight / p->threadNum;
+		p->gradient[i] = o.l2weight * input[i] / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumAdFeats(); i++){
+	int numAdFeats = o.problem.NumAdFeats();
+	for(size_t i = 0; i < numAdFeats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += V[i*dimLatent + j] * V[i*dimLatent + j];
@@ -685,20 +785,22 @@ void* ThreadEvalLocalForW(void * arg){
 		sum += epsilon;
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumUserFeats(); i++){
+	int numUserFeats = o.problem.NumUserFeats();
+	for(size_t i = 0; i < numUserFeats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
-			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
+			sum += input[i*dimLatent + j] * input[i*dimLatent + j];
 		}
 		sum += epsilon;
 		double sqrt_sum = sqrt(sum);
 		
 		for (size_t j = 0; j < dimLatent; j++){
-			p->gradient[i*dimLatent + j] = o.l21weight * p->input[i*dimLatent + j] / sqrt_sum / p->threadNum;
+			p->gradient[i*dimLatent + j] = o.l21weight * input[i*dimLatent + j] / sqrt_sum / p->threadNum;
 		}
 		p->loss += sqrt_sum * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumInstance(); i++){
+	int numIns = o.problem.NumInstance();
+	for(size_t i = 0; i < numIns; i++){
 		if(i % p->threadNum != p->threadId) continue;
 		double score = o.problem.ScoreOfForW(i, p->input);
 		double insLoss, insProb;

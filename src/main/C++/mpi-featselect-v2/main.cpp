@@ -56,15 +56,17 @@ int main(int argc, char** argv) {
 	int size = Psize + P1size + P2size;
 	
 	int l1regweight = 0;
-	double tol = 1e-6, l2weight = 0;
+	double tol = 1e-7, l2weight = 0;
 	int m = 5;
 	DblVec input(size), gradient(size);
-	for(int i = 0; i < Psize; i++) input[i] = P[i];
-	for(int i = 0; i < P1size; i++) input[i+Psize] = P1[i];
-	for(int i = 0; i < P2size; i++) input[i+Psize+P1size] = P2[i];
+	
+
 	
 	if(my_rankid == 0){
 		OWLQN opt;
+		for(int i = 0; i < Psize; i++) input[i] = P[i];
+		for(int i = 0; i < P1size; i++) input[i+Psize] = P1[i];
+		for(int i = 0; i < P2size; i++) input[i+Psize+P1size] = P2[i];
 		opt.Minimize(*o0, input, input, l1regweight, tol, m);
 		o0->handler(0, 0); // inform all non-root worker finish
 		for(int i = 0; i < Psize; i++) P[i] = input[i];
@@ -98,21 +100,37 @@ int main(int argc, char** argv) {
 	
 	
 	//ALternate optimization for user and ad parts
-	MPI_Bcast(&((fsp->getW())[0]), fsp->getW().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
-	double loss = 1e8;
-	int size1 = fsp->getW().size();
-	int size2 = fsp->getV().size();
+	DblVec& W = fsp->getW();
+	DblVec& V = fsp->getV();
+	int Wsize = W.size();
+	int Vsize = V.size();
+	int size1 = Wsize+size;
+	int size2 = Vsize+size;
 	DblVec input1(size1), gradient1(size1);
 	DblVec input2(size2), gradient2(size2);
 	
+	
+	MPI_Bcast(&(W[0]), Wsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(V[0]), Vsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	
+	double loss = 1e8;
+	
+	
 	for(int iter = 0; iter < 5; iter++){
+		for(int i = 0; i < Wsize; i++) input1[i] = W[i];
+		for(int i = 0; i < Psize; i++) input1[i+Wsize] = P[i];
+		for(int i = 0; i < P1size; i++) input1[i+Wsize+Psize] = P1[i];
+		for(int i = 0; i < P2size; i++) input1[i+Wsize+Psize+P1size] = P2[i];
 		if(my_rankid == 0){
 			OWLQN opt1;	
-			opt1.Minimize(*o1, fsp->getW(), fsp->getW(), l1regweight, tol, m, iter);
+			opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
 		//	opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
 			o1->handler(0, 0); // inform all non-root worker finish
+			for(int i = 0; i<Wsize; i++) W[i] = input1[i];
+			for(int i = 0; i<Psize; i++) P[i] = input1[i+Wsize];
+			for(int i = 0; i<P1size; i++) P1[i] = input1[i+Wsize+Psize];
+			for(int i = 0; i<P2size; i++) P2[i] = input1[i+Wsize+Psize+P1size];
 				
 		}
 		else{
@@ -130,12 +148,27 @@ int main(int argc, char** argv) {
 		}
 		
 		if(my_rankid == 0) cout << ">>Iter" <<iter << " OPT1 END" << endl;
-		MPI_Bcast(&((fsp->getW())[0]), fsp->getW().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		
+		MPI_Bcast(&(W[0]), Wsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P[0]), Psize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P1[0]), P1size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		
+		
+		for(int i = 0; i < Vsize; i++) input2[i] = V[i];
+		for(int i = 0; i < Psize; i++) input2[i+Vsize] = P[i];
+		for(int i = 0; i < P1size; i++) input2[i+Vsize+Psize] = P1[i];
+		for(int i = 0; i < P2size; i++) input2[i+Vsize+Psize+P1size] = P2[i];
+		
 		
 		if(my_rankid == 0){
 			OWLQN opt2;
-			double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m, iter);
+			double newloss = opt2.Minimize(*o2, input2, input2, l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
+			for(int i = 0; i<Vsize; i++) V[i] = input2[i];
+			for(int i = 0; i<Psize; i++) P[i] = input2[i+Vsize];
+			for(int i = 0; i<P1size; i++) P1[i] = input2[i+Vsize+Psize];
+			for(int i = 0; i<P2size; i++) P2[i] = input2[i+Vsize+Psize+P1size];
 		}
 		
 		else{
@@ -153,8 +186,11 @@ int main(int argc, char** argv) {
 		}
 		
 		if(my_rankid == 0)  cout << ">>Iter" <<iter << " OPT2 END" << endl;
-		MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		
+		MPI_Bcast(&(V[0]), Vsize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P[0]), Psize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P1[0]), P1size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+			
 		
 		if(my_rankid == 0){
 //				if ((loss - newloss) / loss > 1e-8){
