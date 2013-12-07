@@ -101,7 +101,7 @@ public:
 	}
 	
 	//mult* u*w_j * T_i fix ad part
-	void AddMultToV(size_t i, double mult, std::vector<double> &vec) const{
+	void AddMultToV(size_t i, double mult, std::vector<double> &vec){
 		int a_size = 0;
 		int u_size = 0;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){			
@@ -142,7 +142,7 @@ public:
 	
 	
 	//mult*u_i *T*v_j fix User
-	void AddMultToW(size_t i, double mult, std::vector<double> &vec) const{
+	void AddMultToW(size_t i, double mult, std::vector<double> &vec){
 		int a_size = 0;
 		int u_size = 0;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){

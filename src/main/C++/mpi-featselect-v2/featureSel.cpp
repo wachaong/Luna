@@ -82,7 +82,7 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 		cout << "NumAdFeature:" << numAdFeature << endl;
 		cout << "NumUserFeature:" << numUserFeature << endl;
 		cout << "NumAllFeature:" << NumAllFeats() << endl;
-		cout << "NumInstance" << numInstance << endl;
+	//	cout << "NumInstance" << numInstance << endl;
 	}
 	
 }

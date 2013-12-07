@@ -201,6 +201,7 @@ double cal_score(vector <size_t> instance){
 	
 	DblVec UP1;
 	DblVec TP2;
+	int dimLatent = W.size() / getUserFeaCount();
 	for (size_t j = 0 ; j < dimLatent; j++){
 		UP1.push_back(0);
 		TP2.push_back(0);
