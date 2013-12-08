@@ -106,10 +106,10 @@ public:
 		int u_size = 0;
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){			
 			size_t index = features[j];
+			vec[index+V.size()] += mult;
 			//Ad Feature
 			if(index < numAdFeature){
 				a[a_size++] = index;
-				vec[index+V.size()] += mult;
 			}
 			//User Feature
 			else if(index < numAdFeature + numUserFeature){
@@ -125,6 +125,16 @@ public:
 					sum += P1[u[uu_index]*dimLatent+j_index];
 				}
 				vec[V.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
+			}
+		}
+		for(size_t a_index = 0; a_index < a_size; a_index++){
+			size_t i_index = a[a_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
+					sum += P2[a[aa_index]*dimLatent + j_index];
+				}
+				vec[V.size()+P.size()+P1.size()+i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
@@ -156,6 +166,17 @@ public:
 			else if(index < numAdFeature + numUserFeature){
 				vec[index+W.size()] += mult;
 				u[u_size++] = index-numAdFeature;
+			}
+		}
+		
+		for(size_t u_index = 0; u_index < u_size; u_index++){
+			size_t i_index = u[u_index];
+			for(size_t j_index = 0; j_index < dimLatent; j_index++){
+				double sum = 0;
+				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
+					sum += P1[u[uu_index]*dimLatent+j_index];
+				}
+				vec[W.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
