@@ -41,6 +41,7 @@ int main(int argc, char** argv) {
 	int K = 10; //latent factor dimension
 	double l21reg = 0;
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem(train_file, fea_file, K, my_rankid);
+	DifferentiableFunction* o00  = new FeatureSelectionObjectiveInitP(*fsp);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
@@ -53,14 +54,40 @@ int main(int argc, char** argv) {
 	int P1size = P1.size();
 	int P2size = P2.size();
 	
-	int size = Psize + P1size + P2size;
 	
 	int l1regweight = 0;
 	double tol = 1e-7, l2weight = 0;
 	int m = 5;
-	DblVec input(size), gradient(size);
+	DblVec input0(Psize), gradient0(Psize);
 	
-
+	if(my_rankid == 0){
+		OWLQN opt0;
+		for(int i = 0; i < Psize; i++) input0[i] = P[i];
+		opt0.Minimize(*o00, input0, input0, l1regweight, tol, m);
+		o0->handler(0, 0); // inform all non-root worker finish
+		for(int i = 0; i < Psize; i++) P[i] = input0[i];
+	}
+	else{
+		int ret;
+		int command = 0;
+		while(1){
+			ret = o00->handler(my_rankid, command);
+			if(ret == 0){
+				break;
+			}
+			else{
+				o00->Eval(input0, gradient0);
+			}
+		}
+		
+	}
+	//broadcast P to all slaver node
+	MPI_Bcast(&(P[0]), Psize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(P1[0]), P1size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	
+	int size = Psize + P1size + P2size;
+	DblVec input(size), gradient(size);
 	
 	if(my_rankid == 0){
 		OWLQN opt;

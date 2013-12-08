@@ -121,8 +121,22 @@ double FeatureSelectionProblem::ScoreSubForALLP(size_t i, const DblVec& Ptemp, c
 	return score;
 }
 
-//calculate f(x) for P/P1/P2
+
 double FeatureSelectionProblem::ScoreOfForP(size_t i, const std::vector<double>& weights) const{
+	
+	
+	double score = 0.0;
+	int Psize = P.size();
+	for(size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		score += weights[features[j]];
+	}
+	return score;
+
+	
+}
+
+//calculate f(x) for P/P1/P2
+double FeatureSelectionProblem::ScoreOfForALLP(size_t i, const std::vector<double>& weights) const{
 	
 	DblVec UP1;
 	DblVec TP2;
@@ -624,7 +638,7 @@ void* ThreadEvalLocalForP(void * arg){
 	
 	Parameter* p  = ( Parameter*) arg;
 	p->loss = 0.0;
-	FeatureSelectionObjectiveInit& o = (FeatureSelectionObjectiveInit&)(p->obj);
+	FeatureSelectionObjectiveInitP& o = (FeatureSelectionObjectiveInitP&)(p->obj);
 	for (size_t i = 0; i < p->input.size(); i++){
 		p->loss += 0.5 * p->input[i] * p->input[i] * o.l2weight / p->threadNum;
 		p->gradient[i] = o.l2weight * p->input[i] / p->threadNum;
@@ -672,6 +686,61 @@ void* ThreadEvalLocalForP(void * arg){
 		}		
 	}
 }
+
+
+void* ThreadEvalLocalForALLP(void * arg){
+	
+	Parameter* p  = ( Parameter*) arg;
+	p->loss = 0.0;
+	FeatureSelectionObjectiveInit& o = (FeatureSelectionObjectiveInit&)(p->obj);
+	for (size_t i = 0; i < p->input.size(); i++){
+		p->loss += 0.5 * p->input[i] * p->input[i] * o.l2weight / p->threadNum;
+		p->gradient[i] = o.l2weight * p->input[i] / p->threadNum;
+	}
+
+	for(size_t i = 0; i < o.problem.NumInstance(); i++){
+		if(i % p->threadNum != p->threadId) continue;
+		double score = o.problem.ScoreOfForALLP(i, p->input);
+		double insLoss, insProb;
+		if(o.problem.ClkOf(i) > 0){
+			if(score < -30){
+				insLoss = -score;
+				insProb = 0;
+			}
+			else if(score > 30){
+				insLoss = 0;
+				insProb = 1;
+			}
+			else{
+				double temp = 1.0 + exp(-score);
+				insLoss = log(temp);
+				insProb = 1.0/ temp;
+			}
+			p->loss +=  o.problem.ClkOf(i) * insLoss;
+			o.problem.AddMultToALLP(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient);
+		}
+
+		if(o.problem.NonClkOf(i) > 0){
+			score = -score;
+			if(score < -30){
+				insLoss = -score;
+				insProb = 0;
+			}
+			else if(score > 30){
+				insLoss = 0;
+				insProb = 1;
+			}
+			else{
+				double temp = 1.0 + exp(-score);
+				insLoss = log(temp);
+				insProb = 1.0/ temp;
+			}
+			p->loss +=  o.problem.NonClkOf(i) * insLoss;
+			o.problem.AddMultToALLP(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
+		}		
+	}
+}
+
 
 //Don't Fix P
 void* ThreadEvalLocalForV(void * arg){
@@ -843,6 +912,45 @@ void* ThreadEvalLocalForW(void * arg){
 	}
 }
 
+double FeatureSelectionObjectiveInitP::EvalLocalMultiThread(const DblVec& input, DblVec& gradient){
+	
+	/*
+	create 24 thread;
+	each thread calculate a loss and gradient
+	*/
+	int threadNum = 24;
+	double lossList[threadNum];
+	DblVec *gradList = new DblVec[threadNum];
+	for(int i = 0; i < threadNum; i++){
+		gradList[i] = DblVec(gradient.size());
+	}
+	threadList = new pthread_t[threadNum];
+	
+	for(int i = 0; i < threadNum; i++){
+		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i], i, threadNum);
+		pthread_create(&threadList[i], NULL, ThreadEvalLocalForP, p);
+	}
+	
+	for(int i = 0; i < threadNum; i++){
+		pthread_join(threadList[i], NULL);
+	}
+	
+	double loss = 0.0;
+	for(int j = 0; j < gradient.size(); j++){
+		gradient[j] = 0.0;
+	}
+	for(int i = 0; i < threadNum; i++){
+		loss += lossList[i];
+		for(int j = 0; j < gradient.size(); j++){
+			gradient[j] += gradList[i][j];
+		}
+	}
+	delete []gradList;
+	delete []threadList;
+	return loss;
+	
+}
+
 
 double FeatureSelectionObjectiveInit::EvalLocalMultiThread(const DblVec& input, DblVec& gradient){
 	
@@ -860,7 +968,7 @@ double FeatureSelectionObjectiveInit::EvalLocalMultiThread(const DblVec& input, 
 	
 	for(int i = 0; i < threadNum; i++){
 		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i], i, threadNum);
-		pthread_create(&threadList[i], NULL, ThreadEvalLocalForP, p);
+		pthread_create(&threadList[i], NULL, ThreadEvalLocalForALLP, p);
 	}
 	
 	for(int i = 0; i < threadNum; i++){
@@ -963,6 +1071,11 @@ double FeatureSelectionObjectiveFixUser::EvalLocalMultiThread(const DblVec& inpu
 	
 }
 
+int FeatureSelectionObjectiveInitP::handler(size_t rankid, size_t command){
+	MPI_Bcast(&command, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	if(command == 0) return 0;
+	return 1;
+}
 
 int FeatureSelectionObjectiveInit::handler(size_t rankid, size_t command){
 	MPI_Bcast(&command, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -983,6 +1096,18 @@ int FeatureSelectionObjectiveFixAd::handler(size_t rankid, size_t command){
 }
 
 
+double FeatureSelectionObjectiveInitP::Eval(const DblVec& input, DblVec& gradient){
+	DblVec localInput = input;
+	DblVec localGradient = gradient;
+	MPI_Bcast(&localInput[0], localInput.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);	
+	MPI_Bcast(&localGradient[0], localGradient.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	double loss = EvalLocalMultiThread(localInput, localGradient);	
+//	double loss = EvalLocal(localInput, localGradient);	
+	double gloss = 0.0;
+	MPI_Reduce(&localGradient[0], &gradient[0], input.size(), MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+	MPI_Reduce(&loss, &gloss, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+	return gloss;
+}
 
 double FeatureSelectionObjectiveInit::Eval(const DblVec& input, DblVec& gradient){
 	DblVec localInput = input;

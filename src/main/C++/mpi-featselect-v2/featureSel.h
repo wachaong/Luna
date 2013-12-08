@@ -38,6 +38,7 @@ public:
 	void AddInstance();
 
 	double ScoreOfForP(size_t i, const std::vector<double>& weights) const;
+	double ScoreOfForALLP(size_t i, const std::vector<double>& weights) const;
 	double ScoreOfForW(size_t i, const std::vector<double>& weights) const;
 	double ScoreOfForV(size_t i, const std::vector<double>& weights) const;
 	double ScoreSubForALLP(size_t i, const DblVec& Ptemp, const DblVec& P1temp, const DblVec& P2temp) const;
@@ -60,6 +61,13 @@ public:
 	}
 	*/
 	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) {
+		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+			size_t index = features[j];
+			vec[index] += mult;	
+		}
+	}
+	
+	void AddMultToALLP(size_t i, double mult,  std::vector<double>& vec) {
 		
 		int a_size = 0;
 		int u_size = 0;
@@ -73,7 +81,7 @@ public:
 			else if(index < numAdFeature + numUserFeature){
 				u[u_size++] = index-numAdFeature;
 			}
-			vec[index] += mult * 1.0;	
+			vec[index] += mult;	
 		}
 		
 		
@@ -176,7 +184,7 @@ public:
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
 					sum += P1[u[uu_index]*dimLatent+j_index];
 				}
-				vec[W.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
+				vec[W	.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
@@ -224,6 +232,17 @@ public:
 	size_t NumAllFeats() const { return numAdFeature+numUserFeature+numOtherFeature;}
 	size_t getDimLatent() const {return dimLatent;}
 	double getEpsilon() const {return epsilon;}
+};
+
+struct FeatureSelectionObjectiveInitP : public DifferentiableFunction {
+	FeatureSelectionProblem& problem;
+	const double l2weight;
+	FeatureSelectionObjectiveInitP(FeatureSelectionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){ }
+	~FeatureSelectionObjectiveInitP(){}
+	double Eval(const DblVec& input, DblVec& gradient);
+	double EvalLocal(const DblVec& input, DblVec& gradient);
+	int handler(size_t rankid, size_t command); 
+	double EvalLocalMultiThread(const DblVec& input, DblVec& gradient);
 };
 
 struct FeatureSelectionObjectiveInit : public DifferentiableFunction {
