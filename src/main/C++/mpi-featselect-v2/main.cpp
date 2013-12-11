@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 	
 	
 	int K = 10; //latent factor dimension
-	double l21reg = 0;
+	double l21reg = 0.0;
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem(train_file, fea_file, K, my_rankid);
 	DifferentiableFunction* o00  = new FeatureSelectionObjectiveInitP(*fsp);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
@@ -50,13 +50,13 @@ int main(int argc, char** argv) {
 	DblVec& P1 = fsp->getP1();
 	DblVec& P2 = fsp->getP2();
 	
-	int Psize = P.size();
-	int P1size = P1.size();
-	int P2size = P2.size();
+	size_t Psize = P.size();
+	size_t P1size = P1.size();
+	size_t P2size = P2.size();
 	
 	
 	int l1regweight = 0;
-	double tol = 1e-7, l2weight = 0;
+	double tol = 1e-7, l2weight = 0.0;
 	int m = 5;
 	DblVec input0(Psize), gradient0(Psize);
 	
@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 		OWLQN opt0;
 		for(int i = 0; i < Psize; i++) input0[i] = P[i];
 		opt0.Minimize(*o00, input0, input0, l1regweight, tol, m);
-		o0->handler(0, 0); // inform all non-root worker finish
+		o00->handler(0, 0); // inform all non-root worker finish
 		for(int i = 0; i < Psize; i++) P[i] = input0[i];
 	}
 	else{
@@ -86,19 +86,19 @@ int main(int argc, char** argv) {
 	MPI_Bcast(&(P1[0]), P1size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	
-	int size = Psize + P1size + P2size;
+	size_t size = Psize + P1size + P2size;
 	DblVec input(size), gradient(size);
 	
 	if(my_rankid == 0){
 		OWLQN opt;
-		for(int i = 0; i < Psize; i++) input[i] = P[i];
-		for(int i = 0; i < P1size; i++) input[i+Psize] = P1[i];
-		for(int i = 0; i < P2size; i++) input[i+Psize+P1size] = P2[i];
+		for(size_t i = 0; i < Psize; i++) input[i] = P[i];
+		for(size_t i = 0; i < P1size; i++) input[i+Psize] = P1[i];
+		for(size_t i = 0; i < P2size; i++) input[i+Psize+P1size] = P2[i];
 		opt.Minimize(*o0, input, input, l1regweight, tol, m);
 		o0->handler(0, 0); // inform all non-root worker finish
-		for(int i = 0; i < Psize; i++) P[i] = input[i];
-		for(int i = 0; i < P1size; i++) P1[i] = input[i+Psize];
-		for(int i = 0; i < P2size; i++) P2[i] = input[i+Psize+P1size];
+		for(size_t i = 0; i < Psize; i++) P[i] = input[i];
+		for(size_t i = 0; i < P1size; i++) P1[i] = input[i+Psize];
+		for(size_t i = 0; i < P2size; i++) P2[i] = input[i+Psize+P1size];
 	}
 	else{
 		int ret;
@@ -130,10 +130,10 @@ int main(int argc, char** argv) {
 	
 	DblVec& W = fsp->getW();
 	DblVec& V = fsp->getV();
-	int Wsize = W.size();
-	int Vsize = V.size();
-	int size1 = Wsize+size;
-	int size2 = Vsize+size;
+	size_t Wsize = W.size();
+	size_t Vsize = V.size();
+	size_t size1 = Wsize+size;
+	size_t size2 = Vsize+size;
 	DblVec input1(size1), gradient1(size1);
 	DblVec input2(size2), gradient2(size2);
 	
@@ -145,19 +145,19 @@ int main(int argc, char** argv) {
 	
 	
 	for(int iter = 0; iter < 5; iter++){
-		for(int i = 0; i < Wsize; i++) input1[i] = W[i];
-		for(int i = 0; i < Psize; i++) input1[i+Wsize] = P[i];
-		for(int i = 0; i < P1size; i++) input1[i+Wsize+Psize] = P1[i];
-		for(int i = 0; i < P2size; i++) input1[i+Wsize+Psize+P1size] = P2[i];
+		for(size_t i = 0; i < Wsize; i++) input1[i] = W[i];
+		for(size_t i = 0; i < Psize; i++) input1[i+Wsize] = P[i];
+		for(size_t i = 0; i < P1size; i++) input1[i+Wsize+Psize] = P1[i];
+		for(size_t i = 0; i < P2size; i++) input1[i+Wsize+Psize+P1size] = P2[i];
 		if(my_rankid == 0){
 			OWLQN opt1;	
 			opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
 		//	opt1.Minimize(*o1, input1, input1, l1regweight, tol, m, iter);
 			o1->handler(0, 0); // inform all non-root worker finish
-			for(int i = 0; i<Wsize; i++) W[i] = input1[i];
-			for(int i = 0; i<Psize; i++) P[i] = input1[i+Wsize];
-			for(int i = 0; i<P1size; i++) P1[i] = input1[i+Wsize+Psize];
-			for(int i = 0; i<P2size; i++) P2[i] = input1[i+Wsize+Psize+P1size];
+			for(size_t i = 0; i<Wsize; i++) W[i] = input1[i];
+			for(size_t i = 0; i<Psize; i++) P[i] = input1[i+Wsize];
+			for(size_t i = 0; i<P1size; i++) P1[i] = input1[i+Wsize+Psize];
+			for(size_t i = 0; i<P2size; i++) P2[i] = input1[i+Wsize+Psize+P1size];
 				
 		}
 		else{
@@ -182,20 +182,20 @@ int main(int argc, char** argv) {
 		MPI_Bcast(&(P2[0]), P2size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		
 		
-		for(int i = 0; i < Vsize; i++) input2[i] = V[i];
-		for(int i = 0; i < Psize; i++) input2[i+Vsize] = P[i];
-		for(int i = 0; i < P1size; i++) input2[i+Vsize+Psize] = P1[i];
-		for(int i = 0; i < P2size; i++) input2[i+Vsize+Psize+P1size] = P2[i];
+		for(size_t i = 0; i < Vsize; i++) input2[i] = V[i];
+		for(size_t i = 0; i < Psize; i++) input2[i+Vsize] = P[i];
+		for(size_t i = 0; i < P1size; i++) input2[i+Vsize+Psize] = P1[i];
+		for(size_t i = 0; i < P2size; i++) input2[i+Vsize+Psize+P1size] = P2[i];
 		
 		
 		if(my_rankid == 0){
 			OWLQN opt2;
 			double newloss = opt2.Minimize(*o2, input2, input2, l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
-			for(int i = 0; i<Vsize; i++) V[i] = input2[i];
-			for(int i = 0; i<Psize; i++) P[i] = input2[i+Vsize];
-			for(int i = 0; i<P1size; i++) P1[i] = input2[i+Vsize+Psize];
-			for(int i = 0; i<P2size; i++) P2[i] = input2[i+Vsize+Psize+P1size];
+			for(size_t i = 0; i<Vsize; i++) V[i] = input2[i];
+			for(size_t i = 0; i<Psize; i++) P[i] = input2[i+Vsize];
+			for(size_t i = 0; i<P1size; i++) P1[i] = input2[i+Vsize+Psize];
+			for(size_t i = 0; i<P2size; i++) P2[i] = input2[i+Vsize+Psize+P1size];
 		}
 		
 		else{

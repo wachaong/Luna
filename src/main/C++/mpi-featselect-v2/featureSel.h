@@ -8,7 +8,7 @@
 #include "OWLQN.h"
 
 typedef std::vector<double> DblVec;
-typedef std::vector<int> IntVec;
+typedef std::vector<size_t> IntVec;
 typedef std::vector<double>* DblMat;
 
 
@@ -18,6 +18,7 @@ class FeatureSelectionProblem{
 	size_t numUserFeature;
 	size_t numOtherFeature;
 	size_t dimLatent;
+	size_t rankid;
 	
 	std::deque<size_t> features;
 	std::deque<size_t> instance_starts;
@@ -63,14 +64,16 @@ public:
 	void AddMultToP(size_t i, double mult,  std::vector<double>& vec) {
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j];
-			vec[index] += mult;	
+			vec[index] += mult * 1.0;	
 		}
 	}
 	
-	void AddMultToALLP(size_t i, double mult,  std::vector<double>& vec) {
+	void AddMultToALLP(size_t i, double mult,  const std::vector<double>& input, std::vector<double>& vec) {
 		
-		int a_size = 0;
-		int u_size = 0;
+		size_t a_size = 0;
+		size_t u_size = 0;
+		size_t Psize = P.size();
+		size_t P1size = P1.size();
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j];
 			//Ad Feature
@@ -81,40 +84,43 @@ public:
 			else if(index < numAdFeature + numUserFeature){
 				u[u_size++] = index-numAdFeature;
 			}
-			vec[index] += mult;	
+			vec[index] += mult*1.0;	
 		}
 		
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
 			size_t i_index = u[u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += P1[u[uu_index]*dimLatent+j_index];
+					sum += input[Psize+u[uu_index]*dimLatent+j_index];
 				}
-				vec[P.size() + i_index*dimLatent+j_index] += mult * sum;
+				vec[Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
 		for(size_t a_index = 0; a_index < a_size; a_index++){
 			size_t i_index = a[a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += P2[a[aa_index]*dimLatent + j_index];
+					sum += input[Psize+P1size+a[aa_index]*dimLatent + j_index];
 				}
-				vec[P.size()+P1.size()+i_index*dimLatent+j_index] += mult * sum;
+				vec[Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 	}
 	
 	//mult* u*w_j * T_i fix ad part
-	void AddMultToV(size_t i, double mult, std::vector<double> &vec){
-		int a_size = 0;
-		int u_size = 0;
+	void AddMultToV(size_t i, double mult, const std::vector<double> &input, std::vector<double> &vec){
+		size_t a_size = 0;
+		size_t u_size = 0;
+		size_t Vsize = V.size();
+		size_t Psize = P.size();
+		size_t P1size = P1.size();
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){			
 			size_t index = features[j];
-			vec[index+V.size()] += mult;
+			vec[index+Vsize] += mult*1.0;
 			//Ad Feature
 			if(index < numAdFeature){
 				a[a_size++] = index;
@@ -128,21 +134,21 @@ public:
 		for(size_t u_index = 0; u_index < u_size; u_index++){
 			size_t i_index = u[u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += P1[u[uu_index]*dimLatent+j_index];
+					sum += input[Vsize+Psize+u[uu_index]*dimLatent+j_index];
 				}
-				vec[V.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
+				vec[Vsize+Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		for(size_t a_index = 0; a_index < a_size; a_index++){
 			size_t i_index = a[a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += P2[a[aa_index]*dimLatent + j_index];
+					sum += input[Vsize+Psize+P1size+a[aa_index]*dimLatent + j_index];
 				}
-				vec[V.size()+P.size()+P1.size()+i_index*dimLatent+j_index] += mult * sum;
+				vec[Vsize+Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
@@ -160,19 +166,21 @@ public:
 	
 	
 	//mult*u_i *T*v_j fix User
-	void AddMultToW(size_t i, double mult, std::vector<double> &vec){
-		int a_size = 0;
-		int u_size = 0;
+	void AddMultToW(size_t i, double mult, const std::vector<double>& input, std::vector<double> &vec){
+		size_t a_size = 0;
+		size_t u_size = 0;
+		size_t Wsize = W.size();
+		size_t Psize = P.size();
+		size_t P1size = P1.size();
 		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
 			size_t index = features[j];
+			vec[index+Wsize] += mult*1.0;
 			//Ad Feature
 			if(index < numAdFeature){
 				a[a_size++] = index;
-				vec[index+V.size()] += mult;
 			}
 			//User Feature
-			else if(index < numAdFeature + numUserFeature){
-				vec[index+W.size()] += mult;
+			else if(index < numAdFeature + numUserFeature){	
 				u[u_size++] = index-numAdFeature;
 			}
 		}
@@ -180,22 +188,22 @@ public:
 		for(size_t u_index = 0; u_index < u_size; u_index++){
 			size_t i_index = u[u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += P1[u[uu_index]*dimLatent+j_index];
+					sum += input[Wsize+Psize+u[uu_index]*dimLatent+j_index];
 				}
-				vec[W	.size()+P.size() + i_index*dimLatent+j_index] += mult * sum;
+				vec[Wsize+Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
 		for(size_t a_index = 0; a_index < a_size; a_index++){
 			size_t i_index = a[a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += P2[a[aa_index]*dimLatent + j_index];
+					sum += input[Wsize+Psize+P1size+a[aa_index]*dimLatent + j_index];
 				}
-				vec[W.size()+P.size()+P1.size()+i_index*dimLatent+j_index] += mult * sum;
+				vec[Wsize+Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
@@ -203,7 +211,7 @@ public:
 		for(size_t u_index = 0; u_index < u_size; u_index++){
 			size_t i_index = u[u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
-				double sum = 0;
+				double sum = 0.0;
 				for(size_t a_index = 0; a_index < a_size; a_index++){
 					sum += V[a[a_index]*dimLatent+j_index];
 				}
@@ -237,10 +245,10 @@ public:
 struct FeatureSelectionObjectiveInitP : public DifferentiableFunction {
 	FeatureSelectionProblem& problem;
 	const double l2weight;
-	FeatureSelectionObjectiveInitP(FeatureSelectionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){ }
+	FeatureSelectionObjectiveInitP(FeatureSelectionProblem& p, double l2weight = 0.0) : problem(p), l2weight(l2weight){ }
 	~FeatureSelectionObjectiveInitP(){}
 	double Eval(const DblVec& input, DblVec& gradient);
-	double EvalLocal(const DblVec& input, DblVec& gradient);
+//	double EvalLocal(const DblVec& input, DblVec& gradient);
 	int handler(size_t rankid, size_t command); 
 	double EvalLocalMultiThread(const DblVec& input, DblVec& gradient);
 };
@@ -248,7 +256,7 @@ struct FeatureSelectionObjectiveInitP : public DifferentiableFunction {
 struct FeatureSelectionObjectiveInit : public DifferentiableFunction {
 	FeatureSelectionProblem& problem;
 	const double l2weight;
-	FeatureSelectionObjectiveInit(FeatureSelectionProblem& p, double l2weight = 0) : problem(p), l2weight(l2weight){ }
+	FeatureSelectionObjectiveInit(FeatureSelectionProblem& p, double l2weight = 0.0) : problem(p), l2weight(l2weight){ }
 	~FeatureSelectionObjectiveInit(){}
 	double Eval(const DblVec& input, DblVec& gradient);
 	double EvalLocal(const DblVec& input, DblVec& gradient);
@@ -261,7 +269,7 @@ struct FeatureSelectionObjectiveFixUser : public DifferentiableFunction {
 	FeatureSelectionProblem& problem;
 	const double l2weight;
 	const double l21weight;
-	FeatureSelectionObjectiveFixUser(FeatureSelectionProblem& p, double l21weight = 0, double l2weight = 0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
+	FeatureSelectionObjectiveFixUser(FeatureSelectionProblem& p, double l21weight = 0.0, double l2weight = 0.0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
 	~FeatureSelectionObjectiveFixUser(){}
 	double Eval(const DblVec& input, DblVec& gradient);
 	double EvalLocal(const DblVec& input, DblVec& gradient);
@@ -274,7 +282,7 @@ struct FeatureSelectionObjectiveFixAd : public DifferentiableFunction {
 	FeatureSelectionProblem& problem;
 	const double l2weight;
 	const double l21weight;
-	FeatureSelectionObjectiveFixAd(FeatureSelectionProblem& p, double l21weight = 0, double l2weight = 0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
+	FeatureSelectionObjectiveFixAd(FeatureSelectionProblem& p, double l21weight = 0.0, double l2weight = 0.0) : problem(p), l21weight(l21weight), l2weight(l2weight){}
 	~FeatureSelectionObjectiveFixAd(){}
 	double Eval(const DblVec& input, DblVec& gradient);
 	double EvalLocal(const DblVec& input, DblVec& gradient);

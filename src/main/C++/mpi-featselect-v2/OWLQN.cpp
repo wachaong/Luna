@@ -267,7 +267,7 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 	
 	while(true) {
 		state.UpdateDir();
-		if(state.DirDeriv() == 0) break;
+		if(state.DirDeriv() >= 0) break;
 		state.BackTrackingLineSearch();
 
 		ostringstream str;
