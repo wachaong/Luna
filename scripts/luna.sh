@@ -67,6 +67,10 @@ echo "Data InstanceSub Done"
 
 #bash ~/Luna/scripts/instance.sh MergeInstance 20131003 14 20131010 7 
 bash ~/Luna/scripts/instance.sh MergeInstance 20131007 7 20131008 1 
+hadoop fs -mkdir /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance/output/validation                                                                     
+hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance/output/train/part-r-000*0 /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance/output/validation/
+hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance/output/train/part-r-000*1 /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance/output/validation/
+
 hadoop fs -rmr /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance$1
 hadoop fs -mv /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance /group/tbalgo-dev/yanling.yl/Luna/1.0.1/Instance$1
 

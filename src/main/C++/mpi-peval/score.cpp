@@ -112,10 +112,10 @@ int load_feamap(const char* feamap_path){
 		feasign2id_map[type][feasign] = feaid[type];
 		feaid[type]++;
 	}
-	cout << "Ad Feature: "<<getAdFeaCount() << endl;
-	cout << "User Feature: "<<getUserFeaCount() << endl;
-	cout << "Other Feature: "<<getOtherFeaCount() << endl;
-	cout << "Total Feature: " << getAllFeaCount() << "\n";
+//	cout << "Ad Feature: "<<getAdFeaCount() << endl;
+//	cout << "User Feature: "<<getUserFeaCount() << endl;
+//	cout << "Other Feature: "<<getOtherFeaCount() << endl;
+//	cout << "Total Feature: " << getAllFeaCount() << "\n";
 	pfeamap.close();
 	return 0;
 }

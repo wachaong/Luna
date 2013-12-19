@@ -100,10 +100,10 @@ int load_feamap(const char* feamap_path){
 		feasign2id_map[type][feasign] = feaid[type];
 		feaid[type]++;
 	}
-	cout << "Ad Feature: "<<getAdFeaCount() << endl;
-	cout << "User Feature: "<<getUserFeaCount() << endl;
-	cout << "Other Feature: "<<getOtherFeaCount() << endl;
-	cout << "Total Feature: " << getAllFeaCount() << "\n";
+	//cout << "Ad Feature: "<<getAdFeaCount() << endl;
+	//cout << "User Feature: "<<getUserFeaCount() << endl;
+	//cout << "Other Feature: "<<getOtherFeaCount() << endl;
+	//cout << "Total Feature: " << getAllFeaCount() << "\n";
 	return 0;
 }
 
@@ -222,7 +222,7 @@ int trans_ins(const char* ins_path, size_t rankid, std::deque<size_t>& indices, 
 	
 	}
 
-	cout << "RANKID:" <<rankid << "\tNUMINSTANCE:" << numInstance << endl;
+//	cout << "RANKID:" <<rankid << "\tNUMINSTANCE:" << numInstance << endl;
 //	out.close();
 	return 0;				
 }

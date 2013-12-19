@@ -15,6 +15,7 @@ double g_total_nonclk = 0.0;
 double g_mean_ctr1 = 0.0;   // total_clk / (total_clk + total_nonclk)
 double g_mean_ctr2 = 0.0;   // 1/n * sum (clk_i/(clk_i + nonclk_i))
 double g_mean_pctr2 = 0.0;  // 1/n * sum (pctr_i)
+double g_nll = 0.0;
 int64_t g_ins = 0;
 
 int load_qid(const char * p_str_qid_path)
@@ -174,6 +175,7 @@ int load_predict(const char * p_str_ins_path, int rank)
       diff = clk/(non_clk+clk) - pctr;
       g_mae += fabs(diff);
       g_mse += diff*diff;
+	  g_nll += (-clk*log(pctr)-non_clk*log(1-pctr));
     }
     Log_r_Info("rank:%d end process %s", rank, p_str_ins_path);
 

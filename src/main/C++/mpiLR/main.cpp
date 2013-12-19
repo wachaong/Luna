@@ -9,6 +9,15 @@
 using namespace std;
 
 
+void printUsageAndExit() {
+	cout << "options:" << endl;
+	cout << "  -tol <value>   sets convergence tolerance (default is 1e-4)" << endl;
+ 	cout << "  -l2weight <value>" << endl;
+ 	cout << "  -l1weight <value>" << endl;
+	cout << endl;
+	exit(0);
+}
+
 void printVector(const DblVec &vec, const char* filename) {
 	ofstream outfile(filename);
 	if (!outfile.good()) {
@@ -23,7 +32,33 @@ void printVector(const DblVec &vec, const char* filename) {
 
 int main(int argc, char** argv) {
 
-
+	if (argc < 7 ) {
+		printUsageAndExit();
+	}
+	double tol = 1e-6, l2weight = 0.0;
+	double l1weight = 0.0;
+	for (int i=1; i<argc; i++) {
+		 if (!strcmp(argv[i], "-tol")) {
+			++i;
+			if (i >= argc || (tol = atof(argv[i])) <= 0) {
+				cout << "-tol (convergence tolerance) flag requires 1 positive real argument." << endl;
+				exit(1);
+			}
+		} else if (!strcmp(argv[i], "-l2weight")) {
+			++i;
+			if (i >= argc || (l2weight = atof(argv[i])) < 0) {
+				cout << "-l2weight flag requires 1 non-negative real argument." << endl;
+				exit(1);
+			}
+		}
+		else if (!strcmp(argv[i], "-l1weight")) {
+			++i;
+			if (i >= argc || (l1weight = atof(argv[i])) < 0) {
+				cout << "-l1weight flag requires 1 non-negative real argument." << endl;
+				exit(1);
+			}
+		}
+	}
 	int my_rankid;
 	int cnt_processors;
 	char train_file[100] = "./data/train/ins";
@@ -36,16 +71,14 @@ int main(int argc, char** argv) {
 	//In the LR problem <load local dataset to memory>
 	LogisticRegressionProblem *prob = new LogisticRegressionProblem(train_file, my_rankid);
 	DifferentiableFunction *obj;
-	double tol = 1e-8, l2weight = 0;
 	obj = new LogisticRegressionObjective(*prob, l2weight);
 	size_t size = prob->NumFeats();
 	DblVec init(size), ans(size);
 	if(my_rankid == 0){
-		int regweight = 0;
 	//	char output_file[100] = "model";
 		int m = 10;
 		OWLQN opt;
-		opt.Minimize(*obj, init, ans, regweight, tol, m);
+		opt.Minimize(*obj, init, ans, l1weight, tol, m);
 		obj->handler(0, 0);  //inform all non-root work finish
 		
 		int nonZero = 0;
@@ -71,7 +104,9 @@ int main(int argc, char** argv) {
 	MPI_Bcast(&ans[0], ans.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 	char output_file[100] = "./rank-00000/model";
 	printVector(ans, output_file);
-	cout <<"HAHAHHAHAHA GAME OVER\n";
+	if(my_rankid == 0){
+		cout <<"HAHAHHAHAHA GAME OVER\n";
+	}
 	MPI_Finalize();
 	delete obj;
 	delete prob;

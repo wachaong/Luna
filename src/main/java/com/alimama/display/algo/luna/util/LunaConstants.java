@@ -30,9 +30,9 @@ public class LunaConstants {
 	public final static String AD_INTEREST_PREFIX = "ai";
 	public final static String AD_MAINCATETARGETING_PREFIX = "am";
 	
-	public final static String USER_CROWDPOWER_PREFIX = "uc";
 	public final static String USER_SHOPTARGETING_PREFIX = "us";
 	public final static String USER_INTEREST_PREFIX = "ui";
+	public final static String USER_CROWDPOWER_PREFIX = "uc";
 	public final static String USER_MAINCATETARGETING_PREFIX = "um";
 	
 	public final static String CROWDPOWER_PREFIX = "cp";

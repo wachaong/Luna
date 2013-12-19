@@ -133,6 +133,7 @@ function FeatureFilter() {
 
 HDHOME=/group/tbalgo-dev/yanling.yl
 inputs=${HDHOME}/Luna/1.0.1/${NAME}/output/train/part*
+valid_inputs=${HDHOME}/Luna/1.0.1/${NAME}/output/validation/part*
 evaluate_inputs=${HDHOME}/Luna/1.0.1/${NAME}/output/test/part*
 
 
@@ -143,6 +144,7 @@ hadoop fs -rmr $HADOOP_OUT_PATH
 output=${HADOOP_OUT_PATH}/model
 VALID_FEATURE_HADOOP_PATH=${output}/valid
 FEATURE_HADOOP_PATH=${output}/feature
+VALID_INSTANCE_HADOOP_PATH=${output}/test/instance
 TEST_INSTANCE_HADOOP_PATH=${output}/test/instance
 
 INPUT_SIGN_MAPPER_NUM=100
@@ -154,6 +156,7 @@ reducer_num=$INPUT_SIGN_REDUCER_NUM
 #build feature dict
 
 FeatureSign ${inputs} ${output} ${INPUT_SIGN_MAPPER_NUM} ${reducer_num} ${INPUT_IS_SEQ} ${PV_THRESHOLD}
+FeatureSign ${valid_inputs} ${output}/validation ${INPUT_SIGN_MAPPER_NUM} ${reducer_num} ${INPUT_IS_SEQ} ${PV_THRESHOLD}
 FeatureSign ${evaluate_inputs} ${output}/test ${INPUT_SIGN_MAPPER_NUM} ${reducer_num} ${INPUT_IS_SEQ} ${PV_THRESHOLD}
 FeatureFilter ${FEATURE_HADOOP_PATH} ${VALID_FEATURE_HADOOP_PATH} ${INPUT_SIGN_MAPPER_NUM} 1 false ${PV_THRESHOLD}
 
