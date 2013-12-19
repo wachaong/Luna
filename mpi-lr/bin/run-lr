@@ -1,12 +1,13 @@
 #!/bin/bash
 usage(){
-	echo "USAGE: $0 Tol L2weight L1weight"
+	echo "USAGE: $0 DATASET Tol L2weight L1weight"
 	exit $1
 }
-[[ $# == 3 ]] || usage
-TOL=$1
-L2WEIGHT=$2
-L1WEIGHT=$3
+[[ $# == 4 ]] || usage
+DATASET=$1
+TOL=$2
+L2WEIGHT=$3
+L1WEIGHT=$4
 
 WORK_DIR=`readlink -f $0`
 WORK_DIR=`dirname $WORK_DIR`
@@ -27,7 +28,7 @@ HDHOME=/group/tbalgo-dev/yanling.yl
 HADOOP_HOME=/home/yunti/hadoop-current
 HADOOP_CONF_DIR=`cd ~/conf; pwd`
 HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
-HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
+HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/${DATASET}
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 
 output=${HADOOP_OUTPUT_PATH}/model
