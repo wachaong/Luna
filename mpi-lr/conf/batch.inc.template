@@ -108,6 +108,10 @@ CMD_NAME[$i]="valid-pre-auc"
 MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
 ((i++))
 
+CMD_NAME[$i]="valid-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/valid_auc.txt "
+((i++))
+
 
 #run test data for result evaluation
 # eval test data

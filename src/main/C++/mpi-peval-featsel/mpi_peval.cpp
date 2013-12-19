@@ -104,6 +104,7 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
     double mean_pctr2 = 0.0;
     double mse = 0.0;
     double mae = 0.0;
+	double nll = 0.0;
     double auc = 0.0;
     double weight = 0.0;
     double total_weight = 0.0;
@@ -119,6 +120,7 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
     
     MPI_Allreduce(&g_mse, &mse,1,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
     MPI_Allreduce(&g_mae, &mae,1,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
+	MPI_Allreduce(&g_nll, &nll,1,MPI_DOUBLE,MPI_SUM,MPI_COMM_WORLD);
     MPI_Allreduce(&g_ins, &total_ins,1,MPI_LONG,MPI_SUM,MPI_COMM_WORLD);
 
     if (mse<0 || mae<0 || total_ins<0) {
@@ -145,7 +147,8 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
         
         printf("MSE=%lf\n", mse);
         printf("MAE=%lf\n", mae);
-
+		printf("NLL=%lf\n", nll);
+		
         Log_r_Info("total_Clk=%lf", total_clk);
         Log_r_Info("total_nonClk=%lf", total_nonclk);
         Log_r_Info("total_ins=%ld", total_ins);
@@ -156,6 +159,8 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
 
         Log_r_Info("MSE=%lf", mse);
         Log_r_Info("MAE=%lf", mae);
+		Log_r_Info("NLL=%lf", nll);
+		
         if (auc_file != NULL) {
             fp = fopen(auc_file, "a+");
             if (fp != NULL) {
@@ -169,6 +174,7 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
                 
                 fprintf(fp, "MSE=%lf\n", mse);
                 fprintf(fp, "MAE=%lf\n", mae);
+				fprintf(fp, "NLL=%lf\n", nll);
             }
         }
     }

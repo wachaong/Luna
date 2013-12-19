@@ -113,7 +113,7 @@ void* ThreadEvalLocal(void * arg){
 
 	p->loss = 0.0;
 	int NumIns = p->obj.problem.NumInstances();
-	start=clock();
+//	start=clock();
 	for (size_t i = 0; i < NumIns; i++){
 		if(i%p->threadNum != p->threadId) continue;
 		double score = p->obj.problem.ScoreOf(i, p->input);
@@ -133,11 +133,11 @@ void* ThreadEvalLocal(void * arg){
 		p->obj.problem.AddMultTo(i, 1.0 - insProb, p->gradient);	
 	}
 	
-	finish=clock();
-	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
-		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
-		cout<<"All Time: "<<totaltime<<"seconds"<<endl;
-	}
+//	finish=clock();
+//	if(p->threadId == 0 && p->obj.problem.getRankId() == 0){
+//		totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+//		cout<<"All Time: "<<totaltime<<"seconds"<<endl;
+//	}
 	
 }
 

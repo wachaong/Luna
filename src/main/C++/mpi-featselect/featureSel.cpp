@@ -57,24 +57,26 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	srand((unsigned)time(NULL)); 
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			W.push_back((rand() * 2 - 1) / double(RAND_MAX) * 0.01);
+			W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
 		//W.push_back(0);
 		}
+		u.push_back(0);
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			V.push_back((rand() * 2 - 1) / double(RAND_MAX) * 0.01);
+			V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
 		}
+		a.push_back(0);
 	}
 	
 	for(size_t i = 0; i<NumAllFeats(); i++){
 		P.push_back(0);
 	}
 	
-	cout << "NumAdFeature:" << numAdFeature << endl;
-	cout << "NumUserFeature:" << numUserFeature << endl;
-	cout << "NumAllFeature:" << NumAllFeats() << endl;
-	cout << "NumInstance" << numInstance << endl;
+	//cout << "NumAdFeature:" << numAdFeature << endl;
+	//cout << "NumUserFeature:" << numUserFeature << endl;
+	//cout << "NumAllFeature:" << NumAllFeats() << endl;
+	//cout << "NumInstance" << numInstance << endl;
 }
 
 
@@ -84,7 +86,7 @@ double FeatureSelectionProblem::ScoreOfForP(size_t i, const std::vector<double>&
 	//f(x)=Px
 	double score = 0.0;	
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += weights[features[j]];
+		score += weights[features[j]]*1.0;
 	}
 	return score;
 }
@@ -102,7 +104,7 @@ double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>&
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += P[features[j]];
+		score += weights[W.size()+features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -136,7 +138,7 @@ double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>&
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += P[features[j]];
+		score += weights[V.size()+features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -469,19 +471,24 @@ void* ThreadEvalLocalForV(void * arg){
 	double epsilon = o.problem.getEpsilon();
 	size_t dimLatent = o.problem.getDimLatent();
 	DblVec& W = o.problem.getW();
-	DblVec& P = o.problem.getP();
-	for(size_t i = 0; i < P.size(); i++){
-		p->loss += 0.5*P[i]*P[i]*o.l2weight / p->threadNum;
+	
+	int Vsize = o.problem.NumAdFeats()*dimLatent;
+	int Psize = o.problem.getP().size();
+	for(size_t i = 0; i < Psize; i++){
+		p->loss += 0.5*p->input[Vsize+i]*p->input[Vsize+i]*o.l2weight / p->threadNum;
+		p->gradient[i+Vsize] = o.l2weight * p->input[i+Vsize] / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumUserFeats(); i++){
-		double sum = 0;
+	int num_user_feats = o.problem.NumUserFeats();
+	for(size_t i = 0; i < o.problem.num_user_feats; i++){
+		double sum = 0.0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += W[i*dimLatent + j] * W[i*dimLatent + j] ;
 		}
 		sum += epsilon;
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumAdFeats(); i++){
+	int num_ad_feats = o.problem.NumAdFeats();
+	for(size_t i = 0; i < o.problem.num_ad_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
@@ -495,7 +502,8 @@ void* ThreadEvalLocalForV(void * arg){
 		p->loss += sqrt_sum * o.l21weight / p->threadNum;
 	}
 	
-	for(size_t i = 0; i < o.problem.NumInstance(); i++){
+	int num_ins = o.problem.NumInstance();
+	for(size_t i = 0; i < num_ins; i++){
 		if(i%p->threadNum != p->threadId) continue;
 		double score = o.problem.ScoreOfForV(i, p->input);
 		double insLoss, insProb;
@@ -547,11 +555,15 @@ void* ThreadEvalLocalForW(void * arg){
 	double epsilon = o.problem.getEpsilon();
 	size_t dimLatent = o.problem.getDimLatent();
 	DblVec& V = o.problem.getV();
-	DblVec& P = o.problem.getP();
-	for(size_t i = 0; i < P.size(); i++){
-		p->loss += 0.5*P[i]*P[i]*o.l2weight / p->threadNum;
+	int Wsize = o.problem.NumUserFeats()*dimLatent;
+	int Psize = o.problem.getP().size();
+	
+	for(size_t i = 0; i < PSize; i++){
+		p->loss += 0.5*p->input[Wsize+i]*p->input[Wsize+i]*o.l2weight / p->threadNum;
+		p->gradient[i+Wsize] = o.l2weight * p->input[i+Wsize] / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumAdFeats(); i++){
+	int num_ad_feats = o.problem.NumAdFeats();
+	for(size_t i = 0; i < num_ad_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += V[i*dimLatent + j] * V[i*dimLatent + j];
@@ -559,7 +571,8 @@ void* ThreadEvalLocalForW(void * arg){
 		sum += epsilon;
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumUserFeats(); i++){
+	int num_user_feats = o.problem.NumUserFeats()
+	for(size_t i = 0; i <num_user_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
@@ -572,7 +585,8 @@ void* ThreadEvalLocalForW(void * arg){
 		}
 		p->loss += sqrt_sum * o.l21weight / p->threadNum;
 	}
-	for(size_t i = 0; i < o.problem.NumInstance(); i++){
+	int num_ins = o.problem.NumInstance();
+	for(size_t i = 0; i < num_ins; i++){
 		if(i % p->threadNum != p->threadId) continue;
 		double score = o.problem.ScoreOfForW(i, p->input);
 		double insLoss, insProb;

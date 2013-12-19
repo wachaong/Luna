@@ -51,7 +51,7 @@ extern double g_mean_pctr2;
 extern int64_t g_ins;
 extern double g_mse;
 extern double g_mae;
-
+extern double g_nll;
 
 typedef struct {
     float clk;

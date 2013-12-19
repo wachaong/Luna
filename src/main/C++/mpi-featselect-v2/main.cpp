@@ -13,14 +13,9 @@ void printVector(const DblVec &vec, const char* filename) {
 		cerr << "error opening matrix file " << filename << endl;
 		exit(1);
 	}
-//	outfile << "%%MatrixMarket matrix array real general" << endl;
-//	outfile << "1 " << vec.size() << endl;
+
 	for (size_t i=0; i<vec.size(); i++) {
-//		if(vec[i] < 1e-6){
-//			outfile << 0 << endl;
-//		}
-//		else
-			outfile << vec[i] << endl;
+		outfile << vec[i] << endl;
 	}
 	outfile.close();
 }
