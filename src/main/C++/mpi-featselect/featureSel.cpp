@@ -296,7 +296,7 @@ double FeatureSelectionObjectiveFixUser::EvalLocal(const DblVec& V, DblVec& grad
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.ClkOf(i) * insLoss;
-			problem.AddMultToV(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), gradientV);
+			problem.AddMultToV(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), gradientV, 0);
 		}
 
 		if(problem.NonClkOf(i) > 0){
@@ -315,7 +315,7 @@ double FeatureSelectionObjectiveFixUser::EvalLocal(const DblVec& V, DblVec& grad
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.NonClkOf(i) * insLoss;
-			problem.AddMultToV(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), gradientV);
+			problem.AddMultToV(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), gradientV, 0);
 		}		
 	}
 	return loss;
@@ -371,7 +371,7 @@ double FeatureSelectionObjectiveFixAd::EvalLocal(const DblVec& W, DblVec& gradie
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.ClkOf(i) * insLoss;
-			problem.AddMultToW(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), gradientW);
+			problem.AddMultToW(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), gradientW, 0);
 		}
 
 		if(problem.NonClkOf(i) > 0){
@@ -390,7 +390,7 @@ double FeatureSelectionObjectiveFixAd::EvalLocal(const DblVec& W, DblVec& gradie
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.NonClkOf(i) * insLoss;
-			problem.AddMultToW(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), gradientW);
+			problem.AddMultToW(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), gradientW, 0);
 		}		
 	}
 	return loss;
@@ -558,7 +558,7 @@ void* ThreadEvalLocalForW(void * arg){
 	int Wsize = o.problem.NumUserFeats()*dimLatent;
 	int Psize = o.problem.getP().size();
 	
-	for(size_t i = 0; i < PSize; i++){
+	for(size_t i = 0; i < Psize; i++){
 		p->loss += 0.5*p->input[Wsize+i]*p->input[Wsize+i]*o.l2weight / p->threadNum;
 		p->gradient[i+Wsize] = o.l2weight * p->input[i+Wsize] / p->threadNum;
 	}

@@ -89,7 +89,7 @@ public:
 		
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
-			size_t i_index = u[[thread_id]u_index];
+			size_t i_index = u[thread_id][u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){

@@ -3,7 +3,7 @@ usage(){
 	echo "USAGE: $0 DATASET Tol L2weight L21weight K"
 	exit $1
 }
-[[ $# == 4 ]] || usage
+[[ $# == 5 ]] || usage
 DATASET=$1
 TOL=$2
 L2WEIGHT=$3

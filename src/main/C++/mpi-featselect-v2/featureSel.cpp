@@ -507,7 +507,7 @@ double FeatureSelectionObjectiveFixUser::EvalLocal(const DblVec& V, DblVec& grad
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.ClkOf(i) * insLoss;
-			problem.AddMultToV(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), V, gradientV);
+			problem.AddMultToV(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), V, gradientV, 0);
 		}
 
 		if(problem.NonClkOf(i) > 0){
@@ -526,7 +526,7 @@ double FeatureSelectionObjectiveFixUser::EvalLocal(const DblVec& V, DblVec& grad
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.NonClkOf(i) * insLoss;
-			problem.AddMultToV(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), V, gradientV);
+			problem.AddMultToV(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), V, gradientV, 0);
 		}		
 	}
 	return loss;
@@ -582,7 +582,7 @@ double FeatureSelectionObjectiveFixAd::EvalLocal(const DblVec& W, DblVec& gradie
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.ClkOf(i) * insLoss;
-			problem.AddMultToW(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), W, gradientW);
+			problem.AddMultToW(i, -1.0*problem.ClkOf(i)*(1.0 - insProb), W, gradientW, 0);
 		}
 
 		if(problem.NonClkOf(i) > 0){
@@ -601,7 +601,7 @@ double FeatureSelectionObjectiveFixAd::EvalLocal(const DblVec& W, DblVec& gradie
 				insProb = 1.0/ temp;
 			}
 			loss +=  problem.NonClkOf(i) * insLoss;
-			problem.AddMultToW(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), W, gradientW);
+			problem.AddMultToW(i, 1.0*problem.NonClkOf(i)*(1.0 - insProb), W, gradientW, 0);
 		}		
 	}
 	return loss;

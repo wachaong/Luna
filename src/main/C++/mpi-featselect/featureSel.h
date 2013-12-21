@@ -78,11 +78,11 @@ public:
 			}
 			vec[index+V.size()] += mult*1.0;
 		}
-		for(size_t a_index = 0; a_index < asize; a_index++){
+		for(size_t a_index = 0; a_index < a_size; a_index++){
 			size_t i_index = a[thread_id][a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
-				for(size_t u_index = 0; u_index < usize; u_index++){
+				for(size_t u_index = 0; u_index < u_size; u_index++){
 					sum += W[u[thread_id][u_index]*dimLatent + j_index];
 				}
 				vec[i_index*dimLatent+j_index] += mult * sum;
@@ -105,11 +105,11 @@ public:
 			}
 			vec[index+W.size()] += mult*1.0;
 		}
-		for(size_t u_index = 0; u_index < usize; u_index++){
+		for(size_t u_index = 0; u_index < u_size; u_index++){
 			size_t i_index = u[thread_id][u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0;
-				for(size_t a_index = 0; a_index < asize; a_index++){
+				for(size_t a_index = 0; a_index < a_size; a_index++){
 					sum += V[a[thread_id][a_index]*dimLatent+j_index];
 				}
 				vec[i_index*dimLatent+j_index] += mult * sum;
