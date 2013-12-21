@@ -60,13 +60,13 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 			W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
 		//W.push_back(0);
 		}
-		u.push_back(0);
+		for(size_t j = 0; j < 24; j++) u[j].push_back(0);
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
 			V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
 		}
-		a.push_back(0);
+		for(size_t j = 0; j < 24; j++) a[j].push_back(0);
 	}
 	
 	for(size_t i = 0; i<NumAllFeats(); i++){
@@ -479,7 +479,7 @@ void* ThreadEvalLocalForV(void * arg){
 		p->gradient[i+Vsize] = o.l2weight * p->input[i+Vsize] / p->threadNum;
 	}
 	int num_user_feats = o.problem.NumUserFeats();
-	for(size_t i = 0; i < o.problem.num_user_feats; i++){
+	for(size_t i = 0; i < num_user_feats; i++){
 		double sum = 0.0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += W[i*dimLatent + j] * W[i*dimLatent + j] ;
@@ -488,7 +488,7 @@ void* ThreadEvalLocalForV(void * arg){
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
 	int num_ad_feats = o.problem.NumAdFeats();
-	for(size_t i = 0; i < o.problem.num_ad_feats; i++){
+	for(size_t i = 0; i < num_ad_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
@@ -522,7 +522,7 @@ void* ThreadEvalLocalForV(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultToV(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultToV(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -541,7 +541,7 @@ void* ThreadEvalLocalForV(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToV(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultToV(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}		
 	}
 }
@@ -571,7 +571,7 @@ void* ThreadEvalLocalForW(void * arg){
 		sum += epsilon;
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
-	int num_user_feats = o.problem.NumUserFeats()
+	int num_user_feats = o.problem.NumUserFeats();
 	for(size_t i = 0; i <num_user_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
@@ -605,7 +605,7 @@ void* ThreadEvalLocalForW(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultToW(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultToW(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -624,7 +624,7 @@ void* ThreadEvalLocalForW(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToW(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultToW(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}		
 	}
 }

@@ -60,22 +60,18 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 			P1.push_back((rand() / double(RAND_MAX) * 2 - 1)  * 0.01);
 		//W.push_back(0);
 		}
+		for(size_t j = 0; j < 24; j++) u[j].push_back(0);
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
 			V.push_back((rand() / double(RAND_MAX) * 2 - 1)  * 0.01);
 			P2.push_back((rand() / double(RAND_MAX) * 2 - 1) * 0.01);
 		}
+		for(size_t j = 0; j < 24; j++) a[j].push_back(0);
 	}
 	
 	for(size_t i = 0; i<NumAllFeats(); i++){
 		P.push_back(0.0);
-	}
-	for(size_t i = 0; i<numAdFeature; i++){
-		a.push_back(0);
-	}
-	for(size_t i = 0; i<numUserFeature; i++){
-		u.push_back(0);
 	}
 	
 	if(rankid == 0){
@@ -707,7 +703,7 @@ void* ThreadEvalLocalForALLP(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultToALLP(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToALLP(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -726,7 +722,7 @@ void* ThreadEvalLocalForALLP(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToALLP(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToALLP(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}		
 	}
 }
@@ -793,7 +789,7 @@ void* ThreadEvalLocalForV(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultToV(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToV(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -812,7 +808,7 @@ void* ThreadEvalLocalForV(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToV(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToV(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}		
 	}
 }
@@ -878,7 +874,7 @@ void* ThreadEvalLocalForW(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultToW(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToW(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -897,7 +893,7 @@ void* ThreadEvalLocalForW(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToW(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient);
+			o.problem.AddMultToW(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->input, p->gradient, p->threadId);
 		}		
 	}
 }

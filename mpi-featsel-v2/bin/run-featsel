@@ -1,4 +1,14 @@
 #!/bin/bash
+usage(){
+	echo "USAGE: $0 DATASET Tol L2weight L21weight K"
+	exit $1
+}
+[[ $# == 4 ]] || usage
+DATASET=$1
+TOL=$2
+L2WEIGHT=$3
+L21WEIGHT=$4
+K=$5
 
 WORK_DIR=`readlink -f $0`
 WORK_DIR=`dirname $WORK_DIR`
@@ -19,23 +29,24 @@ HDHOME=/group/tbalgo-dev/yanling.yl
 HADOOP_HOME=/home/yunti/hadoop-current
 HADOOP_CONF_DIR=`cd ~/conf; pwd`
 HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
-HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/LR_JOB_Instance8days_Baseline_RawFeature_Joint_AD_and_TargetingInfo
+HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/${DATASET}
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/FSTest
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 
 output=${HADOOP_OUTPUT_PATH}/model
-jobName=my-mpi-feature-select-v2
-nodes=30
+jobName=my-mpi-feature-select-v2-Tol-${TOL}-l2weight-${L2WEIGHT}-l21weight-${L1WEIGHT}-K-${K}
+nodes=60
 ppn=1
 cpuct=24
 user=yanling.yl
-walltime=36000
+walltime=360000
 pmem=60G
 queue=batch
 
 VALID_FEATURE_HADOOP_PATH=${output}/valid
 FEATURE_HADOOP_PATH=${output}/feature
 TEST_INSTANCE_HADOOP_PATH=${output}/test/instance
+VALID_INSTANCE_HADOOP_PATH=${output}/validation/instance
 
 hadoop fs -rmr ${output}/model
 hadoop fs -rmr ${output}/score
@@ -47,6 +58,7 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
   #compose a batch.inc file
   VALID_FEATURE_HADOOP_PATH_TMP=`echo ${VALID_FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   FEATURE_HADOOP_PATH_TMP=`echo ${FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  VALID_INSTANCE_HADOOP_PATH_TMP=`echo ${VALID_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   TEST_INSTANCE_HADOOP_PATH_TMP=`echo ${TEST_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   
   
@@ -54,7 +66,12 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
   #   begin variable substitution
   cat ${LOG_DIR}/batch.inc.tmp \
 	  | sed "s/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH_TMP}/g" \
+	  | sed "s/\[VALID_INSTANCE_HADOOP_PATH\]/${VALID_INSTANCE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_NUM\]/${FEATURE_NUM}/g" \
+	  | sed "s/\[TOL\]/${TOL}/g" \
+	  | sed "s/\[L2WEIGHT\]/${L2WEIGHT}/g" \
+	  | sed "s/\[L21WEIGHT\]/${L21WEIGHT}/g" \
+	  | sed "s/\[K\]/${K}/g" \
       | sed "s/\[VALID_FEATURE_HADOOP_PATH\]/${VALID_FEATURE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_HADOOP_PATH\]/${FEATURE_HADOOP_PATH_TMP}/g" > ${LOG_DIR}/batch.inc
   rm ${LOG_DIR}/batch.inc.tmp -f

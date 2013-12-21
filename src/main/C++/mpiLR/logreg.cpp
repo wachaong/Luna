@@ -106,12 +106,17 @@ struct Parameter{
 };
 
 void* ThreadEvalLocal(void * arg){
-	clock_t start,finish;
-	double totaltime;
+	//clock_t start,finish;
+	//double totaltime;
 	
 	Parameter* p  = ( Parameter*) arg;
-
+	
 	p->loss = 0.0;
+	LogisticRegressionObjective& o = (LogisticRegressionObjective&)(p->obj);
+	for (size_t i = 0; i < p->input.size(); i++){
+		p->loss += 0.5 * p->input[i] * p->input[i] * o.l2weight / p->threadNum;
+		p->gradient[i] = o.l2weight * p->input[i] / p->threadNum;
+	}
 	int NumIns = p->obj.problem.NumInstances();
 //	start=clock();
 	for (size_t i = 0; i < NumIns; i++){

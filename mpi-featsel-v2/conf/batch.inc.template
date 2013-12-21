@@ -4,6 +4,7 @@ local_train_dict="FeaDict"
 local_feature_folder="FeatureFold"
 local_train_path="download_output/ins"
 local_test_path="TestIns"
+local_valid_path="ValidIns"
 local_dict_path="FeaDict.dat"
 
 i=0;
@@ -52,7 +53,7 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/rank-00000"
 ((i++))
 
 CMD_NAME[$i]="featsel"
-MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiFeatSel"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiFeatSel -tol [TOL] -l2weight [L2WEIGHT] -l21weight [L1WEIGHT] -K [K]"
 ((i++))
 
 
@@ -94,6 +95,29 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./d
 CMD_NAME[$i]="train-auc"
 MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval-featsel ./data/score/ins ./data/score/qid rank-00000/train_auc.txt"
 ((i++))
+
+#run validation data for result evaluation
+# eval validation data
+CMD_NAME[$i]="downloadValidSet"
+MPI_CMD[$i]="/home/a/share/algo1/mpi-download/script/mpi_get -p /home/a/libexec64/hadoop/current -c ./hadoop_conf/ [VALID_INSTANCE_HADOOP_PATH]:${local_valid_path}:0"
+((i++))
+
+CMD_NAME[$i]="mvFile"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh moveFile.sh ${WORKSPACE}/${local_valid_path} ${WORKSPACE}/data/eval"
+((i++))
+
+CMD_NAME[$i]="valid-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-pfs-score ./rank-00000/model ${WORKSPACE}/data/eval/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="valid-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="valid-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval-featsel ./data/score/ins ./data/score/qid rank-00000/valid_auc.txt "
+((i++))
+
 
 #run test data for result evaluation
 #[EVALUATE]

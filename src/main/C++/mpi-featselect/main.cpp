@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 		}
 		else if (!strcmp(argv[i], "-l12weight")) {
 			++i;
-			if (i >= argc || (l12reg = atof(argv[i])) < 0) {
+			if (i >= argc || (l21reg = atof(argv[i])) < 0) {
 				cout << "-l12weight flag requires 1 non-negative real argument." << endl;
 				exit(1);
 			}
@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
 		
 		if(my_rankid == 0){
 			OWLQN opt2;
-			double newloss = opt2.Minimize(*o2, fsp->getV(), fsp->getV(), l1regweight, tol, m, iter);
+			double newloss = opt2.Minimize(*o2, input2, input2, l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
 			
 			for(int i = 0; i < fsp->getV().size(); i++) fsp->getV()[i] = input2[i];                                                                      
@@ -180,11 +180,11 @@ int main(int argc, char** argv) {
 			}
 		}
 		
-		if(my_rankid == 0){
+		if(my_rankid == 0)
 			cout << ">>Iter" <<iter << " OPT2 END" << endl;
 		
 		MPI_Bcast(&((fsp->getP())[0]), fsp->getP().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-		MPI_Bcast(&((fsp->getW())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+		MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		
 		
 		if(my_rankid == 0){
@@ -198,7 +198,7 @@ int main(int argc, char** argv) {
 		}
 	
 	}
-
+	
 	printVector(fsp->getP(), "./rank-00000/modelP");
 	printVector(fsp->getW(), "./rank-00000/modelW");
 	printVector(fsp->getV(), "./rank-00000/modelV");

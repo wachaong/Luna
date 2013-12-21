@@ -20,14 +20,23 @@ void printVector(const DblVec &vec, const char* filename) {
 	outfile.close();
 }
 
+void printUsageAndExit() {
+	cout << "options:" << endl;
+	cout << "  -tol <value>   sets convergence tolerance (default is 1e-4)" << endl;
+ 	cout << "  -l2weight <value>" << endl;
+ 	cout << "  -l12weight <value>" << endl;
+ 	cout << "  -K <value>" << endl;
+	cout << endl;
+	exit(0);
+}
+
 int main(int argc, char** argv) {
 
 	int my_rankid;
 	int cnt_processors;
 	char train_file[100] = "./data/train/ins";
-//	char train_file[100] = "D:\\workspace\\Luna\\src\\main\\C++\\mpi-featselect\\ins";
-//	char fea_file[100] = "D:\\workspace\\Luna\\src\\main\\C++\\mpi-featselect\\feat";
 	char fea_file[100] = "./FeaDict.dat";
+	
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rankid);
 	MPI_Comm_size(MPI_COMM_WORLD, &cnt_processors);
@@ -35,9 +44,40 @@ int main(int argc, char** argv) {
 	
 	int K = 10; //latent factor dimension
 	double l21reg = 0.0;
+	double l2weight = 0.0;
+	double tol = 1e-6;
+	for (int i=1; i<argc; i++) {
+		 if (!strcmp(argv[i], "-tol")) {
+			++i;
+			if (i >= argc || (tol = atof(argv[i])) <= 0) {
+				cout << "-tol (convergence tolerance) flag requires 1 positive real argument." << endl;
+				exit(1);
+			}
+		} else if (!strcmp(argv[i], "-l2weight")) {
+			++i;
+			if (i >= argc || (l2weight = atof(argv[i])) < 0) {
+				cout << "-l2weight flag requires 1 non-negative real argument." << endl;
+				exit(1);
+			}
+		}
+		else if (!strcmp(argv[i], "-l12weight")) {
+			++i;
+			if (i >= argc || (l21reg = atof(argv[i])) < 0) {
+				cout << "-l12weight flag requires 1 non-negative real argument." << endl;
+				exit(1);
+			}
+		}
+		else if (!strcmp(argv[i], "-K")) {
+			++i;
+			if (i >= argc || (K = atoi(argv[i])) < 0) {
+				cout << "-K flag requires 1 non-negative integer argument." << endl;
+				exit(1);
+			}
+		}
+	}
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem(train_file, fea_file, K, my_rankid);
 	DifferentiableFunction* o00  = new FeatureSelectionObjectiveInitP(*fsp);
-	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
+	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp, l2weight);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
 	
@@ -50,9 +90,8 @@ int main(int argc, char** argv) {
 	size_t P2size = P2.size();
 	
 	
-	int l1regweight = 0;
-	double tol = 1e-7, l2weight = 0.0;
-	int m = 5;
+	double l1regweight = 0;
+	int m = 10;
 	DblVec input0(Psize), gradient0(Psize);
 	
 	if(my_rankid == 0){

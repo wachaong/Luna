@@ -31,8 +31,8 @@ class FeatureSelectionProblem{
 	DblVec P1;
 	DblVec P2;
 	
-	IntVec u;
-	IntVec a;
+	IntVec u[24];
+	IntVec a[24];
 	double epsilon;
 public:
 	FeatureSelectionProblem(const char* instance_file, const char* feature_file, int K, size_t rankid);
@@ -68,7 +68,7 @@ public:
 		}
 	}
 	
-	void AddMultToALLP(size_t i, double mult,  const std::vector<double>& input, std::vector<double>& vec) {
+	void AddMultToALLP(size_t i, double mult,  const std::vector<double>& input, std::vector<double>& vec, int thread_id) {
 		
 		size_t a_size = 0;
 		size_t u_size = 0;
@@ -78,33 +78,33 @@ public:
 			size_t index = features[j];
 			//Ad Feature
 			if(index < numAdFeature){
-				a[a_size++] = index;
+				a[thread_id][a_size++] = index;
 			}
 			//User Feature
 			else if(index < numAdFeature + numUserFeature){
-				u[u_size++] = index-numAdFeature;
+				u[thread_id][u_size++] = index-numAdFeature;
 			}
 			vec[index] += mult*1.0;	
 		}
 		
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
-			size_t i_index = u[u_index];
+			size_t i_index = u[[thread_id]u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += input[Psize+u[uu_index]*dimLatent+j_index];
+					sum += input[Psize+u[thread_id][uu_index]*dimLatent+j_index];
 				}
 				vec[Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
 		for(size_t a_index = 0; a_index < a_size; a_index++){
-			size_t i_index = a[a_index];
+			size_t i_index = a[thread_id][a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += input[Psize+P1size+a[aa_index]*dimLatent + j_index];
+					sum += input[Psize+P1size+a[thread_id][aa_index]*dimLatent + j_index];
 				}
 				vec[Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
@@ -112,7 +112,7 @@ public:
 	}
 	
 	//mult* u*w_j * T_i fix ad part
-	void AddMultToV(size_t i, double mult, const std::vector<double> &input, std::vector<double> &vec){
+	void AddMultToV(size_t i, double mult, const std::vector<double> &input, std::vector<double> &vec, int thread_id){
 		size_t a_size = 0;
 		size_t u_size = 0;
 		size_t Vsize = V.size();
@@ -123,41 +123,41 @@ public:
 			vec[index+Vsize] += mult*1.0;
 			//Ad Feature
 			if(index < numAdFeature){
-				a[a_size++] = index;
+				a[thread_id][a_size++] = index;
 			}
 			//User Feature
 			else if(index < numAdFeature + numUserFeature){
-				u[u_size++] = index-numAdFeature;
+				u[thread_id][u_size++] = index-numAdFeature;
 			}
 		}
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
-			size_t i_index = u[u_index];
+			size_t i_index = u[thread_id][u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += input[Vsize+Psize+u[uu_index]*dimLatent+j_index];
+					sum += input[Vsize+Psize+u[thread_id][uu_index]*dimLatent+j_index];
 				}
 				vec[Vsize+Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		for(size_t a_index = 0; a_index < a_size; a_index++){
-			size_t i_index = a[a_index];
+			size_t i_index = a[thread_id][a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += input[Vsize+Psize+P1size+a[aa_index]*dimLatent + j_index];
+					sum += input[Vsize+Psize+P1size+a[thread_id][aa_index]*dimLatent + j_index];
 				}
 				vec[Vsize+Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
 		for(size_t a_index = 0; a_index < a_size; a_index++){
-			size_t i_index = a[a_index];
+			size_t i_index = a[thread_id][a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0;
 				for(size_t u_index = 0; u_index < u_size; u_index++){
-					sum += W[u[u_index]*dimLatent + j_index];
+					sum += W[u[thread_id][u_index]*dimLatent + j_index];
 				}
 				vec[i_index*dimLatent+j_index] += mult * sum;
 			}
@@ -166,7 +166,7 @@ public:
 	
 	
 	//mult*u_i *T*v_j fix User
-	void AddMultToW(size_t i, double mult, const std::vector<double>& input, std::vector<double> &vec){
+	void AddMultToW(size_t i, double mult, const std::vector<double>& input, std::vector<double> &vec, int thread_id){
 		size_t a_size = 0;
 		size_t u_size = 0;
 		size_t Wsize = W.size();
@@ -177,31 +177,31 @@ public:
 			vec[index+Wsize] += mult*1.0;
 			//Ad Feature
 			if(index < numAdFeature){
-				a[a_size++] = index;
+				a[thread_id][a_size++] = index;
 			}
 			//User Feature
 			else if(index < numAdFeature + numUserFeature){	
-				u[u_size++] = index-numAdFeature;
+				u[thread_id][u_size++] = index-numAdFeature;
 			}
 		}
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
-			size_t i_index = u[u_index];
+			size_t i_index = u[thread_id][u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t uu_index = 0; uu_index < u_size; uu_index++){
-					sum += input[Wsize+Psize+u[uu_index]*dimLatent+j_index];
+					sum += input[Wsize+Psize+u[thread_id][uu_index]*dimLatent+j_index];
 				}
 				vec[Wsize+Psize + i_index*dimLatent+j_index] += mult * sum;
 			}
 		}
 		
 		for(size_t a_index = 0; a_index < a_size; a_index++){
-			size_t i_index = a[a_index];
+			size_t i_index = a[thread_id][a_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t aa_index = 0; aa_index < a_size; aa_index++){
-					sum += input[Wsize+Psize+P1size+a[aa_index]*dimLatent + j_index];
+					sum += input[Wsize+Psize+P1size+a[thread_id][aa_index]*dimLatent + j_index];
 				}
 				vec[Wsize+Psize+P1size+i_index*dimLatent+j_index] += mult * sum;
 			}
@@ -209,11 +209,11 @@ public:
 		
 		
 		for(size_t u_index = 0; u_index < u_size; u_index++){
-			size_t i_index = u[u_index];
+			size_t i_index = u[thread_id][u_index];
 			for(size_t j_index = 0; j_index < dimLatent; j_index++){
 				double sum = 0.0;
 				for(size_t a_index = 0; a_index < a_size; a_index++){
-					sum += V[a[a_index]*dimLatent+j_index];
+					sum += V[a[thread_id][a_index]*dimLatent+j_index];
 				}
 				vec[i_index*dimLatent+j_index] += mult * sum;
 			}

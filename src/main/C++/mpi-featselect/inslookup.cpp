@@ -125,7 +125,7 @@ int trans_ins(const char* ins_path, size_t rankid,
 //	sprintf(insinput, "%s", ins_path);
 //	sprintf(insinput, "%s%d", ins_path, rankid);
 	ifstream fins(insinput);
-	ofstream out("ins_out");
+//	ofstream out("ins_out");
 	char line[MAX_BUF_LEN];
 	string linestr;
 	const char CTRL_A = '';
@@ -185,12 +185,12 @@ int trans_ins(const char* ins_path, size_t rankid,
 		}
 
 		sort(&instance[0], &instance[instance.size()]);
-		out << temp_nonclick << "_"<<temp_click<<":";
+//		out << temp_nonclick << "_"<<temp_click<<":";
 		for(size_t i = 0; i < instance.size(); i++){
 			features.push_back(instance[i]);
-			out << instance[i] << " ";
+//			out << instance[i] << " ";
 		}
-		out << "\n";	
+//		out << "\n";	
 		instance_starts.push_back(features.size());
 		nonClkQ.push_back(temp_nonclick);
 		ClkQ.push_back(temp_click);
