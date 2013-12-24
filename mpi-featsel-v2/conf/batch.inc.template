@@ -53,7 +53,7 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mkdir -p ${WORKSPACE}/rank-00000"
 ((i++))
 
 CMD_NAME[$i]="featsel"
-MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiFeatSel -tol [TOL] -l2weight [L2WEIGHT] -l21weight [L1WEIGHT] -K [K]"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiFeatSel -tol [TOL] -l2weight [L2WEIGHT] -l21weight [L21WEIGHT] -K [K]"
 ((i++))
 
 

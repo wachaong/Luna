@@ -30,6 +30,20 @@ void printVector(const DblVec &vec, const char* filename) {
 	outfile.close();
 }
 
+double calSparsity(const DblVec& vec, size_t dimLatent){
+	int num = vec.size() / dimLatent;
+	int sparseNum = 0;
+	double sum = 0;
+	for(int i = 0; i < num; i++){ 
+		sum = 0;
+		for(int j = 0; j < dimLatent; j++)
+		sum += vec[i*dimLatent+j] * vec[i*dimLatent+j];
+		if(sum < 1e-10) sparseNum++;
+	}
+	return (double)sparseNum / num;
+}  
+
+
 int main(int argc, char** argv) {
 
 	int my_rankid;
@@ -60,10 +74,10 @@ int main(int argc, char** argv) {
 				exit(1);
 			}
 		}
-		else if (!strcmp(argv[i], "-l12weight")) {
+		else if (!strcmp(argv[i], "-l21weight")) {
 			++i;
 			if (i >= argc || (l21reg = atof(argv[i])) < 0) {
-				cout << "-l12weight flag requires 1 non-negative real argument." << endl;
+				cout << "-l21weight flag requires 1 non-negative real argument." << endl;
 				exit(1);
 			}
 		}
@@ -203,8 +217,12 @@ int main(int argc, char** argv) {
 	printVector(fsp->getW(), "./rank-00000/modelW");
 	printVector(fsp->getV(), "./rank-00000/modelV");
 	
-	if(my_rankid == 0)
+	if(my_rankid == 0){
 		cout <<"HAHAHHAHAHA GAME OVER\n";
+		cout << "Sparsity of W is : " << calSparsity(fsp->getW(),K) << endl;
+		cout << "Sparsity of V is : " << calSparsity(fsp->getV(),K) << endl;
+	}
+	
 	MPI_Finalize();
 	return 0;
 	

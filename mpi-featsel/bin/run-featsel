@@ -34,7 +34,7 @@ HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/${DATASET}
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 
 output=${HADOOP_OUTPUT_PATH}/model
-jobName=my-mpi-feature-select-Tol-${TOL}-l2weight-${L2WEIGHT}-l21weight-${L1WEIGHT}-K-${K}
+jobName=my-mpi-feature-select-Tol-${TOL}-l2weight-${L2WEIGHT}-l21weight-${L21WEIGHT}-K-${K}
 nodes=30
 ppn=1
 cpuct=24
