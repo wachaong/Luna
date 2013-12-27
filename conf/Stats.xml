@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<flow name="STATS">
+  <node>
+    <name>CF.MergeAd</name>
+  </node>
+  <node>
+    <name>CF.MergeUser</name>
+  </node>
+  <node>
+    <name>CF.MergeNewUser</name>
+  </node>
+</flow>

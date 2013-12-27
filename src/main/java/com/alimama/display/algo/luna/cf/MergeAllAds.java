@@ -6,20 +6,19 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 
-import com.alimama.display.algo.luna.message.Luna.Display;
-import com.alimama.display.algo.luna.message.Luna.User;
 
 import display.algo.common.Constants;
 
-public class GetAllUsers {
+public class MergeAllAds {
 	static enum Counters{
 		  RECORD_TOTAL_CNT,
-		  USER_TOTAL_CNT,
+		  AD_TOTAL_CNT,
+		  NO_TARGETING_INFO_AD,
 	  }
 	
 	public static class Mapper
 	  	extends org.apache.hadoop.mapreduce.Mapper
-	  	<Display, NullWritable, Text, LongWritable> {
+	  	<LongWritable, Text, Text, Text> {
 		
 	    @Override
 	    protected void setup(Context context)
@@ -32,37 +31,34 @@ public class GetAllUsers {
 	      }
 		
 	    @Override
-	    protected void map(Display value, NullWritable n, Context context)
+	    protected void map(LongWritable key, Text value, Context context)
 	        throws IOException, InterruptedException {
 	    		context.getCounter(Counters.RECORD_TOTAL_CNT).increment(1);
-	    		User u = value.getUser();
-	    		Long click = value.getClick();
-	    		String acookie = u.getAcookie();
-	    		if(acookie == null || acookie.equals("")) return;
-	    		Text outkey = new Text();
-	    		LongWritable outvalue = new LongWritable();
-	    		
-	    		outkey.set(acookie);
-	    		outvalue.set(click);
-	    		context.write(outkey, outvalue);
+	    		String str = value.toString();
+	    		String[] temp = str.split(Constants.CTRL_A);
+	    		Text outKey = new Text();
+	    		Text outValue = new Text();
+	    		outKey.set(temp[0]);
+	    		outValue.set(temp[1]+Constants.CTRL_A+temp[2]);
+	    		context.write(outKey, outValue);
 		}
 	}
 	
 	public static class Reducer
 	  	extends org.apache.hadoop.mapreduce.Reducer
-	  	<Text, LongWritable, Text, NullWritable> {
+	  	<Text, Text, Text, NullWritable> {
 	
 		    @Override
-		    protected void reduce(Text key, Iterable<LongWritable> values, Context context)
+		    protected void reduce(Text key, Iterable<Text> values, Context context)
 		        throws IOException, InterruptedException {
-		    	context.getCounter(Counters.USER_TOTAL_CNT).increment(1);
+		    	context.getCounter(Counters.AD_TOTAL_CNT).increment(1);
 		    	int pv = 0;
 		    	int click = 0;
-		    	for(LongWritable value: values){
-		    		if(value.get() == 1){
-		    			click++;
-		    		}
-		    		pv++;
+		    	for(Text value: values){
+		    		String str = value.toString();
+		    		String[] temp = str.split(Constants.CTRL_A);
+		    		pv += Integer.parseInt(temp[0]);
+		    		click += Integer.parseInt(temp[1]);
 		    	}
 
 		    	String outkey = "";
@@ -72,4 +68,6 @@ public class GetAllUsers {
 		    	context.write(outText, NullWritable.get());
 		    }
 	}
+
 }
+

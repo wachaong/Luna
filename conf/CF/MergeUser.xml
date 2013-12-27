@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<configuration xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="../application.xml"/>
+
+  <property>
+    <name>husky.flow.job.name</name>
+    <value>merge User</value>
+  </property>
+  
+ 
+  <property>
+    <name>mapred.job.name</name>
+    <value>${application.package}.${husky.flow.job.name}: ${gmtdate}</value>
+  </property>
+  
+  <property>
+    <name>mapred.input.dir</name>
+    <value>${train.input}</value>
+  </property>
+  
+  <property>
+    <name>mapred.output.dir</name>
+    <value>${output.dir}/MergeUser</value>
+  </property>
+  
+  <property>
+    <name>mapreduce.map.class</name>
+    <value>com.alimama.display.algo.luna.cf.MergeAllUsers$Mapper</value>
+  </property>
+  
+  <property>
+    <name>mapreduce.combiner.class</name>
+    <value>com.alimama.display.algo.luna.cf.MergeAllUsers$Reducer</value>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.class</name>
+    <value>com.alimama.display.algo.luna.cf.MergeAllUsers$Reducer</value>
+  </property>
+
+  <property>
+    <name>mapred.reduce.tasks</name>
+    <value>100</value>
+  </property>
+
+<property>
+    <name>mapreduce.inputformat.class</name>
+    <value>org.apache.hadoop.mapreduce.lib.input.TextInputFormat</value>
+  </property>
+  
+  <property>
+    <name>mapred.mapoutput.key.class</name>
+    <value>org.apache.hadoop.io.Text</value>
+  </property>
+
+  <property>
+    <name>mapred.mapoutput.value.class</name>
+    <value>org.apache.hadoop.io.Text</value>
+  </property>
+  <property>
+    <name>mapred.output.key.class</name>
+    <value>org.apache.hadoop.io.Text</value>
+  </property>
+
+  <property>
+    <name>mapred.output.value.class</name>
+    <value>org.apache.hadoop.io.NullWritable</value>
+  </property>
+</configuration>

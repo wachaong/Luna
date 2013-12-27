@@ -5,9 +5,6 @@
     <name>CF.Ad</name>
   </node>
   <node>
-    <name>CF.Click</name>
-  </node>
-  <node>
     <name>CF.User</name>
   </node>
   <node>

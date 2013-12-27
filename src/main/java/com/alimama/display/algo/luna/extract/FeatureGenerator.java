@@ -305,94 +305,117 @@ public class FeatureGenerator {
 	}
 
 	public ArrayList<String> calculateMatchFeature(User u,Ad a, org.apache.hadoop.mapreduce.Mapper.Context context){
-		Set<String> userinfoSet = new HashSet<String>();
-		Set<String> adinfoSet = new HashSet<String>();
-		ArrayList<String> result = new ArrayList<String>();
-		for(int i = 0; i < u.getLabelsCount(); i++){
-			Label l = u.getLabels(i);
-			if(l.getType() == 8){
-				for(int j = 0; j < l.getTagsCount(); j++)
-					userinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());
-			}
-			else if(l.getType() == 16){
-				for(int j = 0; j < l.getTagsCount(); j++){
-					//get maincate of the shop
-					long shopid = l.getTags(j).getId();
-					//if(!shop2maincate.containsKey(shopid)) continue;
-					//Long maincate = shop2maincate.get(shopid);
-					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
-					userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);
-				}
-					
-			}
-			else if(l.getType() == 128){
-				for(int j = 0; j < l.getTagsCount(); j++){
-					//get maincate of the shop
-					long shopmaincate = l.getTags(j).getId();
-					//if(!shop2maincate.containsKey(shopid)) continue;
-					//Long maincate = shop2maincate.get(shopid);
-					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
-					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);
-				}
-					
-			}
-			else if(l.getType() == 64){
-				for(int j = 0; j < l.getTagsCount(); j++)
-					userinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());
-			}
-		}
-		
-		for(int i = 0; i < a.getLabelsCount(); i++){
-			Label l = a.getLabels(i);
-			if(l.getType() == 8){
-				for(int j = 0; j < l.getTagsCount(); j++)
-					adinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());
-			}
-			else if(l.getType() == 16){
-				for(int j = 0; j < l.getTagsCount(); j++){
-					//get maincate of the shop
-					long shopid = l.getTags(j).getId();
-					//if(!shop2maincate.containsKey(shopid)) continue;
-					//Long maincate = shop2maincate.get(shopid);
-					//adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
-					adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);
-				}
-					
-			}
-			else if(l.getType() == 128){
-				for(int j = 0; j < l.getTagsCount(); j++){
-					//get maincate of the shop
-					long shopmaincate = l.getTags(j).getId();
-					//if(!shop2maincate.containsKey(shopid)) continue;
-					//Long maincate = shop2maincate.get(shopid);
-					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);
-					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);
-				}
-					
-			}
-			else if(l.getType() == 64){
-				for(int j = 0; j < l.getTagsCount(); j++)
-					adinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());
-			}
-		}
-		
-		for(Iterator<String> it=adinfoSet.iterator();it.hasNext();){
-			String adinfo = it.next();
-			if(userinfoSet.contains(adinfo)){
-				result.add(adinfo);
-				if(adinfo.contains(LunaConstants.CROWDPOWER_PREFIX))
-					context.getCounter("match_type", "CROWDPOWER").increment(1);
-				else if(adinfo.contains(LunaConstants.SHOPTARGETING_PREFIX))
-					context.getCounter("match_type", "SHOPTARGETING").increment(1);
-				else if(adinfo.contains(LunaConstants.INTEREST_PREFIX))
-					context.getCounter("match_type", "INTEREST").increment(1);
-				else if(adinfo.contains(LunaConstants.MAINCATETARGETING_PREFIX))
-					context.getCounter("match_type", "MAINCATE").increment(1);
-			}
-		}
-		
-		return result;
-	}
+		Set<String> userinfoSet = new HashSet<String>();                                                                                                 
+		Set<String> adinfoSet = new HashSet<String>();                                                                                                   
+		ArrayList<String> result = new ArrayList<String>();                                                                                              
+		ArrayList<Integer> match = new ArrayList<Integer>();                                                                                             
+		match.add(0); match.add(0); match.add(0); match.add(0);                                                                                          
+		for(int i = 0; i < u.getLabelsCount(); i++){                                                                                                     
+			Label l = u.getLabels(i);                                                                                                                    
+			if(l.getType() == 8){                                                                                                                        
+				for(int j = 0; j < l.getTagsCount(); j++)                                                                                                
+					userinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());                                                             
+			}                                                                                                                                            
+			else if(l.getType() == 16){                                                                                                                  
+				for(int j = 0; j < l.getTagsCount(); j++){                                                                                               
+				//get maincate of the shop                                                                                                           
+					long shopid = l.getTags(j).getId();                                                                                                  
+					//if(!shop2maincate.containsKey(shopid)) continue;                                                                                   
+					//Long maincate = shop2maincate.get(shopid);                                                                                         
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);                                                                    
+					userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);                                                                        
+				}                                                                                                                                        
+				
+			}                                                                                                                                            
+			else if(l.getType() == 128){                                                                                                                 
+				for(int j = 0; j < l.getTagsCount(); j++){                                                                                               
+					//get maincate of the shop                                                                                                           
+					long shopmaincate = l.getTags(j).getId();                                                                                            
+					//if(!shop2maincate.containsKey(shopid)) continue;                                                                                   
+					//Long maincate = shop2maincate.get(shopid);                                                                                         
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);     
+					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);                                                              
+				}                                                                                                                                        
+                                                                                                                                                    
+			}                                                                                                                                            
+			else if(l.getType() == 64){                                                                                                                  
+				for(int j = 0; j < l.getTagsCount(); j++)                                                                                                
+					userinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());                                                               
+			}                                                                                                                                            
+		}                                                                                                                                                
+                                                                                                                                                      
+		for(int i = 0; i < a.getLabelsCount(); i++){                                                                                                     
+			Label l = a.getLabels(i);                                                                                                                    
+			if(l.getType() == 8){                                                                                                                        
+				for(int j = 0; j < l.getTagsCount(); j++)                                                                                                
+					adinfoSet.add(LunaConstants.CROWDPOWER_PREFIX + l.getTags(j).getId());                                                               
+			}                                                                                                                                            
+			else if(l.getType() == 16){                                                                                                                  
+				for(int j = 0; j < l.getTagsCount(); j++){                                                                                               
+					//get maincate of the shop                                                                                                           
+					long shopid = l.getTags(j).getId();                                                                                                  
+					//if(!shop2maincate.containsKey(shopid)) continue;                                                                                   
+					//Long maincate = shop2maincate.get(shopid);                                                                                         
+					//adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);                                                                      
+					adinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + shopid);                                                                          
+				}                                                                                                                                        
+	                                                                                                                                             
+			}                                                                                                                                            
+			else if(l.getType() == 128){                                                                                                                 
+				for(int j = 0; j < l.getTagsCount(); j++){                                                                                               
+					//get maincate of the shop                                                                                                           
+					long shopmaincate = l.getTags(j).getId();                                                                                            
+					//if(!shop2maincate.containsKey(shopid)) continue;   
+					//Long maincate = shop2maincate.get(shopid);                                                                                         
+					//userinfoSet.add(LunaConstants.SHOPTARGETING_PREFIX + maincate);                                                                    
+					userinfoSet.add(LunaConstants.MAINCATETARGETING_PREFIX + shopmaincate);                                                              
+				}                                                                                                                                        
+			}                                                                                                                                            
+			else if(l.getType() == 64){                                                                                                                  
+				for(int j = 0; j < l.getTagsCount(); j++)                                                                                                
+					adinfoSet.add(LunaConstants.INTEREST_PREFIX + l.getTags(j).getId());                                                                 
+			}                                                                                                                                            
+		}                                                                                                                                                
+		for(Iterator<String> it=adinfoSet.iterator();it.hasNext();){                                                                                     
+			String adinfo = it.next();                                                                                                                   
+			if(userinfoSet.contains(adinfo)){                                                                                                            
+				//result.add(adinfo);                                                                                                                    
+				if(adinfo.contains(LunaConstants.CROWDPOWER_PREFIX))                                                                                     
+				{                                                                                                                                        
+					match.set(0, 1);                                                                                                                     
+					context.getCounter("match_type", "CROWDPOWER").increment(1);                                                                         
+				}                                                                                                                                        
+				else if(adinfo.contains(LunaConstants.SHOPTARGETING_PREFIX))                                                                             
+				{                                                                                                                                        
+					match.set(1,1);                                                                                                                      
+					context.getCounter("match_type", "SHOPTARGETING").increment(1);                                                                      
+				}                                                                                                                                        
+				else if(adinfo.contains(LunaConstants.INTEREST_PREFIX))                                                                                  
+				{                                                                                                                                        
+					match.set(2, 1);                                                                                                                     
+					context.getCounter("match_type", "INTEREST").increment(1);                                                                           
+				}                                                       
+        
+				else if(adinfo.contains(LunaConstants.MAINCATETARGETING_PREFIX))                                                                         
+				{                                                                                                                                        
+					match.set(3, 1);                                                                                                                     
+					context.getCounter("match_type", "MAINCATE").increment(1);                                                                           
+				}                                                                                                                                        
+			}                                                                                                                                            
+		}                                                                                                                                                
+		if(match.get(0) == 1) result.add(LunaConstants.CROWDPOWER_PREFIX);                                                                               
+		if(match.get(1) == 1) result.add(LunaConstants.SHOPTARGETING_PREFIX);                                                                            
+		if(match.get(2) == 1) result.add(LunaConstants.INTEREST_PREFIX);                                                                                 
+		if(match.get(3) == 1) result.add(LunaConstants.MAINCATE_PREFIX);                                                                                 
+		if(result.size() == 0) {                                                                                                                         
+			context.getCounter("match_type", "NOMATCH").increment(1);                                                                                    
+			result.add("NOMATCH");                                                                                                                       
+		}                                                                                                                                                
+	                                                                                                                                                       
+		return result;                                                                                                                                  
+	}                                 
+	
+
 	
 	public  ArrayList<String> getAllFeatures(Display display, org.apache.hadoop.mapreduce.Mapper.Context context) {
 		ArrayList<String> allFeatures = new ArrayList<String>();
@@ -405,11 +428,11 @@ public class FeatureGenerator {
 		for(int i = 0; i < contextFeatures.size(); i++) allFeatures.add(contextFeatures.get(i));
 		
 		ArrayList<String> adTargetingFeatures = GetAdFeatureList(a);
-		if(adTargetingFeatures.size() < 5) return null;
+//		if(adTargetingFeatures.size() < 5) return null;
 		for(int i = 0; i < adTargetingFeatures.size(); i++) allFeatures.add(adTargetingFeatures.get(i));
 		
 		ArrayList<String> userTargetingFeatures = GetUserFeatureList(u);
-		if(userTargetingFeatures.size() < 3) return null;
+//		if(userTargetingFeatures.size() < 3) return null;
 		
 		for(int i = 0; i < userTargetingFeatures.size(); i++) allFeatures.add(userTargetingFeatures.get(i));
 		
