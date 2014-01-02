@@ -15,7 +15,7 @@
 	
   <property>
     <name>mapred.input.dir</name>
-    <value>${train.input}</value>
+    <value>${train.input.ad}</value>
   </property>
   
   <property>

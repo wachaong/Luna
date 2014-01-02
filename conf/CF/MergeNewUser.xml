@@ -17,7 +17,7 @@
   
   <property>
     <name>mapred.input.dir</name>
-    <value>${train.input}</value>
+    <value>${train.input.newuser}</value>
   </property>
   
   <property>
