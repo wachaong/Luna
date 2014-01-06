@@ -43,11 +43,11 @@ input_path_train_ad4=$(get_input_path $end_date_train 4 CF Ad)
 input_path_train_newuser4=$(get_input_path $end_date_train 4 CF NewUser)
 input_path_train_user4=$(get_input_path $end_date_train 4 CF User)
 
-input_path_train7=$(get_input_path $end_date_train 7 CF step0)
+input_path_train7=$(get_input_path $end_date_train 7 CF Ad)
 input_path_train_newuser7=$(get_input_path $end_date_train 7 CF NewUser)
 input_path_train_user7=$(get_input_path $end_date_train 7 CF User)
 
-input_path_train10=$(get_input_path $end_date_train 10 CF step0)
+input_path_train10=$(get_input_path $end_date_train 10 CF Ad)
 input_path_train_newuser10=$(get_input_path $end_date_train 10 CF NewUser)
 input_path_train_user10=$(get_input_path $end_date_train 10 CF User)
 

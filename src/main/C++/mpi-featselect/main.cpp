@@ -2,10 +2,23 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 
 #include "OWLQN.h"
 #include "featureSel.h"
 using namespace std;
+
+extern vector<string> featureNameUser;
+extern vector<string> featureNameAd;
+
+struct paramStruct{
+	string name;
+	double value;
+	paramStruct(string name, double value){
+		this->name = name;
+		this->value = value;
+	}
+};
 
 void printUsageAndExit() {
 	cout << "options:" << endl;
@@ -15,6 +28,10 @@ void printUsageAndExit() {
  	cout << "  -K <value>" << endl;
 	cout << endl;
 	exit(0);
+}
+
+bool sortBy(const paramStruct& p1, const paramStruct& p2){
+	return p1.value > p2.value;
 }
 
 void printVector(const DblVec &vec, const char* filename) {
@@ -43,6 +60,37 @@ double calSparsity(const DblVec& vec, size_t dimLatent){
 	return (double)sparseNum / num;
 }  
 
+void saveParameters(const DblVec &vec, const vector<string>& featureName, const char* filename, size_t dimLatent){
+	ofstream outfile(filename);
+	if(!outfile.good()){
+		cerr << "error opening matrix file " << filename << endl;
+		exit(1);
+	}
+	vector<paramStruct> paramVec;
+	int num = vec.size() / dimLatent;
+	double sum = 0;
+	for(int i = 0; i < num; i++){
+		sum = 0;
+		for(int j = 0; j < dimLatent; j++)
+			sum += vec[i*dimLatent+j]*vec[i*dimLatent+j];
+		paramVec.push_back(paramStruct(featureName[i], sum));
+	}
+	std::sort(paramVec.begin(), paramVec.end(), sortBy);
+	
+	for(size_t i = 0; i < paramVec.size(); i++){
+		outfile << paramVec[i].name << "\t" << paramVec[i].value << endl;
+	}
+	
+	for(size_t i = 0; i < 20; i++){
+		cout << paramVec[i].name << "\t" << paramVec[i].value << endl;
+	}
+	
+	cout << "=====================\n";
+	for(size_t i = paramVec.size()-20; i < paramVec.size(); i++){
+		cout << paramVec[i].name << "\t" << paramVec[i].value << endl;
+	}
+	outfile.close();
+}
 
 int main(int argc, char** argv) {
 
@@ -90,6 +138,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	
+	double begin = MPI_Wtime();
 	FeatureSelectionProblem *fsp = new FeatureSelectionProblem(train_file, fea_file, K, my_rankid);
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp, l2weight);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg, l2weight);
@@ -212,15 +261,22 @@ int main(int argc, char** argv) {
 		}
 	
 	}
-	
+	double end = MPI_Wtime();
 	printVector(fsp->getP(), "./rank-00000/modelP");
 	printVector(fsp->getW(), "./rank-00000/modelW");
 	printVector(fsp->getV(), "./rank-00000/modelV");
 	
 	if(my_rankid == 0){
 		cout <<"HAHAHHAHAHA GAME OVER\n";
+		cout <<"L2weight:" << l2weight << " L21reg:" << l21reg << " K:" << K << " Tol:"<< tol << endl; 
 		cout << "Sparsity of W is : " << calSparsity(fsp->getW(),K) << endl;
 		cout << "Sparsity of V is : " << calSparsity(fsp->getV(),K) << endl;
+		double sparsity = (sparsityW*(fsp->getW().size()/K) + sparsityV*(fsp->getV().size()/K)) / (fsp->getW().size()/K + fsp->getV().size()/K);
+		double timecost = end -begin;
+		cout <<"The sparsity of V is " << calSparsity(fsp->getV(), K)<< endl;
+		cout <<"The time cost is " << timecost  << endl;
+		saveParameters(fsp->getW(), featureNameUser, "./rank-00000/Windex", K);
+		saveParameters(fsp->getV(), featureNameAd, "./rank-00000/Vindex", K);
 	}
 	
 	MPI_Finalize();

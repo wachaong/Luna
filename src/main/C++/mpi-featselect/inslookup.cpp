@@ -9,6 +9,8 @@
 using namespace std;
 
 map<unsigned int, int> *feasign2id_map;
+vector<string> featureNameUser;
+vector<string> featureNameAd;
 
 //feasign2id_map[0]	Ad featuremap
 //feasign2id_map[1] User featuremap
@@ -93,6 +95,14 @@ int load_feamap(const char* feamap_path){
 
 	while (getline(pfeamap, line)){
 		int type = get_feature(line.c_str(), feasign);
+		//ad
+		if(type == 0){
+			featureNameAd.push_back(line.substr(line.find('\t')+1));
+		}
+		//user
+		else if(type == 1){
+			featureNameUser.push_back(line.substr(line.find('\t')+1));
+		}
 		feasign2id_map[type][feasign] = feaid[type];
 		feaid[type]++;
 	}

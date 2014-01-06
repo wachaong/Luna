@@ -27,22 +27,22 @@
   
   <property>
     <name>mapreduce.map.class</name>
-    <value>com.alimama.display.algo.luna.cf.MergeNewUsers$Mapper</value>
+    <value>com.alimama.display.algo.luna.cf.MergeAllNewUsers$Mapper</value>
   </property>
   
   <property>
     <name>mapreduce.combiner.class</name>
-    <value>com.alimama.display.algo.luna.cf.MergeNewUsers$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.MergeAllNewUsers$Reducer</value>
   </property>
 
   <property>
     <name>mapreduce.reduce.class</name>
-    <value>com.alimama.display.algo.luna.cf.MergeNewUsers$Reducer</value>
+    <value>com.alimama.display.algo.luna.cf.MergeAllNewUsers$Reducer</value>
   </property>
 
   <property>
     <name>mapred.reduce.tasks</name>
-    <value>100</value>
+    <value>1</value>
   </property>
 
 <property>
