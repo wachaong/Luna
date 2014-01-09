@@ -9,17 +9,11 @@ using namespace std;
 void printVector(const DblVec &vec, const char* filename) {
 	ofstream outfile(filename);
 	if (!outfile.good()) {
-		cerr << "error opening matrix file " << filename << endl;
+		cerr << "error opening vector file " << filename << endl;
 		exit(1);
 	}
-//	outfile << "%%MatrixMarket matrix array real general" << endl;
-//	outfile << "1 " << vec.size() << endl;
 	for (size_t i=0; i<vec.size(); i++) {
-	//	if(vec[i] < 1e-6){
-	//		outfile << 0 << endl;
-	//	}
-	//	else
-			outfile << vec[i] << endl;
+		outfile << vec[i] << endl;
 	}
 	outfile.close();
 }
@@ -31,8 +25,6 @@ int main(int argc, char** argv) {
 	DifferentiableFunction* o0  = new FeatureSelectionObjectiveInit(*fsp);
 	DifferentiableFunction* o1  = new FeatureSelectionObjectiveFixAd(*fsp, l21reg);
 	DifferentiableFunction* o2  = new FeatureSelectionObjectiveFixUser(*fsp, l21reg);
-	
-	
 	
 	int l1regweight = 0;
 	double tol = 1e-6, l2weight = 0;
@@ -61,6 +53,5 @@ int main(int argc, char** argv) {
 	printVector(fsp->getP(), "modelP");
 	printVector(fsp->getW(), "modelW");
 	printVector(fsp->getV(), "modelV");
-	return 0;
-	
+	return 0;	
 }

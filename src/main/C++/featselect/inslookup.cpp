@@ -159,8 +159,6 @@ int trans_ins(const char* ins_path,
 		p_begin++;
 		p_end = p_begin;
 		bool bEnd = false;
-	//	cout << temp_nonclick << "x" << temp_click << "\t";
-    //    cout << p_end <<endl;
 		while(!bEnd){
 			p_end = p_begin;
 			while(*p_end != CTRL_A && *p_end != END){

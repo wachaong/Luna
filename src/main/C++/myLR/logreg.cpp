@@ -18,7 +18,6 @@ LogisticRegressionProblem::LogisticRegressionProblem(const char* ins_path){
 	init();
 	load_feamap("feat");
 	trans_ins(ins_path, indices, values, instance_starts, labels, numFeats);
-	//cout << "here" << endl;
 }
 
 /*
