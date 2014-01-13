@@ -206,7 +206,7 @@ void OptimizerState::BackTrackingLineSearch() {
 		value = EvalL1();
 		if(value <= oldValue + c1 * origDirDeriv * alpha) break;
 		
-		cout << "." << flush;
+//		cout << "." << flush;
 		alpha *= backoff;
 	}
 	cout << endl;
@@ -255,13 +255,13 @@ void OptimizerState::Shift() {
 double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m, int iter) const {
 	OptimizerState state(function, initial, m, l1weight);
 	cout << setprecision(4) << scientific << right;
-	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
-	cout << "	l1 regularization weitht: " << l1weight << "." << endl;
-	cout << "	L-BFGS memory parameter (m): " << m << endl;
-	cout << "	Convergence tolerance: " << tol << endl;
-	cout << endl;
-	cout << "Iter n: new_value (conv_crit) line_search" << endl << flush;
-	cout << "Iter 0:   " << setw(10) << state.value << " (**********) " << flush;
+//	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
+//	cout << "	l1 regularization weitht: " << l1weight << "." << endl;
+//	cout << "	L-BFGS memory parameter (m): " << m << endl;
+//	cout << "	Convergence tolerance: " << tol << endl;
+//	cout << endl;
+//	cout << "Iter n: new_value (conv_crit) line_search" << endl << flush;
+//	cout << "Iter 0:   " << setw(10) << state.value << " (**********) " << flush;
 	
 	
 	
@@ -272,18 +272,19 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 
 		ostringstream str;
 		double termCritVal = termCrit->GetValue(state, str);
-		cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
-		cout << str.str() << flush;
+//		cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
+//		cout << str.str() << flush;
 		
 		if (termCritVal < tol) break;
 		
 		state.Shift(); 
-	//	if(iter < 3 && state.iter >= 20) break;
+//		if(iter < 3 && state.iter >= 20) break;
 		if(state.iter >= 500) break;
 	}
 	
-	cout << endl;
+//	cout << endl;
 	minimum = state.newX;
+	cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
 	return state.value;
 }
 

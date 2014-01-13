@@ -99,7 +99,7 @@ int load_feamap(const char* feamap_path){
 	unsigned int feasign = 0;
 	string line;
 	int feaid[3];
-	feaid[0] = 0; feaid[1] = 0; feaid[2] = 0;
+	feaid[0] = 1; feaid[1] = 1; feaid[2] = 0;
 	ifstream pfeamap(feamap_path);
 
 	
@@ -266,6 +266,8 @@ int score_ins(const char* score_path){
 		p_end = p_begin;
 		
 		bool bEnd = false;
+		instance.push_back(0);
+		instance.push_back(getAdFeaCount());
 		while(!bEnd){
 			p_end = p_begin;
 			while(*p_end != CTRL_A && *p_end != END){

@@ -84,7 +84,7 @@ int load_feamap(const char* feamap_path){
 	unsigned int feasign = 0;
 	string line;
 	int feaid[3];
-	feaid[0] = 0; feaid[1] = 0; feaid[2] = 0;
+	feaid[0] = 1; feaid[1] = 1; feaid[2] = 0;
 	ifstream pfeamap(feamap_path);
 
 
@@ -176,6 +176,8 @@ int trans_ins(const char* ins_path, size_t rankid,
 		bool bEnd = false;
 	//	cout << temp_nonclick << "x" << temp_click << "\t";
     //  cout << p_end <<endl;
+    	instance.push_back(0);
+    	instance.push_back(getAdFeaCount);
 		while(!bEnd){
 			p_end = p_begin;
 			while(*p_end != CTRL_A && *p_end != END){

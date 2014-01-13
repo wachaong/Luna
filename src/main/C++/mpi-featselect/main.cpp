@@ -24,7 +24,7 @@ void printUsageAndExit() {
 	cout << "options:" << endl;
 	cout << "  -tol <value>   sets convergence tolerance (default is 1e-4)" << endl;
  	cout << "  -l2weight <value>" << endl;
- 	cout << "  -l12weight <value>" << endl;
+ 	cout << "  -l21weight <value>" << endl;
  	cout << "  -K <value>" << endl;
 	cout << endl;
 	exit(0);
@@ -211,7 +211,7 @@ int main(int argc, char** argv) {
 			}
 		}
 		if(my_rankid == 0)
-			cout << ">>Iter" <<iter << " OPT1 END" << endl;
+			cout << ">>Iter" <<iter << " OPT1 END" << "\t";
 		
 		MPI_Bcast(&((fsp->getP())[0]), fsp->getP().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		MPI_Bcast(&((fsp->getW())[0]), fsp->getW().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -224,7 +224,6 @@ int main(int argc, char** argv) {
 			OWLQN opt2;
 			double newloss = opt2.Minimize(*o2, input2, input2, l1regweight, tol, m, iter);
 			o2->handler(0, 0); // inform all non-root worker finish
-			
 			for(int i = 0; i < fsp->getV().size(); i++) fsp->getV()[i] = input2[i];                                                                      
 			for(int i = 0; i < fsp->getP().size(); i++) fsp->getP()[i] = input2[i+fsp->getV().size()]; 
 		}
@@ -244,13 +243,13 @@ int main(int argc, char** argv) {
 		}
 		
 		if(my_rankid == 0)
-			cout << ">>Iter" <<iter << " OPT2 END" << endl;
+			cout << ">>Iter" <<iter << " OPT2 END" << "\t";
 		
 		MPI_Bcast(&((fsp->getP())[0]), fsp->getP().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		MPI_Bcast(&((fsp->getV())[0]), fsp->getV().size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 		
 		
-		if(my_rankid == 0){
+//		if(my_rankid == 0){
 //				if ((loss - newloss) / loss > 1e-8){
 //					loss = newloss;
 //				}
@@ -258,25 +257,28 @@ int main(int argc, char** argv) {
 //					cout << "LARGE ITERATION: " << iter << " END" << endl;
 //					break;
 //				}
-		}
+//		}
 	
 	}
+
 	double end = MPI_Wtime();
 	printVector(fsp->getP(), "./rank-00000/modelP");
 	printVector(fsp->getW(), "./rank-00000/modelW");
 	printVector(fsp->getV(), "./rank-00000/modelV");
 	
 	if(my_rankid == 0){
-		cout <<"HAHAHHAHAHA GAME OVER\n";
+		cout <<"\t HAHAHHAHAHA GAME OVER\n";
 		cout <<"L2weight:" << l2weight << " L21reg:" << l21reg << " K:" << K << " Tol:"<< tol << endl; 
-		cout << "Sparsity of W is : " << calSparsity(fsp->getW(),K) << endl;
-		cout << "Sparsity of V is : " << calSparsity(fsp->getV(),K) << endl;
+		cout << "Sparsity of W is : " << calSparsity(fsp->getW(),K);
+		cout << "; Sparsity of V is : " << calSparsity(fsp->getV(),K);
 		double sparsity = (sparsityW*(fsp->getW().size()/K) + sparsityV*(fsp->getV().size()/K)) / (fsp->getW().size()/K + fsp->getV().size()/K);
 		double timecost = end -begin;
-		cout <<"The sparsity of V is " << calSparsity(fsp->getV(), K)<< endl;
-		cout <<"The time cost is " << timecost  << endl;
-		saveParameters(fsp->getW(), featureNameUser, "./rank-00000/Windex", K);
-		saveParameters(fsp->getV(), featureNameAd, "./rank-00000/Vindex", K);
+		cout <<"; The whole sparsity is " << calSparsity(fsp->getV(), K);
+		cout <<"; The time cost is " << timecost  << endl;
+	//	saveParameters(fsp->getW(), featureNameUser, "./rank-00000/Windex", K);
+	//	cout << "=====================\n";
+	//	cout << "=====================\n";
+	//	saveParameters(fsp->getV(), featureNameAd, "./rank-00000/Vindex", K);
 	}
 	
 	MPI_Finalize();

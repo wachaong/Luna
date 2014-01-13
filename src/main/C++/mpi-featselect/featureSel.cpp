@@ -54,17 +54,21 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	epsilon = 1e-8;
 	
 	//initialize W, V, P
-	srand((unsigned)time(NULL)); 
+	//srand((unsigned)time(NULL)); 
+	double minit = 1.0/sqrt(numUserFeature);
+	double ninit = 1.0/sqrt(numAdFeature);
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
-		//W.push_back(0);
+			//W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
+			//W.push_back(0);
+			W.push_back(minit);
 		}
 		for(size_t j = 0; j < 24; j++) u[j].push_back(0);
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
+			//V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
+			V.push_back(ninit);
 		}
 		for(size_t j = 0; j < 24; j++) a[j].push_back(0);
 	}
@@ -86,7 +90,8 @@ double FeatureSelectionProblem::ScoreOfForP(size_t i, const std::vector<double>&
 	//f(x)=Px
 	double score = 0.0;	
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += weights[features[j]]*1.0;
+		if(features[j] >= NumAdFeats()+NumUserFeats())
+			score += weights[features[j]]*1.0;
 	}
 	return score;
 }
@@ -104,7 +109,8 @@ double FeatureSelectionProblem::ScoreOfForW(size_t i, const std::vector<double>&
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += weights[W.size()+features[j]];
+		if(features[j] >= NumAdFeats()+NumUserFeats())
+			score += weights[W.size()+features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -138,7 +144,8 @@ double FeatureSelectionProblem::ScoreOfForV(size_t i, const std::vector<double>&
 		TV.push_back(0);
 	}
 	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		score += weights[V.size()+features[j]];
+		if(features[j] >= NumAdFeats()+NumUserFeats())
+			score += weights[V.size()+features[j]];
 		if(features[j] < NumAdFeats()){
 			for(size_t k = 0; k < dimLatent; k++){
 				int v_index = features[j] * dimLatent + k;
@@ -479,7 +486,7 @@ void* ThreadEvalLocalForV(void * arg){
 		p->gradient[i+Vsize] = o.l2weight * p->input[i+Vsize] / p->threadNum;
 	}
 	int num_user_feats = o.problem.NumUserFeats();
-	for(size_t i = 0; i < num_user_feats; i++){
+	for(size_t i = 1; i < num_user_feats; i++){
 		double sum = 0.0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += W[i*dimLatent + j] * W[i*dimLatent + j] ;
@@ -488,7 +495,10 @@ void* ThreadEvalLocalForV(void * arg){
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
 	int num_ad_feats = o.problem.NumAdFeats();
-	for(size_t i = 0; i < num_ad_feats; i++){
+	for(size_t j = 0; j < dimLatent; j++){
+		p->gradient[j] = 0;
+	}
+	for(size_t i = 1; i < num_ad_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
@@ -558,12 +568,12 @@ void* ThreadEvalLocalForW(void * arg){
 	int Wsize = o.problem.NumUserFeats()*dimLatent;
 	int Psize = o.problem.getP().size();
 	
-	for(size_t i = 0; i < Psize; i++){
+	for(size_t i = 1; i < Psize; i++){
 		p->loss += 0.5*p->input[Wsize+i]*p->input[Wsize+i]*o.l2weight / p->threadNum;
 		p->gradient[i+Wsize] = o.l2weight * p->input[i+Wsize] / p->threadNum;
 	}
 	int num_ad_feats = o.problem.NumAdFeats();
-	for(size_t i = 0; i < num_ad_feats; i++){
+	for(size_t i = 1; i < num_ad_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += V[i*dimLatent + j] * V[i*dimLatent + j];
@@ -572,7 +582,10 @@ void* ThreadEvalLocalForW(void * arg){
 		p->loss += sqrt(sum) * o.l21weight / p->threadNum;
 	}
 	int num_user_feats = o.problem.NumUserFeats();
-	for(size_t i = 0; i <num_user_feats; i++){
+	for (size_t j = 0; j < dimLatent; j++){
+		p->gradient[j] = 0;
+	}
+	for(size_t i = 1; i <num_user_feats; i++){
 		double sum = 0;
 		for (size_t j = 0; j < dimLatent; j++){
 			sum += p->input[i*dimLatent + j] * p->input[i*dimLatent + j];
