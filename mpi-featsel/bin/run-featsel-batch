@@ -1,13 +1,14 @@
 #!/bin/bash
 usage(){
-	echo "USAGE: $0 DATASET Tol L2weight L1weight"
+	echo "USAGE: $0 DATASET Tol L2weight L21weight K"
 	exit $1
 }
-[[ $# == 4 ]] || usage
+[[ $# == 5 ]] || usage
 DATASET=$1
 TOL=$2
 L2WEIGHT=$3
-L1WEIGHT=$4
+L21WEIGHT=$4
+K=$5
 
 WORK_DIR=`readlink -f $0`
 WORK_DIR=`dirname $WORK_DIR`
@@ -29,16 +30,17 @@ HADOOP_HOME=/home/yunti/hadoop-current
 HADOOP_CONF_DIR=`cd ~/conf; pwd`
 HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
 HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/${DATASET}
+#HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/FSTest
 #HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
 
 output=${HADOOP_OUTPUT_PATH}/model
-jobName=my-mpi-lr-Tol-${TOL}-l2weight-${L2WEIGHT}-l1weight-${L1WEIGHT}
+jobName=my-mpi-feature-select-batch-Tol-${TOL}-l2weight-${L2WEIGHT}-l21weight-${L21WEIGHT}-K-${K}
 nodes=60
 ppn=1
 cpuct=24
 user=yanling.yl
-walltime=36000
-pmem=50G
+walltime=3600000
+pmem=60G
 queue=batch
 
 VALID_FEATURE_HADOOP_PATH=${output}/valid
@@ -59,7 +61,8 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
   VALID_INSTANCE_HADOOP_PATH_TMP=`echo ${VALID_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   TEST_INSTANCE_HADOOP_PATH_TMP=`echo ${TEST_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
   
-  cp ${CONF_DIR}/batch.inc.template ${LOG_DIR}/batch.inc.tmp
+  
+  cp ${CONF_DIR}/batch.inc.multi.template ${LOG_DIR}/batch.inc.tmp
   #   begin variable substitution
   cat ${LOG_DIR}/batch.inc.tmp \
 	  | sed "s/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH_TMP}/g" \
@@ -67,7 +70,8 @@ threadNum=`expr $nodes \* $ppn \* $cpuct`
       | sed "s/\[FEATURE_NUM\]/${FEATURE_NUM}/g" \
 	  | sed "s/\[TOL\]/${TOL}/g" \
 	  | sed "s/\[L2WEIGHT\]/${L2WEIGHT}/g" \
-	  | sed "s/\[L1WEIGHT\]/${L1WEIGHT}/g" \
+	  | sed "s/\[L21WEIGHT\]/${L21WEIGHT}/g" \
+	  | sed "s/\[K\]/${K}/g" \
       | sed "s/\[VALID_FEATURE_HADOOP_PATH\]/${VALID_FEATURE_HADOOP_PATH_TMP}/g" \
       | sed "s/\[FEATURE_HADOOP_PATH\]/${FEATURE_HADOOP_PATH_TMP}/g" > ${LOG_DIR}/batch.inc
   rm ${LOG_DIR}/batch.inc.tmp -f
@@ -77,14 +81,14 @@ mrun --hadoop_config ${HADOOP_CONF_DIR} \
     -j $jobName \
     -i ${output}/instance \
     -o ${output}/model \
-    -f ${BIN_DIR}/mpiLR \
-    -f ${BIN_DIR}/mpi-plr-score \
+    -f ${BIN_DIR}/mpiFeatSel \
+    -f ${BIN_DIR}/mpi-pfs-score \
     -f ${CONF_DIR}/log4cpp.conf \
     -f ${BIN_DIR}/mergeDict.sh \
     -f ${BIN_DIR}/moveFile.sh \
     -f ${BIN_DIR}/moveInsToEval.sh \
     -f ${BIN_DIR}/pre-auc.sh \
-    -f ${BIN_DIR}/mpi-peval \
+    -f ${BIN_DIR}/mpi-peval-featsel \
     -f ${BIN_DIR}/mergeInsScore.sh \
     -b ${LOG_DIR}/batch.inc \
     -n ${nodes} \

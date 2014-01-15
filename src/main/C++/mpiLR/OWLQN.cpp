@@ -250,14 +250,14 @@ void OptimizerState::Shift() {
 
 void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, DblVec& minimum, double l1weight,double tol,int m) const {
 	OptimizerState state(function, initial, m, l1weight);
-	cout << setprecision(4) << scientific << right;
-	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
-	cout << "	l1 regularization weitht: " << l1weight << "." << endl;
-	cout << "	L-BFGS memory parameter (m): " << m << endl;
-	cout << "	Convergence tolerance: " << tol << endl;
-	cout << endl;
-	cout << "Iter n: new_value (conv_crit) line_search" << endl << flush;
-	cout << "Iter 0:   " << setw(10) << state.value << " (**********) " << flush;
+//	cout << setprecision(4) << scientific << right;
+//	cout << endl << "Optimizing function of " << state.dim << " variables with OWL_QN parameters: " << endl;
+//	cout << "	l1 regularization weitht: " << l1weight << "." << endl;
+//	cout << "	L-BFGS memory parameter (m): " << m << endl;
+//	cout << "	Convergence tolerance: " << tol << endl;
+//	cout << endl;
+//	cout << "Iter n: new_value (conv_crit) line_search" << endl << flush;
+//	cout << "Iter 0:   " << setw(10) << state.value << " (**********) " << flush;
 	
 	
 	
@@ -267,15 +267,15 @@ void OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, Db
 		
 		ostringstream str;
 		double termCritVal = termCrit->GetValue(state, str);
-		cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
-		cout << str.str() << flush;
+	//	cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
+	//	cout << str.str() << flush;
 		
 		if (termCritVal < tol) break;
 		if (state.iter >= 500) break;
 		state.Shift(); 
 	}
 	
-	cout << endl;
+	cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
 	minimum = state.newX;
 
 }

@@ -137,17 +137,17 @@ int mpi_peval (int num_procs, int rank_id, char *auc_file)
         mean_ctr2 = mean_ctr2/total_ins;
         mean_pctr2 = mean_pctr2/total_ins;
 
-        printf("total_Clk=%lf\n", total_clk);
-        printf("total_nonClk=%lf\n", total_nonclk);
-        printf("total_ins=%ld\n", total_ins);
+ //       printf("total_Clk=%lf\n", total_clk);
+ //       printf("total_nonClk=%lf\n", total_nonclk);
+ //       printf("total_ins=%ld\n", total_ins);
         
-        printf("MEAN_CTR=%lf(total_clk/total_pv)\n", mean_ctr1);
-        printf("MEAN_CTR=%lf(1/n sum(ctr))\n", mean_ctr2);
-        printf("MEAN_PCTR=%lf(1/n sum(pctr))\n", mean_pctr2);
+ //       printf("MEAN_CTR=%lf(total_clk/total_pv)\n", mean_ctr1);
+ //       printf("MEAN_CTR=%lf(1/n sum(ctr))\n", mean_ctr2);
+ //       printf("MEAN_PCTR=%lf(1/n sum(pctr))\n", mean_pctr2);
         
-        printf("MSE=%lf\n", mse);
-        printf("MAE=%lf\n", mae);
-		printf("NLL=%lf\n", nll);
+//        printf("MSE=%lf\n", mse);
+//       printf("MAE=%lf\n", mae);
+//		printf("NLL=%lf\n", nll);
 
         Log_r_Info("total_Clk=%lf", total_clk);
         Log_r_Info("total_nonClk=%lf", total_nonclk);

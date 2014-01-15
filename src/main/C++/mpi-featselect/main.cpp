@@ -269,8 +269,10 @@ int main(int argc, char** argv) {
 	if(my_rankid == 0){
 		cout <<"\t HAHAHHAHAHA GAME OVER\n";
 		cout <<"L2weight:" << l2weight << " L21reg:" << l21reg << " K:" << K << " Tol:"<< tol << endl; 
-		cout << "Sparsity of W is : " << calSparsity(fsp->getW(),K);
-		cout << "; Sparsity of V is : " << calSparsity(fsp->getV(),K);
+		double sparsityW = calSparsity(fsp->getW(),K);
+		double sparsityV = calSparsity(fsp->getV(),K);
+		cout << "Sparsity of W is : " << sparsityW;
+		cout << "; Sparsity of V is : " << sparsityV;
 		double sparsity = (sparsityW*(fsp->getW().size()/K) + sparsityV*(fsp->getV().size()/K)) / (fsp->getW().size()/K + fsp->getV().size()/K);
 		double timecost = end -begin;
 		cout <<"; The whole sparsity is " << calSparsity(fsp->getV(), K);

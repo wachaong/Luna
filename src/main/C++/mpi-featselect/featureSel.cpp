@@ -54,21 +54,21 @@ FeatureSelectionProblem::FeatureSelectionProblem(const char* instance_file, cons
 	epsilon = 1e-8;
 	
 	//initialize W, V, P
-	//srand((unsigned)time(NULL)); 
+	srand((unsigned)time(NULL)); 
 	double minit = 1.0/sqrt(numUserFeature);
 	double ninit = 1.0/sqrt(numAdFeature);
 	for(size_t i = 0; i < numUserFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			//W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
+			W.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
 			//W.push_back(0);
-			W.push_back(minit);
+			//W.push_back(minit);
 		}
 		for(size_t j = 0; j < 24; j++) u[j].push_back(0);
 	}
 	for(size_t i = 0; i < numAdFeature; i++){
 		for(size_t j = 0; j < dimLatent; j++){
-			//V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
-			V.push_back(ninit);
+			V.push_back((rand()  / double(RAND_MAX) * 2 - 1) * 0.01);
+			//V.push_back(ninit);
 		}
 		for(size_t j = 0; j < 24; j++) a[j].push_back(0);
 	}
@@ -464,8 +464,8 @@ void* ThreadEvalLocalForP(void * arg){
 				insLoss = log(temp);
 				insProb = 1.0/ temp;
 			}
-			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToP(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
+			p->loss +=  10.0*o.problem.NonClkOf(i) * insLoss;
+			o.problem.AddMultToP(i, 10.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
 		}		
 	}
 }
@@ -550,8 +550,8 @@ void* ThreadEvalLocalForV(void * arg){
 				insLoss = log(temp);
 				insProb = 1.0/ temp;
 			}
-			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToV(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
+			p->loss +=  10.0*o.problem.NonClkOf(i) * insLoss;
+			o.problem.AddMultToV(i, 10.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}		
 	}
 }
@@ -636,8 +636,8 @@ void* ThreadEvalLocalForW(void * arg){
 				insLoss = log(temp);
 				insProb = 1.0/ temp;
 			}
-			p->loss +=  o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultToW(i, 1.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
+			p->loss +=  10.0*o.problem.NonClkOf(i) * insLoss;
+			o.problem.AddMultToW(i, 10.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}		
 	}
 }

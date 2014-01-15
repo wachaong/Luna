@@ -134,7 +134,8 @@ void* ThreadEvalLocal(void * arg){
 			insLoss = log(temp);
 			insProb = 1.0/ temp;
 		}
-		p->loss += insLoss;
+		if(!o.problem.LabelOf(i)) insLoss *= 10;
+ 		p->loss += insLoss;
 		p->obj.problem.AddMultTo(i, 1.0 - insProb, p->gradient);	
 	}
 	

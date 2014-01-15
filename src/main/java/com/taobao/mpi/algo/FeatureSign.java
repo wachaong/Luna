@@ -157,7 +157,15 @@ public class FeatureSign extends AbstractProcessor {
                if (c>0 && p<c) {
                    p=c;
                }
-
+			   /*
+			   int nonclktemp = 0;
+			   for(int i = 0; i < p-c; i++){
+					if(Math.random() <= 0.1) 
+					nonclktemp++;
+				}
+				p = nonclktemp+c;
+				if(p == 0) return;
+				*/
                String nonclk = String.valueOf(p-c);
                String clk = String.valueOf(c);
 

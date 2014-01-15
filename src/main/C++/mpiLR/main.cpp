@@ -106,6 +106,7 @@ int main(int argc, char** argv) {
 	printVector(ans, output_file);
 	if(my_rankid == 0){
 		cout <<"HAHAHHAHAHA GAME OVER\n";
+		cout << "Tol: " << tol <<" l2weight: " << l2weight << " l1weight: " << l1weight << endl;
 	}
 	MPI_Finalize();
 	delete obj;

@@ -177,7 +177,7 @@ int trans_ins(const char* ins_path, size_t rankid,
 	//	cout << temp_nonclick << "x" << temp_click << "\t";
     //  cout << p_end <<endl;
     	instance.push_back(0);
-    	instance.push_back(getAdFeaCount);
+    	instance.push_back(getAdFeaCount());
 		while(!bEnd){
 			p_end = p_begin;
 			while(*p_end != CTRL_A && *p_end != END){

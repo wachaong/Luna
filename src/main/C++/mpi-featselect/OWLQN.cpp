@@ -209,7 +209,7 @@ void OptimizerState::BackTrackingLineSearch() {
 //		cout << "." << flush;
 		alpha *= backoff;
 	}
-	cout << endl;
+//	cout << endl;
 } 
 
 void OptimizerState::Shift() {
@@ -284,7 +284,7 @@ double OWLQN::Minimize(DifferentiableFunction& function, const DblVec& initial, 
 	
 //	cout << endl;
 	minimum = state.newX;
-	cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value;
+	cout << "Iter " << setw(4) << state.iter << ": "  << setw(10) << state.value << endl;
 	return state.value;
 }
 
