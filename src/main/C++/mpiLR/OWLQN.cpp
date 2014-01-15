@@ -203,10 +203,10 @@ void OptimizerState::BackTrackingLineSearch() {
 		
 		if(value <= oldValue + c1 * origDirDeriv * alpha) break;
 		
-		cout << "." << flush;		
+//		cout << "." << flush;		
 		alpha *= backoff;
 	}
-	cout << endl;
+//	cout << endl;
 } 
 
 void OptimizerState::Shift() {
