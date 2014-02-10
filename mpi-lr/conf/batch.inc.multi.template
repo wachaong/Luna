@@ -789,6 +789,53 @@ MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/
 
 ####9
 CMD_NAME[$i]="logireg"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiLR -tol [TOL] -l2weight 0.0 -l1weight 50.0"
+((i++))
+
+# eval train data
+CMD_NAME[$i]="train-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/data/train/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="train-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="train-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/train_auc.txt"
+((i++))
+
+#run validation data for result evaluation
+# eval validation data
+CMD_NAME[$i]="valid-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/${local_valid_path}/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="valid-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="valid-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/valid_auc.txt "
+((i++))
+
+
+#run test data for result evaluation
+# eval test data
+CMD_NAME[$i]="test-score"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpi-plr-score ./rank-00000/model ${WORKSPACE}/${local_test_path}/ins ./data/score/ins"
+((i++))
+
+CMD_NAME[$i]="test-pre-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} sh pre-auc.sh ./data/score/ins ./data/score/qid"
+((i++))
+
+CMD_NAME[$i]="test-auc"
+MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} mpi-peval ./data/score/ins ./data/score/qid rank-00000/test_auc.txt "
+((i++))
+
+####10
+CMD_NAME[$i]="logireg"
 MPI_CMD[$i]="mpirun -hostfile ${PBS_NODEFILE} ${WORKSPACE}/mpiLR -tol [TOL] -l2weight 0.0 -l1weight 100.0"
 ((i++))
 

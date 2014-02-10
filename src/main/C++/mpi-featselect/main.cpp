@@ -275,7 +275,7 @@ int main(int argc, char** argv) {
 		cout << "; Sparsity of V is : " << sparsityV;
 		double sparsity = (sparsityW*(fsp->getW().size()/K) + sparsityV*(fsp->getV().size()/K)) / (fsp->getW().size()/K + fsp->getV().size()/K);
 		double timecost = end -begin;
-		cout <<"; The whole sparsity is " << calSparsity(fsp->getV(), K);
+		cout <<"; The whole sparsity is " << sparsity;
 		cout <<"; The time cost is " << timecost  << endl;
 	//	saveParameters(fsp->getW(), featureNameUser, "./rank-00000/Windex", K);
 	//	cout << "=====================\n";
