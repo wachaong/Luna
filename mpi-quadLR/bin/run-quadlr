@@ -1,0 +1,124 @@
+#!/bin/bash
+usage(){
+	echo "USAGE: $0 DATASET Tol L2weight"
+	exit $1
+}
+[[ $# == 5 ]] || usage
+DATASET=$1
+TOL=$2
+L2WEIGHT=$3
+
+
+WORK_DIR=`readlink -f $0`
+WORK_DIR=`dirname $WORK_DIR`
+WORK_DIR=`cd $WORK_DIR/../; pwd`
+
+BIN_DIR="$WORK_DIR/bin"
+CONF_DIR="$WORK_DIR/conf"
+ts=`date +%s`
+LOG_DIR="/tmp/run-quadlr-log-${USER}-$ts"
+
+rm -rf $LOG_DIR
+mkdir -p ${LOG_DIR}
+
+
+source /home/a/share/phoenix/algo_db/common/script/algo_db_common.sh
+
+HDHOME=/group/tbalgo-dev/yanling.yl
+HADOOP_HOME=/home/yunti/hadoop-current
+HADOOP_CONF_DIR=`cd ~/conf; pwd`
+HADOOP_MODEL_PATH=${HDHOME}/Luna/1.0.1/Modelv2
+HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/${DATASET}
+#HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/FSTest
+#HADOOP_OUTPUT_PATH=${HADOOP_MODEL_PATH}/JOB_Instance8daysFilterTargetingInfo
+
+output=${HADOOP_OUTPUT_PATH}/model
+jobName=my-mpi-feature-select-Tol-${TOL}-l2weight-${L2WEIGHT}
+nodes=30
+ppn=1
+cpuct=24
+user=yanling.yl
+walltime=360000
+pmem=60G
+queue=batch
+
+VALID_FEATURE_HADOOP_PATH=${output}/valid
+FEATURE_HADOOP_PATH=${output}/feature
+TEST_INSTANCE_HADOOP_PATH=${output}/test/instance
+VALID_INSTANCE_HADOOP_PATH=${output}/validation/instance
+
+hadoop fs -rmr ${output}/model
+hadoop fs -rmr ${output}/score
+
+#run the mpi phase
+threadNum=`expr $nodes \* $ppn \* $cpuct`
+  #compose a batch.inc file
+  VALID_FEATURE_HADOOP_PATH_TMP=`echo ${VALID_FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  FEATURE_HADOOP_PATH_TMP=`echo ${FEATURE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  VALID_INSTANCE_HADOOP_PATH_TMP=`echo ${VALID_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  TEST_INSTANCE_HADOOP_PATH_TMP=`echo ${TEST_INSTANCE_HADOOP_PATH} | sed 's/\\//\\\\\//g'`
+  
+  
+  cp ${CONF_DIR}/batch.inc.template ${LOG_DIR}/batch.inc.tmp
+  #   begin variable substitution
+  cat ${LOG_DIR}/batch.inc.tmp \
+	  | sed "s/\[TEST_INSTANCE_HADOOP_PATH\]/${TEST_INSTANCE_HADOOP_PATH_TMP}/g" \
+	  | sed "s/\[VALID_INSTANCE_HADOOP_PATH\]/${VALID_INSTANCE_HADOOP_PATH_TMP}/g" \
+	  | sed "s/\[TOL\]/${TOL}/g" \
+	  | sed "s/\[L2WEIGHT\]/${L2WEIGHT}/g" \
+      | sed "s/\[VALID_FEATURE_HADOOP_PATH\]/${VALID_FEATURE_HADOOP_PATH_TMP}/g" \
+      | sed "s/\[FEATURE_HADOOP_PATH\]/${FEATURE_HADOOP_PATH_TMP}/g" > ${LOG_DIR}/batch.inc
+  rm ${LOG_DIR}/batch.inc.tmp -f
+  
+ 
+mrun --hadoop_config ${HADOOP_CONF_DIR} \
+    -j $jobName \
+    -i ${output}/instance \
+    -o ${output}/model \
+    -f ${BIN_DIR}/mpiQuadLR \
+    -f ${BIN_DIR}/mpi-qlr-score \
+    -f ${CONF_DIR}/log4cpp.conf \
+    -f ${BIN_DIR}/mergeDict.sh \
+    -f ${BIN_DIR}/moveFile.sh \
+    -f ${BIN_DIR}/moveInsToEval.sh \
+    -f ${BIN_DIR}/pre-auc.sh \
+    -f ${BIN_DIR}/mpi-peval-qlr \
+    -f ${BIN_DIR}/mergeInsScore.sh \
+    -b ${LOG_DIR}/batch.inc \
+    -n ${nodes} \
+    -p ${ppn} \
+    -t ${cpuct} \
+    -q ${queue} \
+    -w ${walltime} \
+    -m ${pmem}
+	#-u ${user} \
+  if [ $? != 0 ]
+  then
+    log_error "run mpi failed"
+    exit -1
+  fi
+
+  ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mv ${output}/model/rank-00000/model* ${output}/model/
+  if [ $? != 0 ]
+  then
+    log_error "hadoop fs -mv ${output}/model/rank-00000/model* ${output}/model/ failed"
+    exit -1
+  fi
+  ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mv ${output}/model/rank-00000/*.txt ${output}/model/
+  if [ $? != 0 ]
+  then
+    log_error "hadoop fs -mv ${output}/model/rank-00000/*.txt ${output}/model/ failed"
+    exit -1
+  fi
+  ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mkdir ${output}/score
+  if [ $? != 0 ]
+  then
+    log_error "hadoop fs -mkdir ${output}/score failed"
+    exit -1
+  fi
+  ${HADOOP_HOME}/bin/hadoop --config ${HADOOP_CONF_DIR} fs -mv ${output}/model/rank-* ${output}/score/
+  if [ $? != 0 ]
+  then
+    log_error "hadoop fs -mv ${output}/model/rank-* ${output}/score/ failed"
+    exit -1
+  fi

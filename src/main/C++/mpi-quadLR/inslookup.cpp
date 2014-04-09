@@ -9,8 +9,11 @@
 using namespace std;
 
 map<unsigned int, int> *feasign2id_map;
+
 vector<string> featureNameUser;
 vector<string> featureNameAd;
+vector<double>* randMatrixForUser;
+vector<double>* randMatrixForAd;
 
 //feasign2id_map[0]	Ad featuremap
 //feasign2id_map[1] User featuremap
@@ -18,11 +21,16 @@ vector<string> featureNameAd;
 
 char feamap_path[2048];
 char ins_path[2048];
-
-int init_inslookup(const char* instance_file, const char* feature_file)
+char randmat_path_user[2048];
+char randmat_path_ad[2048];
+int rpAdFeaCount = 0;
+int rpUserFeaCount = 0;
+int init_inslookup(const char*instance_file, const char* feature_file, const char* randmat_file_user, const char* randmat_file_ad)
 {
 	snprintf(feamap_path, 2048, "%s", feature_file);
 	snprintf(ins_path, 2048, "%s", instance_file);
+	snprintf(randmat_path_user, 2048, "%s", randmat_file_user);
+	snprintf(randmat_path_ad, 2048, "%s", randmat_file_ad);
 	feasign2id_map = new map<unsigned int, int>[3];
 	return 0;
 }
@@ -30,14 +38,23 @@ int init_inslookup(const char* instance_file, const char* feature_file)
 int getAdFeaCount(){
 	return feasign2id_map[0].size();
 }
+int getRpAdFeaCount(){
+	return rpAdFeaCount;
+}
 int getUserFeaCount(){
 	return feasign2id_map[1].size();
+}
+int getRpUserFeaCount(){
+	return rpUserFeaCount;
 }
 int getOtherFeaCount(){
 	return feasign2id_map[2].size();
 }
 int getAllFeaCount(){
 	return feasign2id_map[0].size() + feasign2id_map[1].size() + feasign2id_map[2].size();
+}
+int getRpAllFeaCount(){
+	return rpAdFeaCount+rpUserFeaCount;
 }
 	/*
     * Get feature Type
@@ -86,8 +103,6 @@ int load_feamap(const char* feamap_path){
 	int feaid[3];
 	feaid[0] = 1; feaid[1] = 1; feaid[2] = 0;
 	ifstream pfeamap(feamap_path);
-
-
 	if(!pfeamap.good()){
 		cerr << "error feature map file" << endl;
 		exit(1);
@@ -106,12 +121,89 @@ int load_feamap(const char* feamap_path){
 		feasign2id_map[type][feasign] = feaid[type];
 		feaid[type]++;
 	}
-//	cout << "Ad Feature: "<<getAdFeaCount() << endl;
-//	cout << "User Feature: "<<getUserFeaCount() << endl;
-//	cout << "Other Feature: "<<getOtherFeaCount() << endl;
-//	cout << "Total Feature: " << getAllFeaCount() << "\n";
 	return 0;
 }
+
+vector<double> split(string str, string pattern){
+	int pos;
+	vector<double> result;
+	str+=pattern;
+	int size = str.size();
+	for(int i = 0; i < size; i++){
+		pos = str.find(pattern, i);
+		if(pos< size){
+			string s = str.substr(i, pos-i);
+			result.push_back(atof(s));
+			i = pos+pattern.size() -1;
+		}
+	}
+	return result;
+}
+
+void load_randmat_for_user(const char* randmat_path_user){
+	string line;
+	ifstream pfeamap(randmat_path_user);
+	if(!pfeamap.good()){
+		cerr << "error rand mat file for user" << endl;
+		exit(1);
+	}
+	getline(pfeamap, line);
+	int pos = line.find("X");
+	int rownum = atoi(line.substr(0, pos).c_str());
+	int colnum = atoi(line.substr(pos+1, line.length()-pos-1).c_str());
+	randMatrixForUser = new vector<double>[rownum];
+	int i = 0;
+	while (getline(pfeamap, line)){
+		randMatrixForUser[i++] = split(line, "\t");
+	}
+	pfeamap.close();
+	rpUserFeaCount = rownum;
+}
+
+void load_randmat_for_ad(const char* randmat_path_ad){
+	string line;
+	ifstream pfeamap(randmat_path_ad);
+	if(!pfeamap.good()){
+		cerr << "error rand mat file for ad" << endl;
+		exit(1);
+	}
+	getline(pfeamap, line);
+	int pos = line.find("X");
+	int rownum = atoi(line.substr(0, pos).c_str());
+	int colnum = atoi(line.substr(pos+1, line.length()-pos-1).c_str());
+	randMatrixForAd = new vector<double>[rownum];
+	int i = 0;
+	while (getline(pfeamap, line)){
+		randMatrixForAd[i++] = split(line, "\t");
+	}
+	pfeamap.close();
+	rpAdFeaCount = rownum;
+}
+
+
+vector<int> get_rp_instance(const vector<int>& instance){
+	vector<int> rpInstance;
+	for(int i = 0; i < rpAdFeaCount; i++){
+		double sum = 0;
+		for(int k = 0; k < instance.size(); k++){
+			if(instance[k] < getAdFeaCount()){
+				sum += randMatrixForAd[i][instance[k]];
+			}
+		}
+		if(sum > 0) rpInstance.push_back(i);
+	}
+	for(int i = 0; i < rpUserFeaCount; i++){
+		double sum = 0;
+		for(int k = 0; k < instance.size(); k++){
+			if(instance[k] >= getAdFeaCount() && instance[k] < getAdFeaCount() + getUserFeaCount()){
+				sum += randMatrixForUser[i][instance[k]-getAdFeaCount()];
+			}
+		}
+		if(sum > 0) rpInstance.push_back(i+rpAdFeaCount);
+	}
+	return rpInstance;
+}
+
 
 /*
 		// Instance parser
@@ -128,14 +220,13 @@ int trans_ins(const char* ins_path, size_t rankid,
 			std::deque<size_t>& instance_starts,
 			std::deque<size_t>& nonClkQ,
 			std::deque<size_t>& ClkQ,
-			size_t& numInstance){
+			size_t& numInstance,
+			std::deque<size_t>& rpFeatures,
+			std::deque<size_t>& rpInstance_starts){
 	char insinput[50];
 	char insoutput[50];
 	sprintf(insinput, "%s-%05d", ins_path, rankid);
-//	sprintf(insinput, "%s", ins_path);
-//	sprintf(insinput, "%s%d", ins_path, rankid);
 	ifstream fins(insinput);
-//	ofstream out("ins_out");
 	char line[MAX_BUF_LEN];
 	string linestr;
 	const char CTRL_A = '';
@@ -148,6 +239,7 @@ int trans_ins(const char* ins_path, size_t rankid,
 		exit(1);
 	}
 	instance_starts.push_back(0);
+	rpInstance_starts.push_back(0);
 	numInstance = 0;
 	while(getline(fins, linestr)){
 		strcpy(line, linestr.c_str());
@@ -174,8 +266,6 @@ int trans_ins(const char* ins_path, size_t rankid,
 		p_begin++;
 		p_end = p_begin;
 		bool bEnd = false;
-	//	cout << temp_nonclick << "x" << temp_click << "\t";
-    //  cout << p_end <<endl;
     	instance.push_back(0);
     	instance.push_back(getAdFeaCount());
 		while(!bEnd){
@@ -197,13 +287,15 @@ int trans_ins(const char* ins_path, size_t rankid,
 		}
 
 		sort(&instance[0], &instance[instance.size()]);
-//		out << temp_nonclick << "_"<<temp_click<<":";
 		for(size_t i = 0; i < instance.size(); i++){
 			features.push_back(instance[i]);
-//			out << instance[i] << " ";
 		}
-//		out << "\n";	
 		instance_starts.push_back(features.size());
+		vector<int> rpInstance = get_rp_instance(instance);
+		for(size_t i = 0; i < rpInstance.size(); i++){
+			rpFeatures.push_back(rpInstance[i]);
+		}
+		rpInstance_starts.push_back(rpFeatures.size());
 		nonClkQ.push_back(temp_nonclick);
 		ClkQ.push_back(temp_click);
 		

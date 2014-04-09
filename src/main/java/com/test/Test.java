@@ -374,6 +374,83 @@ public class Test {
 	        System.out.println(i+" "+j+" "+(j-i));
 	        return Math.max(maxSoFar, j-i);
 	    }
+	    public static String longestPalindrome(String s) {
+	        int dp[][] = new int[s.length()][s.length()];
+	        int maxLength = 1;
+	        int indexX = 0; int indexY = 0;
+	        for(int j = 0; j < s.length(); j++){
+	            for(int i = 0; i < s.length()-j; i++){
+	                if(i == j) dp[i][j] = 1;
+	                else if(s.charAt(i) == s.charAt(j)){
+	                    if(i+1 <= j-1){
+	                        dp[i][j] = dp[i+1][j-1];
+	                    }
+	                    else dp[j][i] = 1;
+	                }
+	                else{
+	                    dp[j][i] = 0;
+	                }
+	            }
+	        }
+	        for(int i = 0; i < s.length(); i++){
+	            for(int j = i; j < s.length(); j++){
+	                if(j-i+1 > maxLength){
+	                    indexY = j; indexX = i;
+	                    maxLength = j-i+1;
+	                }
+	            }
+	        }
+	        return s.substring(indexX, indexY+1);
+	    }
+	    
+	    public static ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
+	        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+	        if(num.length <= 0) return result;
+	        int[] numTmp = new int[num.length];
+	        boolean[] used = new boolean[num.length];
+	        for(int i = 0; i < num.length; i++) {
+	            numTmp[i] = num[i];
+	            used[i] = false;
+	        }
+	        Arrays.sort(num);
+	        LinkedList<Integer> path = new LinkedList<Integer>();
+	        permuteHelper(num, used, result, path);
+	        return result;
+	    }
+	    private static void permuteHelper(int[] num, boolean[] used, ArrayList<ArrayList<Integer>> result, LinkedList<Integer> path){
+	        if(path.size() == num.length){
+	            boolean dup = false;
+	            for(int i = result.size()-1; i >=0; i--){
+	                //check duplicate
+	                ArrayList<Integer> tmp = result.get(i);
+	                int j = 0;
+	                for(; j < tmp.size(); j++){
+	                    if( tmp.get(j) != path.get(j)) break;
+	                }
+	                if(j == tmp.size()){
+	                    dup = true;
+	                    break;
+	                } 
+	            }
+	            if(!dup){
+	                ArrayList<Integer> ls = new ArrayList<Integer>();
+	                for(int i = 0; i < path.size(); i++) ls.add(path.get(i));
+	                result.add(ls);
+	            }
+	        }
+	        else{
+	            for(int i = 0; i < num.length; i++){
+	                if(!used[i]){
+	                    path.addLast(num[i]);
+	                    used[i] = true;
+	                    permuteHelper(num, used, result, path);
+	                    used[i] = false;
+	                    path.pollLast();
+	                }
+	                while(i+1 < num.length && num[i+1] == num[i]) ++i;
+	            }
+	        }
+	    }
 	public static void main(String[] args) throws IOException{
 		/*
 		BufferedReader br = new BufferedReader(new FileReader("A-large.in"));
@@ -427,11 +504,18 @@ public class Test {
 		//System.out.println(spiralOrder(matrix));
 		ArrayList<Integer> al = new ArrayList<Integer>();
 		Vector<Integer> v = new Vector<Integer>();
-		int[] a = {1,2,3};
+		Stack<Character> stk = new Stack<Character>();
+		
 		Set<String> dict = new HashSet<String>();
-		String str= "123";
+		String str= "123"; long l = 1;
+		double d = 0.234;
+		System.out.println((int)(d*100)*1.00);
 		System.out.println(lengthOfLongestSubstring("whtaciohordtqkvwcsgspqo"));
 		System.out.println(multiply("11000000000000000","01111111111"));
+		int[] array = {1,1};
+		System.out.println((int)(char)(byte)-2);
+
+		permuteUnique(array);
 	}
 }
 
