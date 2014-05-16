@@ -9,7 +9,7 @@ using namespace std;
 
 const int MAX_BUF_LEN = 1024*20;
 
-int init_inslookup(const char*instance_file, const char* feature_file);
+int init_inslookup(const char*instance_file, const char* feature_file, const char* randad, const char* randuser);
 int trans_ins(const char* ins_path, size_t rankid, std::deque<size_t>& features, 
 			std::deque<size_t>& instance_starts, 
 			std::deque<size_t>& nonClk, std::deque<size_t>& Clk, size_t& numInstance,

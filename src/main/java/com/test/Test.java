@@ -3,6 +3,7 @@ package com.test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -451,7 +452,54 @@ public class Test {
 	            }
 	        }
 	    }
+	    public static String minWindow(String S, String T) {
+	        HashMap<Character, Integer> pattern= new HashMap<Character, Integer>();
+	        for(int i = 0; i < T.length(); i++){
+	            char ch = T.charAt(i);
+	            if(pattern.containsKey(ch)) pattern.put(ch, pattern.get(ch)+1);
+	            else pattern.put(ch, 1);
+	        }
+	        HashMap<Character, Integer> currentStat = new HashMap<Character, Integer>();
+	        int count = 0;
+	        int head = 0;
+	        int tail = 0;
+	        int left = -1;
+	        int minWidth = S.length()+1;
+	        while(tail < S.length()){
+	            char ch = S.charAt(tail);
+	            if(pattern.containsKey(ch)){
+	                if(currentStat.containsKey(ch)){
+	                    currentStat.put(ch, currentStat.get(ch)+1);
+	                }
+	                else{
+	                    currentStat.put(ch, 1);
+	                }
+	                if(currentStat.get(ch) <= pattern.get(ch)) count++;
+	            }
+	            
+	            if(count == T.length()){
+	                while(!currentStat.containsKey(S.charAt(head)) || currentStat.get(S.charAt(head)) > pattern.get(S.charAt(head))){
+	                    if(currentStat.containsKey(S.charAt(head)) && currentStat.get(S.charAt(head)) > pattern.get(S.charAt(head)))
+	                        currentStat.put(S.charAt(head), currentStat.get(S.charAt(head))-1);
+	                    head++;
+	                }
+	                if(minWidth > tail -head+1){
+	                    minWidth = tail-head+1;
+	                    left = head;
+	                }
+	            }
+	            tail++;
+	        }
+	        if(minWidth == S.length()+1) return "";
+	        else return S.substring(left, left+minWidth);
+	    }
 	public static void main(String[] args) throws IOException{
+		StringBuffer sb = new StringBuffer("");
+		Stack<String> stk = new Stack<String>();
+		String a = "";
+		System.out.println(minWindow("bba","ab"));
+		LinkedList<Integer> path = new LinkedList<Integer>();
+		path.addLast(1);
 		/*
 		BufferedReader br = new BufferedReader(new FileReader("A-large.in"));
 		BufferedWriter bw = new BufferedWriter(new FileWriter("A-large.out"));
@@ -502,20 +550,59 @@ public class Test {
 		*/
 		//int[][] matrix = {{1,2,3,4},{1,2,3,4}};
 		//System.out.println(spiralOrder(matrix));
-		ArrayList<Integer> al = new ArrayList<Integer>();
-		Vector<Integer> v = new Vector<Integer>();
-		Stack<Character> stk = new Stack<Character>();
+//		ArrayList<Integer> al = new ArrayList<Integer>();
+//		Vector<Integer> v = new Vector<Integer>();
+//		Stack<Character> stk = new Stack<Character>();
+//		
+//		Set<String> dict = new HashSet<String>();
+//		String str= "123"; long l = 1;
+//		double d = 0.234;
+//		System.out.println((int)(d*100)*1.00);
+//		System.out.println(lengthOfLongestSubstring("whtaciohordtqkvwcsgspqo"));
+//		System.out.println(multiply("11000000000000000","01111111111"));
+//		int[] array = {1,1};
+//		System.out.println((int)(char)(byte)-2);
+//
+//		permuteUnique(array);
+		String[] tokens = new String[3];
+		tokens[0] = new String("3");
+		tokens[1] = new String("-4");
+		tokens[2] = new String("+");
+		System.out.println(evalRPN(tokens));
 		
-		Set<String> dict = new HashSet<String>();
-		String str= "123"; long l = 1;
-		double d = 0.234;
-		System.out.println((int)(d*100)*1.00);
-		System.out.println(lengthOfLongestSubstring("whtaciohordtqkvwcsgspqo"));
-		System.out.println(multiply("11000000000000000","01111111111"));
-		int[] array = {1,1};
-		System.out.println((int)(char)(byte)-2);
-
-		permuteUnique(array);
 	}
+	public static int evalRPN(String[] tokens) {
+        int length = tokens.length;
+        int a = 0;
+        int b = 0;
+        int tmp = 0;
+        ArrayList<Integer> nums = new ArrayList<Integer>();
+        for(int i=0; i<length; ++i){
+           if(isOpertor(tokens[i])){
+               if(tokens[i]=="+"){
+                   tmp = nums.get(nums.size()-2)+nums.get(nums.size()-1);
+               } else if(tokens[i]=="-"){
+                    tmp = nums.get(nums.size()-2)-nums.get(nums.size()-1);
+               } else if(tokens[i]=="*"){
+                   tmp = nums.get(nums.size()-2)*nums.get(nums.size()-1);
+               } else if(tokens[i]=="/"){
+                   tmp = nums.get(nums.size()-2)/nums.get(nums.size()-1);
+               }
+               nums.remove(nums.size()-1);
+               nums.remove(nums.size()-1);
+               nums.add(tmp);
+           }else{
+               nums.add(Integer.parseInt(tokens[i]));
+           }
+        }
+        return nums.get(0);
+    }
+
+    private static boolean isOpertor(String token){
+        if(token.equals("+")||token.equals("-")||token.equals("*")||token.equals("/")){
+            return true;
+        }
+        return false;
+    }
 }
 

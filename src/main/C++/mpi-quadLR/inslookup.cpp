@@ -25,7 +25,7 @@ char randmat_path_user[2048];
 char randmat_path_ad[2048];
 int rpAdFeaCount = 0;
 int rpUserFeaCount = 0;
-int init_inslookup(const char*instance_file, const char* feature_file, const char* randmat_file_user, const char* randmat_file_ad)
+int init_inslookup(const char*instance_file, const char* feature_file, const char* randmat_file_ad, const char* randmat_file_user)
 {
 	snprintf(feamap_path, 2048, "%s", feature_file);
 	snprintf(ins_path, 2048, "%s", instance_file);
@@ -133,7 +133,7 @@ vector<double> split(string str, string pattern){
 		pos = str.find(pattern, i);
 		if(pos< size){
 			string s = str.substr(i, pos-i);
-			result.push_back(atof(s));
+			result.push_back(atof(s.c_str()));
 			i = pos+pattern.size() -1;
 		}
 	}

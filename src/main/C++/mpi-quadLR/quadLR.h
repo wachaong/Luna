@@ -31,12 +31,12 @@ class QuadLRProblem{
 	IntVec u[24];
 public:
 	QuadLRProblem(const char* instance_file, const char* feature_file, const char* randmat_path_ad, const char* randmat_path_user, size_t rankid);
-	double ScoreOf(size_t i, const std::vector<double>& weights, int thread_id) const;
+	double ScoreOf(size_t ins, const std::vector<double>& weights, int thread_id);
 	
-	void AddMultTo(size_t i, double mult,  std::vector<double>& vec, int thread_id) const {
+	void AddMultTo(size_t ins, double mult,  std::vector<double>& vec, int thread_id) {
 		int a_size = 0;
 		int u_size = 0;
-		for (size_t j = rpInstance_starts[i]; j < rpInstance_starts[i+1]; j++){
+		for (size_t j = rpInstance_starts[ins]; j < rpInstance_starts[ins+1]; j++){
 			size_t index = rpFeatures[j];
 			//Ad Feature
 			if(index < numRpAdFeature){
@@ -52,7 +52,7 @@ public:
 				vec[i*numRpUserFeature+j] += mult * 1.0;
 			}
 		}
-		for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+		for (size_t j = instance_starts[ins]; j < instance_starts[ins+1]; j++){
 			size_t index = features[j];
 			if(index >= NumAdFeats()+NumUserFeats())
 				vec[index+numRpUserFeature*numRpAdFeature] += mult*1.0;

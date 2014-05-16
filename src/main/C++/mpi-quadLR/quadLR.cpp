@@ -20,13 +20,13 @@ pthread_t* threadList;
 
 extern char feamap_path[2048];
 extern char ins_path[2048];
-extern int init_inslookup(const char*instance_file, const char* feature_file);
+extern int init_inslookup(const char*instance_file, const char* feature_file, const char* ad, const char* user);
 QuadLRProblem::QuadLRProblem(const char* instance_file, const char* feature_file, const char* randmat_path_ad, const char* randmat_path_user, size_t rankid){
 	//initialize
 	//read instances and features from files
 	//save into four deques
 	//features,instance_starts, nonclk, clk
-	init_inslookup(instance_file, feature_file);
+	init_inslookup(instance_file, feature_file, randmat_path_ad, randmat_path_user);
 	load_feamap(feamap_path);
 	load_randmat_for_user(randmat_path_user);
 	load_randmat_for_ad(randmat_path_ad);
@@ -40,12 +40,12 @@ QuadLRProblem::QuadLRProblem(const char* instance_file, const char* feature_file
 }
 
 //calculate f(x) for P
-double QuadLRProblem::ScoreOf(size_t i, const std::vector<double>& weights) const{
+double QuadLRProblem::ScoreOf(size_t ins, const std::vector<double>& weights){
 	//f(x)=Px+tXu
 	double score = 0.0;	
 	int a_size = 0;
 	int u_size = 0;
-	for (size_t j = rpInstance_starts[i]; j < rpInstance_starts[i+1]; j++){
+	for (size_t j = rpInstance_starts[ins]; j < rpInstance_starts[ins+1]; j++){
 		size_t index = rpFeatures[j];
 		//Ad Feature
 		if(index < numRpAdFeature){
@@ -62,7 +62,7 @@ double QuadLRProblem::ScoreOf(size_t i, const std::vector<double>& weights) cons
 		}
 	}
 		
-	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
+	for (size_t j = instance_starts[ins]; j < instance_starts[ins+1]; j++){
 		if(features[j] >= NumAdFeats()+NumUserFeats())
 			score += weights[numRpAdFeature * numRpUserFeature + features[j]]*1.0;
 	}
@@ -106,7 +106,7 @@ void* ThreadEvalLocal(void * arg){
 
 	for(size_t i = 0; i < o.problem.NumInstance(); i++){
 		if(i % p->threadNum != p->threadId) continue;
-		double score = o.problem.ScoreOf(i, p->input);
+		double score = o.problem.ScoreOf(i, p->input, p->threadId);
 		double insLoss, insProb;
 		if(o.problem.ClkOf(i) > 0){
 			if(score < -30){
@@ -123,7 +123,7 @@ void* ThreadEvalLocal(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  o.problem.ClkOf(i) * insLoss;
-			o.problem.AddMultTo(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultTo(i, -1.0*o.problem.ClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}
 
 		if(o.problem.NonClkOf(i) > 0){
@@ -142,7 +142,7 @@ void* ThreadEvalLocal(void * arg){
 				insProb = 1.0/ temp;
 			}
 			p->loss +=  10.0*o.problem.NonClkOf(i) * insLoss;
-			o.problem.AddMultTo(i, 10.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient);
+			o.problem.AddMultTo(i, 10.0*o.problem.NonClkOf(i)*(1.0 - insProb), p->gradient, p->threadId);
 		}		
 	}
 }
@@ -166,7 +166,7 @@ double QuadLRObjective::EvalLocalMultiThread(const DblVec& input, DblVec& gradie
 	
 	for(int i = 0; i < threadNum; i++){
 		Parameter*p = new Parameter(*this, input, gradList[i], lossList[i], i, threadNum);
-		pthread_create(&threadList[i], NULL, ThreadEvalLocalForP, p);
+		pthread_create(&threadList[i], NULL, ThreadEvalLocal, p);
 	}
 	
 	for(int i = 0; i < threadNum; i++){

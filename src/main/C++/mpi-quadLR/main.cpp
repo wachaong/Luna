@@ -13,8 +13,6 @@ void printUsageAndExit() {
 	cout << "options:" << endl;
 	cout << "  -tol <value>   sets convergence tolerance (default is 1e-4)" << endl;
  	cout << "  -l2weight <value>" << endl;
- 	cout << "  -l21weight <value>" << endl;
- 	cout << "  -K <value>" << endl;
 	cout << endl;
 	exit(0);
 }
@@ -101,7 +99,7 @@ int main(int argc, char** argv) {
 
 	double end = MPI_Wtime();
 	int xsize = qlrp->NumRpUserFeats()*qlrp->NumRpAdFeats();
-	int psize = qlrp->NumAllFeats()
+	int psize = qlrp->NumAllFeats();
 	DblVec X(xsize);
 	DblVec P(psize);
 	for(int i = 0; i < xsize; i++){

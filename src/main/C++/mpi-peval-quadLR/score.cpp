@@ -50,7 +50,7 @@ vector<double> split(string str, string pattern){
 		pos = str.find(pattern, i);
 		if(pos< size){
 			string s = str.substr(i, pos-i);
-			result.push_back(atof(s));
+			result.push_back(atof(s.c_str()));
 			i = pos+pattern.size() -1;
 		}
 	}
@@ -96,9 +96,26 @@ void load_randmat_for_ad(const char* randmat_path_ad){
 	pfeamap.close();
 	rpAdFeaCount = rownum;
 }
-
-vector<int> get_rp_instance(const vector<int>& instance){
-	vector<int> rpInstance;
+int getAdFeaCount(){
+	return feasign2id_map[0].size();
+}
+int getUserFeaCount(){
+	return feasign2id_map[1].size();
+}
+int getOtherFeaCount(){
+	return feasign2id_map[2].size();
+}
+int getAllFeaCount(){
+	return feasign2id_map[0].size() + feasign2id_map[1].size() + feasign2id_map[2].size();
+}	
+int getRpAdFeaCount(){
+	return rpAdFeaCount;
+}
+int getRpUserFeaCount(){
+	return rpUserFeaCount;
+}
+vector<size_t> get_rp_instance(const vector<size_t>& instance){
+	vector<size_t> rpInstance = new vector<size_t>();
 	for(int i = 0; i < rpAdFeaCount; i++){
 		double sum = 0;
 		for(int k = 0; k < instance.size(); k++){
@@ -120,24 +137,7 @@ vector<int> get_rp_instance(const vector<int>& instance){
 	return rpInstance;
 }
 
-int getAdFeaCount(){
-	return feasign2id_map[0].size();
-}
-int getUserFeaCount(){
-	return feasign2id_map[1].size();
-}
-int getOtherFeaCount(){
-	return feasign2id_map[2].size();
-}
-int getAllFeaCount(){
-	return feasign2id_map[0].size() + feasign2id_map[1].size() + feasign2id_map[2].size();
-}	
-int getRpAdFeaCount(){
-	return rpAdFeaCount;
-}
-int getRpUserFeaCount(){
-	return rpUserFeaCount;
-}
+
 
 	/*
     * Get feature Type
@@ -247,22 +247,22 @@ double cal_score(vector <size_t> instance){
 	for (size_t j = 0; j < rp_instance.size(); j++){
 		size_t index = rp_instance[j];
 		//Ad Feature
-		if(index < numRpAdFeature){
+		if(index < rpAdFeaCount){
 			a.push_back(index);
 		}
 		//User Feature
-		else if(index < numRpAdFeature + numRpUserFeature){
+		else if(index < rpAdFeaCount + rpUserFeaCount){
 			u.push_back(index-numRpAdFeature);
 		}
 	}
 	for(size_t i = 0; i < a.size(); i++){
 		for(size_t j = 0; j < u.size(); j++){
-			score += X[a[i]*numRpUserFeature + u[j]];
+			score += X[a[i]*rpUserFeaCount + u[j]];
 		}
 	}
 		
-	for (size_t j = instance_starts[i]; j < instance_starts[i+1]; j++){
-		if(features[j] >= getAdFeaCount()+getUserFeaCount())
+	for (size_t j = 0; j < instance.size(); j++){
+		if(instance[j] >= getAdFeaCount()+getUserFeaCount())
 			score += P[features[j]]*1.0;
 	}
 	return score;
